@@ -6,7 +6,7 @@ import os
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
-from vpq.helper.exceptions import DatabaseDoesNotContainUsernameError, QuizNotFavouriteError
+from vpq.helper.exceptions import DatabaseDoesNotContainUsernameError, QuestionSetNotFavouriteError
 
 function = func.Blueprint()
 
@@ -31,13 +31,13 @@ def playerFaveQuizDel(req: func.HttpRequest) -> func.HttpResponse:
 
         # Check the question set is a favourite
         if not reqJson['quizId'] in playerInfo['fave_quizzes']:
-            raise QuizNotFavouriteError
+            raise QuestionSetNotFavouriteError
 
-        # Remove the friend
+        # Remove the question set
         playerInfo['fave_quizzes'].remove(reqJson['quizId'])
         playerContainer.replace_item(playerInfo['id'], body=playerInfo)
 
-        logging.info("Friend removed successfully")
+        logging.info("Question set removed successfully")
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
 
     except DatabaseDoesNotContainUsernameError:
@@ -45,8 +45,8 @@ def playerFaveQuizDel(req: func.HttpRequest) -> func.HttpResponse:
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 
-    except QuizNotFavouriteError:
-        message = QuizNotFavouriteError.getMessage()
+    except QuestionSetNotFavouriteError:
+        message = QuestionSetNotFavouriteError.getMessage()
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 

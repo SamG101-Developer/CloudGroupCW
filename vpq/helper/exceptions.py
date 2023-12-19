@@ -9,17 +9,26 @@ class DatabaseDoesNotContainUsernameError(ValueError):
     def getMessage():
         return "Database DOES NOT contain username."
 
+
 class UsersAlreadyFriendsError(ValueError):
     @staticmethod
     def getMessage():
         return "The users are already friends."
+
 
 class UsersNotFriendsError(ValueError):
     @staticmethod
     def getMessage():
         return "The users are not friends."
 
-class QuizNotFavouriteError(ValueError):
+
+class QuestionSetNotFavouriteError(ValueError):
+    @staticmethod
+    def getMessage():
+        return "The quiz is not a favourite."
+
+
+class DatabaseDoesNotContainQuestionSetIDError(ValueError):
     @staticmethod
     def getMessage():
         return "The quiz is not a favourite."
