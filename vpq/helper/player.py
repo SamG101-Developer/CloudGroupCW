@@ -8,6 +8,9 @@ class UsernameLengthError(ValueError):
 class DatabaseContainsUsernameError(ValueError):
     pass
 
+class DatabaseDoesNotContainUsernameError(ValueError):
+    pass
+
 
 class PasswordLengthError(ValueError):
     pass
@@ -39,7 +42,7 @@ class Player:
                             'premiumCurrency': (int),
                             'totalScore': (int),
                             'friends': ([string]),
-                            'savedQuizzes': ([int])
+                            'favQuizzes': ([int])
                           }
         """
         self.playerData = playerData
