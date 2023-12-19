@@ -14,6 +14,11 @@ class UsersAlreadyFriendsError(ValueError):
     def getMessage():
         return "The users are already friends."
 
+class UsersNotFriendsError(ValueError):
+    @staticmethod
+    def getMessage():
+        return "The users are not friends."
+
 
 class IncorrectUsernameOrPasswordError(ValueError):
     @staticmethod

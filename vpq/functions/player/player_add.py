@@ -56,6 +56,8 @@ def playerAdd(req: func.HttpRequest) -> func.HttpResponse:
     except CosmosHttpResponseError:
         logging.error("Did not complete the request due to an issue connecting to the database."
                       " Please try again later.")
-        return func.HttpResponse(body=json.dumps({'result': False, "msg": "Database already contains username"}),
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": "Did not complete the request due to an "
+                                                                          "issue connecting to the database. Please "
+                                                                          "try again later."}),
                                  mimetype="application/json")
 
