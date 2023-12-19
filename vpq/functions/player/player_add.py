@@ -5,7 +5,8 @@ import logging
 import os
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
-from vpq.helper.player import Player, UsernameLengthError, PasswordLengthError, DatabaseContainsUsernameError
+from vpq.helper.player import Player, UsernameLengthError, PasswordLengthError
+from vpq.helper.exceptions import DatabaseContainsUsernameError
 
 function = func.Blueprint()
 
@@ -38,17 +39,17 @@ def playerAdd(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
 
     except UsernameLengthError:
-        logging.error("Username length invalid.")
+        logging.error(UsernameLengthError.getMessage())
         return func.HttpResponse(body=json.dumps({'result': False, "msg": "Username length invalid"}),
                                  mimetype="application/json")
 
     except PasswordLengthError:
-        logging.error("Password length invalid.")
+        logging.error(PasswordLengthError.getMessage())
         return func.HttpResponse(body=json.dumps({'result': False, "msg": "Password length invalid"}),
                                  mimetype="application/json")
 
     except DatabaseContainsUsernameError:
-        logging.error("Database already contains username.")
+        logging.error(DatabaseContainsUsernameError.getMessage())
         return func.HttpResponse(body=json.dumps({'result': False, "msg": "Database already contains username"}),
                                  mimetype="application/json")
 

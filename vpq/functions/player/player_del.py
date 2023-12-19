@@ -5,7 +5,7 @@ import logging
 import os
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
-from vpq.helper.player import DatabaseDoesNotContainUsernameError
+from vpq.helper.exceptions import DatabaseDoesNotContainUsernameError
 
 function = func.Blueprint()
 
@@ -33,7 +33,7 @@ def playerDel(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
 
     except DatabaseDoesNotContainUsernameError:
-        logging.error("Database does not contain username.")
+        logging.error(DatabaseDoesNotContainUsernameError.getMessage())
         return func.HttpResponse(body=json.dumps({'result': False, "msg": "Database does not contain username."}),
                                  mimetype="application/json")
 

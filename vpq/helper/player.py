@@ -2,18 +2,15 @@ import json
 
 
 class UsernameLengthError(ValueError):
-    pass
-
-
-class DatabaseContainsUsernameError(ValueError):
-    pass
-
-class DatabaseDoesNotContainUsernameError(ValueError):
-    pass
+    @staticmethod
+    def getMessage():
+        return "Username length invalid."
 
 
 class PasswordLengthError(ValueError):
-    pass
+    @staticmethod
+    def getMessage():
+        return "Password length invalid."
 
 
 # Setting constants
