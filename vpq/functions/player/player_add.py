@@ -39,19 +39,19 @@ def playerAdd(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
 
     except UsernameLengthError:
-        logging.error(UsernameLengthError.getMessage())
-        return func.HttpResponse(body=json.dumps({'result': False, "msg": "Username length invalid"}),
-                                 mimetype="application/json")
+        message = UsernameLengthError.getMessage()
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 
     except PasswordLengthError:
-        logging.error(PasswordLengthError.getMessage())
-        return func.HttpResponse(body=json.dumps({'result': False, "msg": "Password length invalid"}),
-                                 mimetype="application/json")
+        message = PasswordLengthError.getMessage()
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 
     except DatabaseContainsUsernameError:
-        logging.error(DatabaseContainsUsernameError.getMessage())
-        return func.HttpResponse(body=json.dumps({'result': False, "msg": "Database already contains username"}),
-                                 mimetype="application/json")
+        message = DatabaseContainsUsernameError.getMessage()
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 
     except CosmosHttpResponseError:
         logging.error("Did not complete the request due to an issue connecting to the database."

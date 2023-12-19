@@ -33,9 +33,9 @@ def playerDel(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
 
     except DatabaseDoesNotContainUsernameError:
-        logging.error(DatabaseDoesNotContainUsernameError.getMessage())
-        return func.HttpResponse(body=json.dumps({'result': False, "msg": "Database does not contain username."}),
-                                 mimetype="application/json")
+        message = DatabaseDoesNotContainUsernameError.getMessage()
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 
     except CosmosHttpResponseError:
         logging.error("Did not complete the request due to an issue connecting to the database."
