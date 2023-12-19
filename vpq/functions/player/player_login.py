@@ -12,7 +12,7 @@ function = func.Blueprint()
 
 cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
 database = cosmos.get_database_client(os.environ['DatabaseName'])
-playerContainer = database.get_container_client(os.environ['Players'])
+playerContainer = database.get_container_client(os.environ['Container_Players'])
 
 
 @function.route(route="playerLogin", auth_level=func.AuthLevel.ANONYMOUS, methods=["POST"])

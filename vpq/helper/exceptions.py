@@ -19,6 +19,11 @@ class UsersNotFriendsError(ValueError):
     def getMessage():
         return "The users are not friends."
 
+class QuizNotFavouriteError(ValueError):
+    @staticmethod
+    def getMessage():
+        return "The quiz is not a favourite."
+
 
 class IncorrectUsernameOrPasswordError(ValueError):
     @staticmethod

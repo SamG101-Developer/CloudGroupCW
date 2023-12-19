@@ -12,7 +12,7 @@ function = func.Blueprint()
 
 cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
 database = cosmos.get_database_client(os.environ['DatabaseName'])
-playerContainer = database.get_container_client(os.environ['Players'])
+playerContainer = database.get_container_client(os.environ['Container_Players'])
 
 
 @function.route(route="playerFriendDel", auth_level=func.AuthLevel.ANONYMOUS)
@@ -28,7 +28,7 @@ def playerFriendDel(req: func.HttpRequest) -> func.HttpResponse:
         if not usernameExists:
             raise DatabaseDoesNotContainUsernameError
 
-        # Check the users are not already friends
+        # Check the users are friends
         if not reqJson['friendUsername'] in playerInfo['friends']:
             raise UsersNotFriendsError
 

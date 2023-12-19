@@ -9,6 +9,7 @@
     "DatabaseName": "vpq-db",
     "Container_Players": "Players",
     "Container_Rooms": "Rooms",
+    "Container_QuestionSet": "QuestionSet",
 
     "FunctionAppKey": "hoz16bfmcoYVX2n0IrqnT4Qo0kDOjtzc72FArQi_qbAqAzFuPbtw4Q=="
   }
