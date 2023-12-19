@@ -1,0 +1,15 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureCosmosDBConnectionString": "AccountEndpoint=https://vpq-db.documents.azure.com:443/;AccountKey=QduOMMfzzkJMVnW1jnRHnBcu6rRRrtf73qH7UuxdSj1Hc8foHAa97OAmPzr6yafkBrSoqap3ZjaDACDb5Cwuag==;",
+
+    "DatabaseName": "vpq-db",
+    "Container_Players": "Players",
+    "Container_Rooms": "Rooms",
+
+    "FunctionAppKey": "hoz16bfmcoYVX2n0IrqnT4Qo0kDOjtzc72FArQi_qbAqAzFuPbtw4Q=="
+  }
+}
