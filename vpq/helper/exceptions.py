@@ -9,6 +9,11 @@ class DatabaseDoesNotContainUsernameError(ValueError):
     def getMessage():
         return "Database DOES NOT contain username."
 
+class UsersAlreadyFriendsError(ValueError):
+    @staticmethod
+    def getMessage():
+        return "The users are already friends."
+
 
 class IncorrectUsernameOrPasswordError(ValueError):
     @staticmethod

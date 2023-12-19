@@ -24,7 +24,8 @@ def playerLogin(req: func.HttpRequest) -> func.HttpResponse:
         # Check the database contains an entry where the username and password match
         query = "SELECT * FROM p where p.username='{0}' AND p.password='{1}'".format(reqJson['username'],
                                                                                      reqJson['password'])
-        usernamePasswordMatch = len(list(playerContainer.query_items(query=query, enable_cross_partition_query=True))) > 0
+        usernamePasswordMatch = len(
+            list(playerContainer.query_items(query=query, enable_cross_partition_query=True))) > 0
         if not usernamePasswordMatch:
             raise IncorrectUsernameOrPasswordError
 
