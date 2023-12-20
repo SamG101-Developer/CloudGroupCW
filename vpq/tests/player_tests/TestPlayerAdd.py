@@ -1,19 +1,18 @@
 import unittest
 import requests
+import json
 from azure.cosmos import CosmosClient
+
 
 class TestPlayerAdd(unittest.TestCase):
     # extend os.environ from local.settings.json
     import os
-    local_settings_json = os.path.join(os.path.dirname(__file__), 'vpq/local.settings.json')
+    local_settings_json = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'local.settings.json')
     if os.path.exists(local_settings_json):
-        print("test123")
         import json
         with open(local_settings_json) as f:
             settings = json.load(f)
         os.environ.update(settings['Values'])
-    for k, v in os.environ.items():
-        print(f"{k}={v}")
 
 
     key = os.environ["FunctionAppKey"]
