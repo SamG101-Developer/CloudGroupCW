@@ -22,7 +22,7 @@ def playerAddFriend(req: func.HttpRequest) -> func.HttpResponse:
         logging.info('Python HTTP trigger function processed a request to add a friend. JSON: {}'.format(reqJson))
 
         # Check the both usernames exists
-        query = "SELECT * FROM p where p.username='{0}' OR p.username={1}".format(reqJson['username'],
+        query = "SELECT * FROM p where p.username='{0}' OR p.username='{1}'".format(reqJson['username'],
                                                                                   reqJson['friendUsername'])
         usernameExists = len(list(playerContainer.query_items(query=query, enable_cross_partition_query=True))) == 2
         if not usernameExists:
