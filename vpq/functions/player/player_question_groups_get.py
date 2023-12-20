@@ -5,7 +5,6 @@ import logging
 import os
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
-from vpq.helper.exceptions import DatabaseDoesNotContainUsernameError
 
 function = func.Blueprint()
 

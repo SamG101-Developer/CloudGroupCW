@@ -15,7 +15,8 @@ database = cosmos.get_database_client(os.environ['DatabaseName'])
 playerContainer = database.get_container_client(os.environ['Container_Players'])
 
 
-@function.route(route="playerAdd", auth_level=func.AuthLevel.ANONYMOUS, methods=["POST"])
+@function.function_name("playerAdd")
+@function.route(route="playerAdd", auth_level=func.AuthLevel.FUNCTION, methods=["POST"])
 def playerAdd(req: func.HttpRequest) -> func.HttpResponse:
     try:
         reqJson = req.get_json()
@@ -60,4 +61,3 @@ def playerAdd(req: func.HttpRequest) -> func.HttpResponse:
                                                                           "issue connecting to the database. Please "
                                                                           "try again later."}),
                                  mimetype="application/json")
-
