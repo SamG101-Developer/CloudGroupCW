@@ -16,7 +16,7 @@ playerContainer = database.get_container_client(os.environ['Container_Players'])
 questionSetContainer = database.get_container_client(os.environ['Container_QuestionSet'])
 
 
-@function.route(route="playerFaveQuizDel", auth_level=func.AuthLevel.ANONYMOUS, methods=["PUT"])
+@function.route(route="playerFaveQuizDel", auth_level=func.AuthLevel.ANONYMOUS, methods=["DELETE"])
 def playerFaveQuizDel(req: func.HttpRequest) -> func.HttpResponse:
     try:
         reqJson = req.get_json()
@@ -24,18 +24,18 @@ def playerFaveQuizDel(req: func.HttpRequest) -> func.HttpResponse:
 
         # Get the player
         query = "SELECT * FROM p where p.username='{}'".format(reqJson['username'])
-        playerInfo = list(playerContainer.query_items(query=query, enable_cross_partition_query=True))[0]
+        playerInfo = list(playerContainer.query_items(query=query, enable_cross_partition_query=True))
         usernameExists = len(playerInfo) == 1
         if not usernameExists:
             raise DatabaseDoesNotContainUsernameError
 
         # Check the question set is a favourite
-        if not reqJson['quizId'] in playerInfo['fave_quizzes']:
+        if not reqJson['quizId'] in playerInfo[0]['fave_quizzes']:
             raise QuestionSetNotFavouriteError
 
         # Remove the question set
-        playerInfo['fave_quizzes'].remove(reqJson['quizId'])
-        playerContainer.replace_item(playerInfo['id'], body=playerInfo)
+        playerInfo[0]['fave_quizzes'].remove(reqJson['quizId'])
+        playerContainer.replace_item(playerInfo[0]['id'], body=playerInfo[0])
 
         logging.info("Question set removed successfully")
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
