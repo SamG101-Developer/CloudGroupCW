@@ -16,7 +16,7 @@ if os.path.exists(local_settings_json):
     os.environ.update(settings['Values'])
 
 
-class TestPlayerAdd(unittest.TestCase):
+class TestPlayerDel(unittest.TestCase):
     key = os.environ["FunctionAppKey"]
     PUBLIC_URL = None
     LOCAL_URL = "http://localhost:7071/api/playerDel?code={}".format(key)
@@ -30,18 +30,18 @@ class TestPlayerAdd(unittest.TestCase):
     defaultPlayerJson = {
         'username': "bsab1g21",
         'password': "myTestPassword2",
-        'firstName': "Ben",
-        'lastName': "Burbridge",
+        'firstname': "Ben",
+        'lastname': "Burbridge",
         'dob': "06/02/2003",
-        'freeCurrency': 0,
-        'premiumCurrency': 0,
-        'totalScore': 0,
+        'currency': 0,
+        'premium_currency': 0,
+        'overall_score': 0,
         'friends': [],
-        'favQuizzes': []
+        'fave_quizzes': []
     }
 
     def testValidPlayerDel(self):
-        # # Add the player to the database
+        # Add the player to the database
         requests.post(self.TEST_URL_ADD, data=json.dumps(self.defaultPlayerJson))
 
         # Try deleting the player

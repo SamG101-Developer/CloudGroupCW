@@ -31,7 +31,7 @@ class QuestionSetNotFavouriteError(ValueError):
 class DatabaseDoesNotContainQuestionSetIDError(ValueError):
     @staticmethod
     def getMessage():
-        return "The quiz is not a favourite."
+        return "The Database does not contain Question Set ID"
 
 
 class IncorrectUsernameOrPasswordError(ValueError):

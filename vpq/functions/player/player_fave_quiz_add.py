@@ -25,24 +25,24 @@ def playerFaveQuizAdd(req: func.HttpRequest) -> func.HttpResponse:
 
         # Get the player
         query = "SELECT * FROM p where p.username='{}'".format(reqJson['username'])
-        playerInfo = list(playerContainer.query_items(query=query, enable_cross_partition_query=True))[0]
+        playerInfo = list(playerContainer.query_items(query=query, enable_cross_partition_query=True))
         usernameExists = len(playerInfo) == 1
         if not usernameExists:
             raise DatabaseDoesNotContainUsernameError
 
         # Check the question set is not already a favourite
-        if reqJson['quizId'] in playerInfo['fave_quizzes']:
+        if reqJson['quizId'] in playerInfo[0]['fave_quizzes']:
             return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
 
         # Check the question set exists
         query = "SELECT * FROM p where p.id='{}'".format(reqJson['quizId'])
-        questionSetExists = len(list(playerContainer.query_items(query=query, enable_cross_partition_query=True))) == 1
+        questionSetExists = len(list(questionSetContainer.query_items(query=query, enable_cross_partition_query=True))) == 1
         if not questionSetExists:
             raise DatabaseDoesNotContainQuestionSetIDError
 
         # Add the question set
-        playerInfo['fave_quizzes'].append(reqJson['quizId'])
-        playerContainer.replace_item(playerInfo['id'], body=playerInfo)
+        playerInfo[0]['fave_quizzes'].append(reqJson['quizId'])
+        playerContainer.replace_item(playerInfo[0]['id'], body=playerInfo[0])
 
         logging.info("Question Set added successfully")
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")

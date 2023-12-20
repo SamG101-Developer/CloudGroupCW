@@ -21,16 +21,15 @@ def playerInfoSet(req: func.HttpRequest) -> func.HttpResponse:
             'Python HTTP trigger function processed a request to set player info. JSON: {}'.format(reqJson))
 
         # Check the database does contain the username
-        query = ("SELECT p.username, p.currency, p.premium_currency, p.overall_score, p.friends, p.fave_quizzes"
-                 " FROM p where p.username='{}'").format(reqJson['username'])
-        users = playerContainer.query_items(query=query, enable_cross_partition_query=True)
-        if len(list(users)) == 0:
+        query = ("SELECT * FROM p where p.username='{}'").format(reqJson['username'])
+        users = list(playerContainer.query_items(query=query, enable_cross_partition_query=True))
+        if len(users) == 0:
             raise DatabaseDoesNotContainUsernameError
 
         # For all fields passed, set the data
-        for dataName, dataValue in reqJson:
+        for dataName in reqJson:
             if dataName in users[0].keys():
-                users[0][dataName] = dataValue
+                users[0][dataName] = reqJson[dataName]
 
         # Replace the user's data
         playerContainer.replace_item(users[0]['id'], body=users[0])

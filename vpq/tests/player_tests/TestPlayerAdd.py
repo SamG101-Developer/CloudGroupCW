@@ -27,14 +27,14 @@ class TestPlayerAdd(unittest.TestCase):
     defaultPlayerJson = {
         'username': "bsab1g21",
         'password': "myTestPassword2",
-        'firstName': "Ben",
-        'lastName': "Burbridge",
+        'firstname': "Ben",
+        'lastname': "Burbridge",
         'dob': "06/02/2003",
-        'freeCurrency': 0,
-        'premiumCurrency': 0,
-        'totalScore': 0,
+        'currency': 0,
+        'premium_currency': 0,
+        'overall_score': 0,
         'friends': [],
-        'favQuizzes': []
+        'fave_quizzes': []
     }
 
     def testValidPlayerAdd(self):
