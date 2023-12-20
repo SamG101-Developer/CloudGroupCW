@@ -2,19 +2,19 @@ import json
 
 
 class UsernameLengthError(ValueError):
-    pass
-
-
-class DatabaseContainsUsernameError(ValueError):
-    pass
+    @staticmethod
+    def getMessage():
+        return "Username length invalid."
 
 
 class PasswordLengthError(ValueError):
-    pass
+    @staticmethod
+    def getMessage():
+        return "Password length invalid."
 
 
 # Setting constants
-USERNAME_MIN_LENGTH = 0
+USERNAME_MIN_LENGTH = 1
 USERNAME_MAX_LENGTH = 12
 PASSWORD_MIN_LENGTH = 2
 PASSWORD_MAX_LENGTH = 20
@@ -29,7 +29,6 @@ class Player:
         :param playerData (dict): Contains all the player data stored in the database.
                           Format:
                           {
-                            'playerId': (int),
                             'username': (string),
                             'password': (string),
                             'firstName': (string),
@@ -39,7 +38,7 @@ class Player:
                             'premiumCurrency': (int),
                             'totalScore': (int),
                             'friends': ([string]),
-                            'savedQuizzes': ([int])
+                            'favQuizzes': ([int])
                           }
         """
         self.playerData = playerData
@@ -56,7 +55,7 @@ class Player:
                                       USERNAME_MAX_LENGTH, "characters.")
 
     def isPasswordValid(self):
-        passwordLength = len(self.playerData['username'])
+        passwordLength = len(self.playerData['password'])
         # A password is not valid if it has less than USERNAME_MIN_LENGTH characters or a more than
         # USERNAME_MAX_LENGTH characters
         if (passwordLength > PASSWORD_MAX_LENGTH) or (passwordLength < PASSWORD_MIN_LENGTH):
