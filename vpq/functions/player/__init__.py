@@ -7,6 +7,7 @@ from .player_friend_del import function as player_friend_del
 from .player_info_get import function as player_info_get
 from .player_info_set import function as player_info_set
 from .player_question_groups_get import function as player_question_groups_get
+from .player_login import function as player_login
 
 
 player_functions = [
@@ -18,5 +19,6 @@ player_functions = [
     player_friend_del,
     player_info_get,
     player_info_set,
-    player_question_groups_get
+    player_question_groups_get,
+    player_login
 ]
