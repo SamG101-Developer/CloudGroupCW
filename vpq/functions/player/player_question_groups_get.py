@@ -21,8 +21,8 @@ def playerQuestionGroupsGet(req: func.HttpRequest) -> func.HttpResponse:
         logging.info('Python HTTP trigger function processed a request to retrieve player info. JSON: {}'.format(reqJson))
 
         # Check the database does contain the username
-        query = ("SELECT p.question_ids FROM p where p.author='{}'").format(reqJson['username'])
-        questions = questionContainer.query_items(query=query, enable_cross_partition_query=True)
+        query = ("SELECT p.id FROM p where p.author='{}'").format(reqJson['username'])
+        questions = list(questionContainer.query_items(query=query, enable_cross_partition_query=True))
 
         # Send the questionIds to the client
         logging.info("User data retrieved")
