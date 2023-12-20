@@ -22,8 +22,8 @@ def playerDel(req: func.HttpRequest) -> func.HttpResponse:
 
         # Check the database does contain the username
         query = "SELECT p.id, p.username FROM p where p.username='{}'".format(reqJson['username'])
-        users = playerContainer.query_items(query=query, enable_cross_partition_query=True)
-        if len(list(users)) == 0:
+        users = list(playerContainer.query_items(query=query, enable_cross_partition_query=True))
+        if len(users) == 0:
             raise DatabaseDoesNotContainUsernameError
 
         # Delete the player from the database
