@@ -16,7 +16,7 @@ playerContainer = database.get_container_client(os.environ['Container_Players'])
 questionSetContainer = database.get_container_client(os.environ['Container_QuestionSet'])
 
 
-@function.route(route="playerFaveQuizAdd", auth_level=func.AuthLevel.ANONYMOUS)
+@function.route(route="playerFaveQuizAdd", auth_level=func.AuthLevel.ANONYMOUS, methods=["PUT"])
 def playerFaveQuizAdd(req: func.HttpRequest) -> func.HttpResponse:
     try:
         reqJson = req.get_json()

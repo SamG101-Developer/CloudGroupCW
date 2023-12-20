@@ -15,7 +15,7 @@ database = cosmos.get_database_client(os.environ['DatabaseName'])
 playerContainer = database.get_container_client(os.environ['Container_Players'])
 
 
-@function.route(route="playerLogin", auth_level=func.AuthLevel.ANONYMOUS, methods=["POST"])
+@function.route(route="playerLogin", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET"])
 def playerLogin(req: func.HttpRequest) -> func.HttpResponse:
     try:
         reqJson = req.get_json()
