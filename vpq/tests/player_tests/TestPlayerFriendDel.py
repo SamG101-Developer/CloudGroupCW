@@ -19,7 +19,7 @@ if os.path.exists(local_settings_json):
 class TestPlayerFaveQuizDel(unittest.TestCase):
     key = os.environ["FunctionAppKey"]
     PUBLIC_URL = None
-    LOCAL_URL = "http://localhost:7071/api/playerFaveQuizDel?code={}".format(key)
+    LOCAL_URL = "http://localhost:7071/api/playerFriendDel?code={}".format(key)
     TEST_URL = LOCAL_URL
     PUBLIC_URL_ADD = None
     LOCAL_URL_ADD = "http://localhost:7071/api/playerAdd?code={}".format(key)
@@ -48,46 +48,50 @@ class TestPlayerFaveQuizDel(unittest.TestCase):
     }
 
     def testValidDelFaveQuiz(self):
-        # Currently just have a question set as a placeholder
-        # TODO: Make a question set and get its id. This will be the set used to test
-        quizId = "2c70e55f-6338-40dd-86a7-b21c4cd24c01"
-
-        # Add a user that has 1 favourite quiz
+        # Add 2 users that are friends
         player_copy = self.defaultPlayerJson.copy()
-        player_copy['fave_quizzes'].append(quizId)
+        player_copy['friends'].append("bsab1g21_2")
+        player_friend = player_copy.copy()
+        player_friend['username'] = "bsab1g21_2"
+        player_friend['friends'].append("bsab1g21")
         requests.post(self.TEST_URL_ADD, data=json.dumps(player_copy))
         requests.put(self.TEST_URL_INFO_SET, data=json.dumps(player_copy))
+        requests.post(self.TEST_URL_ADD, data=json.dumps(player_friend))
+        requests.put(self.TEST_URL_INFO_SET, data=json.dumps(player_friend))
 
-        # Send request to delete the favourite quiz
-        request_json = {"username": player_copy["username"], "quizId": quizId}
+        # Send request for player to delete friend
+        request_json = {"username": player_copy["username"], "friendUsername": player_friend['username']}
         response = requests.put(self.TEST_URL, data=json.dumps(request_json))
-        print(response.json())
 
         self.assertEqual(response.json(), {'result': True, "msg": "Success"})
 
     def testPlayerDoesNotExist(self):
+        # Friend exists but player does not
         # Delete the default player from the database to ensure it is not there before testing
         requests.delete(self.TEST_URL_DEL, data=json.dumps(self.defaultPlayerJson))
 
-        # Real quiz ID TODO: Get this properly
-        quizId = "2c70e55f-6338-40dd-86a7-b21c4cd24c01"
+        # Add the friend player to the database
+        player_friend = self.defaultPlayerJson.copy()
+        player_friend['username'] += "_2"
+        requests.post(self.TEST_URL_ADD, data=json.dumps(player_friend))
+        requests.put(self.TEST_URL_INFO_SET, data=json.dumps(player_friend))
 
-        # Send request to delete favourite quiz
-        request_json = {"username": self.defaultPlayerJson["username"], "quizId": quizId}
-
+        # Send request to delete friend
+        request_json = {"username": self.defaultPlayerJson["username"], "friendUsername": player_friend['username']}
         response = requests.put(self.TEST_URL, data=json.dumps(request_json))
 
         self.assertEqual(response.json(), {'result': False, "msg": 'Database DOES NOT contain username.'})
 
-    def testInvalidQuestionSetID(self):
-        # Add a user that has no favourite quizzes
-        requests.post(self.TEST_URL_ADD, data=json.dumps(self.defaultPlayerJson))
-        requests.put(self.TEST_URL_INFO_SET, data=json.dumps(self.defaultPlayerJson))
+    def testUsersAreNotFriends(self):
+        # Add 2 users that are friends
+        player_copy = self.defaultPlayerJson.copy()
+        player_friend = player_copy.copy()
+        player_friend['username'] = "bsab1g21_2"
+        requests.post(self.TEST_URL_ADD, data=json.dumps(player_copy))
+        requests.post(self.TEST_URL_ADD, data=json.dumps(player_friend))
 
-        quizId = "2c70e55f-6338-40dd-86a7-b21c4cd24c01"
-
-        # Send request to delete favourite quiz
-        request_json = {"username": self.defaultPlayerJson["username"], "quizId": quizId}
+        # Send request for player to delete friend
+        request_json = {"username": player_copy["username"], "friendUsername": player_friend['username']}
         response = requests.put(self.TEST_URL, data=json.dumps(request_json))
 
-        self.assertEqual(response.json(), {'result': False, "msg": 'The quiz is not a favourite.'})
+        self.assertEqual(response.json(), {'result': False, "msg": 'The users are not friends.'})

@@ -23,18 +23,18 @@ def playerFriendDel(req: func.HttpRequest) -> func.HttpResponse:
 
         # Get the player
         query = "SELECT * FROM p where p.username='{}'".format(reqJson['username'])
-        playerInfo = list(playerContainer.query_items(query=query, enable_cross_partition_query=True))[0]
+        playerInfo = list(playerContainer.query_items(query=query, enable_cross_partition_query=True))
         usernameExists = len(playerInfo) == 1
         if not usernameExists:
             raise DatabaseDoesNotContainUsernameError
 
         # Check the users are friends
-        if not reqJson['friendUsername'] in playerInfo['friends']:
+        if not reqJson['friendUsername'] in playerInfo[0]['friends']:
             raise UsersNotFriendsError
 
         # Remove the friend
-        playerInfo['friends'].remove(reqJson['friendUsername'])
-        playerContainer.replace_item(playerInfo['id'], body=playerInfo)
+        playerInfo[0]['friends'].remove(reqJson['friendUsername'])
+        playerContainer.replace_item(playerInfo[0]['id'], body=playerInfo[0])
 
         logging.info("Friend removed successfully")
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
