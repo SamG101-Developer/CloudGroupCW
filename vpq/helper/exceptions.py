@@ -38,3 +38,13 @@ class IncorrectUsernameOrPasswordError(ValueError):
     @staticmethod
     def getMessage():
         return "Username and password DO NOT match."
+
+
+class QuestionDoesNotExistError(ValueError):
+    @staticmethod
+    def getMessage():
+        return "The question does not exist."
+
+
+def CosmosHttpResponseErrorMessage() -> str:
+    return "Did not complete the request due to an issue connecting to the database. Please try again later."
