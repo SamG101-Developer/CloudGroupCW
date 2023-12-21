@@ -6,7 +6,7 @@ import os
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
-from vpq.helper.exceptions import DatabaseDoesNotContainUsernameError, UsersNotFriendsError
+from vpq.helper.exceptions import DatabaseDoesNotContainUsernameError, UsersNotFriendsError, CosmosHttpResponseErrorMessage
 
 function = func.Blueprint()
 
@@ -50,9 +50,6 @@ def playerFriendDel(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 
     except CosmosHttpResponseError:
-        logging.error("Did not complete the request due to an issue connecting to the database."
-                      " Please try again later.")
-        return func.HttpResponse(body=json.dumps({'result': False, "msg": "Did not complete the request due to an "
-                                                                          "issue connecting to the database. Please "
-                                                                          "try again later."}),
-                                 mimetype="application/json")
+        message = CosmosHttpResponseErrorMessage()
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
