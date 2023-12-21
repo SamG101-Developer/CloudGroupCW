@@ -18,8 +18,7 @@ playerContainer = database.get_container_client(os.environ['Container_Players'])
 def playerInfoSet(req: func.HttpRequest) -> func.HttpResponse:
     try:
         reqJson = req.get_json()
-        logging.info(
-            'Python HTTP trigger function processed a request to set player info. JSON: {}'.format(reqJson))
+        logging.info('Python HTTP trigger function processed a request to set player info. JSON: {}'.format(reqJson))
 
         # Check the database does contain the username
         query = "SELECT * FROM p where p.username='{}'".format(reqJson['username'])

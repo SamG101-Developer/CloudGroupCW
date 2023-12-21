@@ -20,7 +20,7 @@ questionContainer = database.get_container_client(os.environ['Container_Question
 def questionDel(req: func.HttpRequest) -> func.HttpResponse:
     try:
         reqJson = req.get_json()
-        logging.info(f"Python HTTP trigger function processed a request to add a question: JSON: {reqJson}.")
+        logging.info(f"Python HTTP trigger function processed a request to delete a question: JSON: {reqJson}.")
 
         # Check the question is in the database (ID)
         query = "SELECT q.id FROM q where q.id='{}'".format(reqJson['id'])
