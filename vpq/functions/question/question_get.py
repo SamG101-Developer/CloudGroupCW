@@ -20,7 +20,7 @@ def questionGet(req: func.HttpRequest) -> func.HttpResponse:
         reqJson = req.get_json()
         logging.info(f"Python HTTP trigger function processed a request to get a question's info: JSON: {reqJson}.")
 
-        query = "SELECT p.author, p.question_text, p.all_options, p.correct_option FROM p where p.id='{}'".format(reqJson['id'])
+        query = "SELECT p.id, p.author, p.question, p.answers, p.correct_answer FROM p where p.id='{}'".format(reqJson['id'])
         users = list(questionContainer.query_items(query=query, enable_cross_partition_query=True))
         if len(users) == 0:
             raise DatabaseDoesNotContainQuestionError

@@ -14,6 +14,10 @@ class TestQuestionAdd(unittest.TestCase, MetaTest):
     LOCAL_URL = f"http://localhost:7071/api/questionAdd?code={MetaTest.key}"
     TEST_URL = LOCAL_URL
 
+    PUBLIC_URL_DEL = None
+    LOCAL_URL_DEL = f"http://localhost:7071/api/questionDel?code={MetaTest.key}"
+    TEST_URL_DEL = LOCAL_URL_DEL
+
     PUBLIC_URL_PLAYER_DEL = None
     LOCAL_URL_PLAYER_DEL = f"http://localhost:7071/api/questionDel?code={MetaTest.key}"
     TEST_URL_PLAYER_DEL = LOCAL_URL_PLAYER_DEL
@@ -33,7 +37,7 @@ class TestQuestionAdd(unittest.TestCase, MetaTest):
         query = "SELECT * FROM p where p.id='{}'".format(self.DEFAULT_QUESTION_JSON['id'])
         questions = list(self.questionContainer.query_items(query=query, enable_cross_partition_query=True))
         if len(questions) != 0:
-            requests.delete(self.TEST_URL_PLAYER_DEL, data=json.dumps(self.DEFAULT_QUESTION_JSON))
+            requests.delete(self.TEST_URL_DEL, data=json.dumps(self.DEFAULT_QUESTION_JSON))
 
         # Check the question was successfully added
         response = requests.post(self.TEST_URL, data=json.dumps(self.DEFAULT_QUESTION_JSON))

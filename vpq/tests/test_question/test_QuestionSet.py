@@ -1,4 +1,5 @@
 import json
+import logging
 import unittest
 
 import requests
@@ -7,7 +8,7 @@ from vpq.tests.MetaTest import MetaTest
 from vpq.helper.exceptions import DatabaseDoesNotContainQuestionError
 
 
-class TestQuestionSGet(unittest.TestCase, MetaTest):
+class TestQuestionsGet(unittest.TestCase, MetaTest):
     PUBLIC_URL = None
     LOCAL_URL = f"http://localhost:7071/api/questionSet?code={MetaTest.key}"
     TEST_URL = LOCAL_URL
@@ -20,30 +21,36 @@ class TestQuestionSGet(unittest.TestCase, MetaTest):
     LOCAL_URL_DEL = f"http://localhost:7071/api/questionDel?code={MetaTest.key}"
     TEST_URL_DEL = LOCAL_URL_DEL
 
-    def testValidInfoSet(self):
-        # Add a question to make sure it exists
-        question_copy = self.DEFAULT_QUESTION_JSON.copy()
-        requests.post(self.TEST_URL_ADD, data=json.dumps(question_copy))
-        requests.put(self.TEST_URL, data=json.dumps(question_copy))
+    PUBLIC_URL_GET = None
+    LOCAL_URL_GET = f"http://localhost:7071/api/questionGet?code={MetaTest.key}"
+    TEST_URL_GET = LOCAL_URL_GET
 
-        question_copy_new = {
+    def testValidInfoSet(self):
+        query = "SELECT * FROM p where p.id='{}'".format(self.DEFAULT_QUESTION_JSON['id'])
+        questions = list(self.questionContainer.query_items(query=query, enable_cross_partition_query=True))
+        if len(questions) != 0:
+            requests.delete(self.TEST_URL_DEL, data=json.dumps(self.DEFAULT_QUESTION_JSON))
+
+        # Add a question to make sure it exists
+        r = requests.post(self.TEST_URL_ADD, data=json.dumps(self.DEFAULT_QUESTION_JSON))
+
+        question_copy = {
             "id": "1",
             "question": "testQuestion",
             "answers": ["testAnswer1", "testAnswer2", "testAnswer3", "testAnswer4"],
-            "correctAnswer": 1,
+            "correct_answer": 1,
         }
 
         # Send request to set question information
-        response = requests.put(self.TEST_URL, data=json.dumps(question_copy_new))
-        query = "SELECT * FROM p where p.id='1'"
-        question = list(self.questionContainer.query_items(query=query, enable_cross_partition_query=True))[0]
+        response = requests.put(self.TEST_URL, data=json.dumps(question_copy))
+        question = requests.get(self.TEST_URL_GET, data=json.dumps({"id": self.DEFAULT_QUESTION_JSON["id"]})).json()["body"]
 
         test_question = {}
-        for dataName in question_copy_new:
+        for dataName in question_copy:
             if dataName in question.keys():
                 test_question[dataName] = question[dataName]
 
-        self.assertEqual(question_copy_new, test_question)
+        self.assertEqual(question_copy, test_question)
         self.assertEqual(response.json()["result"], True)
 
     def testQuestionDoesNotExist(self):

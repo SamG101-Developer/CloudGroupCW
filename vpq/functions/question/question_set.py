@@ -21,7 +21,7 @@ def questionSet(req: func.HttpRequest) -> func.HttpResponse:
         logging.info(f"Python HTTP trigger function processed a request to update a question: JSON: {reqJson}.")
 
         # Check the question is in the database (ID)
-        query = "SELECT q.id FROM q where q.id='{}'".format(reqJson['id'])
+        query = "SELECT * FROM q where q.id='{}'".format(reqJson['id'])
         questions = list(questionContainer.query_items(query=query, enable_cross_partition_query=True))
         if len(questions) == 0:
             raise DatabaseDoesNotContainQuestionError
