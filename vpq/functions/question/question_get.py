@@ -14,7 +14,7 @@ database = cosmos.get_database_client(os.environ['DatabaseName'])
 questionContainer = database.get_container_client(os.environ['Container_Questions'])
 
 
-@function.route(route="questionGet", auth_level=func.AuthLevel.ANONYMOUS)
+@function.route(route="questionGet", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET"])
 def questionGet(req: func.HttpRequest) -> func.HttpResponse:
     try:
         reqJson = req.get_json()

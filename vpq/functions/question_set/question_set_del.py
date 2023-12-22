@@ -14,7 +14,7 @@ database = cosmos.get_database_client(os.environ['DatabaseName'])
 questionSetContainer = database.get_container_client(os.environ['Container_Questions'])
 
 
-@function.route(route="questionSetDel", auth_level=func.AuthLevel.ANONYMOUS)
+@function.route(route="questionSetDel", auth_level=func.AuthLevel.ANONYMOUS, methods=["DELETE"])
 def questionSetDel(req: func.HttpRequest) -> func.HttpResponse:
     try:
         reqJson = req.get_json()

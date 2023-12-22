@@ -16,7 +16,7 @@ questionSetContainer = database.get_container_client(os.environ['Container_Quest
 playerContainer = database.get_container_client(os.environ['Container_Players'])
 
 
-@function.route(route="questionSetAdd", auth_level=func.AuthLevel.ANONYMOUS)
+@function.route(route="questionSetAdd", auth_level=func.AuthLevel.ANONYMOUS, methods=["POST"])
 def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
     try:
         reqJson = req.get_json()
