@@ -9,7 +9,7 @@ class QuestionLengthError(ValueError):
 
 # Setting constants
 QUESTION_MIN_LENGTH = 1
-QUESTION_MAX_LENGTH = 250
+QUESTION_MAX_LENGTH = 255
 
 
 class Question:
