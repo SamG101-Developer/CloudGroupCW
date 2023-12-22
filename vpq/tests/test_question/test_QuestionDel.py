@@ -12,9 +12,13 @@ class TestQuestionDel(unittest.TestCase, MetaTest):
     LOCAL_URL = f"http://localhost:7071/api/questionDel?code={MetaTest.key}"
     TEST_URL = LOCAL_URL
 
+    PUBLIC_URL_ADD = None
+    LOCAL_URL_ADD = f"http://localhost:7071/api/questionAdd?code={MetaTest.key}"
+    TEST_URL_ADD = LOCAL_URL_ADD
+
     def testQuestionDelete(self):
         # Add the question to the database
-        requests.post(self.TEST_URL, data=json.dumps(self.DEFAULT_QUESTION_JSON))
+        requests.post(self.TEST_URL_ADD, data=json.dumps(self.DEFAULT_QUESTION_JSON))
 
         # Try deleting the question
         response = requests.delete(self.TEST_URL, data=json.dumps(self.DEFAULT_QUESTION_JSON))

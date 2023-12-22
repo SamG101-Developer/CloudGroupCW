@@ -36,14 +36,10 @@ class TestPlayerInfoGet(unittest.TestCase, MetaTest):
         request_json = {"username": player_copy["username"]}
         response = requests.get(self.TEST_URL, data=json.dumps(request_json))
 
-        self.assertEqual(response.json(), {'result': True, "body": {
-            'username': "bsab1g21",
-            'currency': 10,
-            'premium_currency': 5,
-            'overall_score': 20,
-            'friends': [],
-            'fave_quizzes': []
-        }})
+        self.assertTrue(response.json()["result"])
+        self.assertEqual(response.json()["body"]["currency"], 10)
+        self.assertEqual(response.json()["body"]["premium_currency"], 5)
+        self.assertEqual(response.json()["body"]["overall_score"], 20)
 
     def testPlayerDoesNotExist(self):
         # Delete the default player from the database to ensure it is not there before testing

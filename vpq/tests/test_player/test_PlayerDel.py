@@ -8,12 +8,16 @@ from vpq.helper.exceptions import DatabaseDoesNotContainUsernameError
 
 class TestPlayerDel(unittest.TestCase, MetaTest):
     PUBLIC_URL = None
-    LOCAL_URL = "http://localhost:7071/api/playerAdd?code={}".format(MetaTest.key)
+    LOCAL_URL = "http://localhost:7071/api/playerDel?code={}".format(MetaTest.key)
     TEST_URL = LOCAL_URL
+
+    PUBLIC_URL_ADD = None
+    LOCAL_URL_ADD = "http://localhost:7071/api/playerAdd?code={}".format(MetaTest.key)
+    TEST_URL_ADD = LOCAL_URL_ADD
 
     def testValidPlayerDel(self):
         # Add the player to the database
-        requests.post(self.TEST_URL, data=json.dumps(self.DEFAULT_PLAYER_JSON))
+        requests.post(self.TEST_URL_ADD, data=json.dumps(self.DEFAULT_PLAYER_JSON))
 
         # Try deleting the player
         response = requests.delete(self.TEST_URL, data=json.dumps(self.DEFAULT_PLAYER_JSON))

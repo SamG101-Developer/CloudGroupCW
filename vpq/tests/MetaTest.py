@@ -5,7 +5,7 @@ from azure.cosmos import CosmosClient
 
 
 def _loadEnvFromJson():
-    local_settings_json = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'local.settings.json')
+    local_settings_json = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'local.settings.json')
     if os.path.exists(local_settings_json):
         with open(local_settings_json) as f:
             settings = json.load(f)
@@ -33,7 +33,7 @@ class MetaTest:
         "question": "What is the capital of France?",
         "answers": ["Paris", "London", "Madrid", "Berlin"],
         "correct_answer": 1,
-        "author": "sg5g21"
+        "author": "bsab1g21"
     }
 
     DEFAULT_PLAYER_JSON = {

@@ -33,7 +33,7 @@ class TestPlayerFaveQuizAdd(unittest.TestCase, MetaTest):
         requests.put(self.TEST_URL_INFO_SET, data=json.dumps(player_friend))
 
         # Send request to add friend
-        request_json = {"username": self.DEFAULT_QUESTION_JSON["username"], "friendUsername": player_friend['username']}
+        request_json = {"username": self.DEFAULT_PLAYER_JSON["username"], "friendUsername": player_friend['username']}
         response = requests.put(self.TEST_URL, data=json.dumps(request_json))
 
         self.assertEqual(response.json(), {'result': True, "msg": "Success"})
