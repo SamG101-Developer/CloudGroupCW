@@ -1,7 +1,7 @@
-from .question_add import function as question_add
-from .question_del import function as question_del
-from .question_get import function as question_get
-from .question_set import function as question_set
+from vpq.functions.question.question_add import function as question_add
+from vpq.functions.question.question_del import function as question_del
+from vpq.functions.question.question_get import function as question_get
+from vpq.functions.question.question_set import function as question_set
 
 
 question_functions = [

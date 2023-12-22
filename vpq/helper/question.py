@@ -2,12 +2,14 @@ import json
 
 
 class QuestionLengthError(ValueError):
-    pass
+    @staticmethod
+    def getMessage():
+        return "Question length invalid."
 
 
 # Setting constants
-QUESTION_MIN_LENGTH = 0
-QUESTION_MAX_LENGTH = 250
+QUESTION_MIN_LENGTH = 1
+QUESTION_MAX_LENGTH = 255
 
 
 class Question:
@@ -31,7 +33,7 @@ class Question:
     def questionToJson(self):
         return json.dumps(self.questionData)
 
-    def isUsernameValid(self):
+    def isQuestionValid(self):
         questionLength = len(self.questionData['question'])
         # A question is not valid if it has less than QUESTION_MIN_LENGTH characters or a more than
         # QUESTION_MAX_LENGTH characters

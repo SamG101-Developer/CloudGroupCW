@@ -6,34 +6,34 @@ import azure.functions as func
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
-from vpq.helper.exceptions import DatabaseDoesNotContainQuestionError, CosmosHttpResponseErrorMessage
+from vpq.helper.exceptions import DatabaseDoesNotContainQuestionSetIDError, CosmosHttpResponseErrorMessage
 
 function = func.Blueprint()
 cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
 database = cosmos.get_database_client(os.environ['DatabaseName'])
-questionContainer = database.get_container_client(os.environ['Container_Questions'])
+questionSetContainer = database.get_container_client(os.environ['Container_Questions'])
 
 
-@function.route(route="questionDel", auth_level=func.AuthLevel.ANONYMOUS, methods=["DELETE"])
-def questionDel(req: func.HttpRequest) -> func.HttpResponse:
+@function.route(route="questionSetDel", auth_level=func.AuthLevel.ANONYMOUS, methods=["DELETE"])
+def questionSetDel(req: func.HttpRequest) -> func.HttpResponse:
     try:
         reqJson = req.get_json()
-        logging.info(f"Python HTTP trigger function processed a request to delete a question: JSON: {reqJson}.")
+        logging.info(f"Python HTTP trigger function processed a request to delete a question set: JSON: {reqJson}.")
 
-        # Check the question is in the database (ID)
+        # Check the question set is in the database (ID)
         query = "SELECT q.id FROM q where q.id='{}'".format(reqJson['id'])
-        questions = list(questionContainer.query_items(query=query, enable_cross_partition_query=True))
-        if len(questions) == 0:
-            raise DatabaseDoesNotContainQuestionError
+        questionSets = list(questionSetContainer.query_items(query=query, enable_cross_partition_query=True))
+        if len(questionSets) == 0:
+            raise DatabaseDoesNotContainQuestionSetIDError
 
         # Delete the question from the database
-        questionContainer.delete_item(item=questions[0]['id'], partition_key=questions[0]['id'])
+        questionSetContainer.delete_item(item=questionSets[0]['id'], partition_key=questionSets[0]['id'])
 
         logging.info("Question Deleted Successfully")
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
 
-    except DatabaseDoesNotContainQuestionError:
-        message = DatabaseDoesNotContainQuestionError.getMessage()
+    except DatabaseDoesNotContainQuestionSetIDError:
+        message = DatabaseDoesNotContainQuestionSetIDError.getMessage()
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 
