@@ -7,7 +7,7 @@ import logging
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
-from vpq.helper.exceptions import QuestionDoesNotExistError, CosmosHttpResponseErrorMessage
+from vpq.helper.exceptions import DatabaseDoesNotContainQuestionError, CosmosHttpResponseErrorMessage
 
 function = func.Blueprint()
 
@@ -26,7 +26,7 @@ def questionDel(req: func.HttpRequest) -> func.HttpResponse:
         query = "SELECT q.id FROM q where q.id='{}'".format(reqJson['id'])
         questions = list(questionContainer.query_items(query=query, enable_cross_partition_query=True))
         if len(questions) == 0:
-            raise QuestionDoesNotExistError
+            raise DatabaseDoesNotContainQuestionError
 
         # Delete the question from the database
         questionContainer.delete_item(item=questions[0]['id'], partition_key=questions[0]['id'])
@@ -34,8 +34,8 @@ def questionDel(req: func.HttpRequest) -> func.HttpResponse:
         logging.info("Question Deleted Successfully")
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
 
-    except QuestionDoesNotExistError:
-        message = QuestionDoesNotExistError.getMessage()
+    except DatabaseDoesNotContainQuestionError:
+        message = DatabaseDoesNotContainQuestionError.getMessage()
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 

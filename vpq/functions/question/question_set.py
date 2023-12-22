@@ -7,7 +7,7 @@ import logging
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
-from vpq.helper.exceptions import QuestionDoesNotExistError, CosmosHttpResponseErrorMessage
+from vpq.helper.exceptions import DatabaseDoesNotContainQuestionError, CosmosHttpResponseErrorMessage
 
 function = func.Blueprint()
 
@@ -26,7 +26,7 @@ def questionSet(req: func.HttpRequest) -> func.HttpResponse:
         query = "SELECT q.id FROM q where q.id='{}'".format(reqJson['id'])
         questions = list(questionContainer.query_items(query=query, enable_cross_partition_query=True))
         if len(questions) == 0:
-            raise QuestionDoesNotExistError
+            raise DatabaseDoesNotContainQuestionError
 
         # For all fields passed, set the data
         for dataName in reqJson:
@@ -39,8 +39,8 @@ def questionSet(req: func.HttpRequest) -> func.HttpResponse:
         logging.info("Question data set Successfully")
         return func.HttpResponse(body=json.dumps({'result': True, "body": questions[0]}), mimetype="application/json")
 
-    except QuestionDoesNotExistError:
-        message = QuestionDoesNotExistError.getMessage()
+    except DatabaseDoesNotContainQuestionError:
+        message = DatabaseDoesNotContainQuestionError.getMessage()
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 

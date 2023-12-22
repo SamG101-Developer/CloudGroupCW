@@ -40,10 +40,10 @@ class IncorrectUsernameOrPasswordError(ValueError):
         return "Username and password DO NOT match."
 
 
-class QuestionDoesNotExistError(ValueError):
+class DatabaseDoesNotContainQuestionError(ValueError):
     @staticmethod
     def getMessage():
-        return "The question does not exist."
+        return "The question does not exist in the database."
 
 
 def CosmosHttpResponseErrorMessage() -> str:
