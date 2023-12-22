@@ -14,6 +14,7 @@ var app = new Vue({
         connect();
     },
     methods: {
+        // TODO: Add correct data to each of the socket.emit() functions
         handleChat(message) {
             if(this.messages.length + 1 > 10) {
                 this.messages.pop();
@@ -41,6 +42,9 @@ var app = new Vue({
         },
         deleteFavouriteQuiz() {
             socket.emit('del_favourite_quiz');
+        },
+        createRoom() {
+            socket.emit('create_room');
         },
         joinRoom() {
             socket.emit('join_room');
