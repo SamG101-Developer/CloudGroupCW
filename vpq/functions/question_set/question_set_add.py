@@ -1,19 +1,15 @@
 import json
 import os
-
-import azure.functions as func
 import logging
 
+import azure.functions as func
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
-from vpq.helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainUsernameError, \
-    DatabaseDoesNotContainQuestionError
+from vpq.helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainUsernameError, DatabaseDoesNotContainQuestionError
 from vpq.helper.question_set import QuestionSet, QuestionSetQuestionsFormatError
 
 function = func.Blueprint()
-
-
 cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
 database = cosmos.get_database_client(os.environ['DatabaseName'])
 questionSetContainer = database.get_container_client(os.environ['Container_Questions'])

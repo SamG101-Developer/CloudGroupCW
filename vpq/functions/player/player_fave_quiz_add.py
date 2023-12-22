@@ -10,7 +10,6 @@ from vpq.helper.exceptions import DatabaseDoesNotContainUsernameError, DatabaseD
     CosmosHttpResponseErrorMessage
 
 function = func.Blueprint()
-
 cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
 database = cosmos.get_database_client(os.environ['DatabaseName'])
 playerContainer = database.get_container_client(os.environ['Container_Players'])
