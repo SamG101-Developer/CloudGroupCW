@@ -75,6 +75,38 @@ function handleRegister(registerJSON){
     );
 }
 
+//Player Add Friend
+function handleAddFriend(addFriendJSON){
+    console.log(`Adding friend '${addFriendJSON.friendUsername}' for user '${addFriendJSON.username}'`);
+
+    backendPUT("/api/playerFriendAdd", addFriendJSON).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+//Player Delete Friend
+function handleDeleteFriend(delFriendJSON){
+    console.log(`Deleting friend '${delFriendJSON.friendUsername}' for user '${delFriendJSON.username}'`);
+
+    backendPUT("/api/playerFriendDel", delFriendJSON).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
 /*
 All backend requests work using promises.
 A backend request can be done by providing:
@@ -182,13 +214,14 @@ io.on('connection', socket => {
     });
 
     //Handle add friend
-    socket.on('add_friend', () => {
-        console.log('Adding a friend');
+    socket.on('add_friend', (addFriendJSON) => {
+        handleAddFriend(addFriendJSON)
+
     });
 
     //Handle delete friend
-    socket.on('del_friend', () => {
-        console.log('Deleting a friend');
+    socket.on('del_friend', (delFriendJSON) => {
+        handleDeleteFriend(delFriendJSON)
     });
 
     //Handle add favourite quiz
