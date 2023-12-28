@@ -18,9 +18,9 @@ if os.path.exists(local_settings_json):
 
 class TestPlayerAdd(unittest.TestCase):
     key = os.environ["FunctionAppKey"]
-    PUBLIC_URL = None
+    PUBLIC_URL = "https://vpq.azurewebsites.net/api/playerAdd?code={}".format(key)
     LOCAL_URL = "http://localhost:7071/api/playerAdd?code={}".format(key)
-    TEST_URL = LOCAL_URL
+    TEST_URL = PUBLIC_URL
     cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
     database = cosmos.get_database_client(os.environ['DatabaseName'])
     playerContainer = database.get_container_client(os.environ['Container_Players'])
