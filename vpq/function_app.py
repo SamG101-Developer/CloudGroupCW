@@ -34,7 +34,7 @@ try:
     #
     # from vpq.shared_code import functions
 
-    from functions import functions
+    from functions import functions # this is good now (imports that are imported are erroneous still -> causes error)
     for function in functions:
         app.register_blueprint(function)
 
