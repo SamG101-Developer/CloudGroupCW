@@ -1,0 +1,31 @@
+/* 
+A naming convention for css styles was not decided, using kebab case.
+*/
+
+h2 { /* Used for main titles */
+    text-align: center;
+    font-size: 26pt;
+}
+
+.login-container {
+    min-width: 250px;
+    width: 25%;
+    height: fit-content;
+
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0px 12px 32px lightgray;
+    
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 1fr 1fr;
+
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    margin: auto;
+    padding: 8px;
+}

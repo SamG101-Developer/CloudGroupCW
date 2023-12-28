@@ -28,6 +28,14 @@
         <div v-else>
             <p>Connecting...</p>
         </div>
+
+        <div class="login-container">
+            <h2 style="grid-column: 1 / -1;">Virtual Pub Quiz</h2>
+            <input style="grid-column: 1 / -1;" type="text" v-model="loginInput.username" placeholder="Username">
+            <input style="grid-column: 1 / -1;" type="password" v-model="loginInput.password" placeholder="Password">
+            <button @click="register">Register</button>
+            <button @click="login">Login</button>
+        </div>
     </div>
     <!-- Bootstrap Javascript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
