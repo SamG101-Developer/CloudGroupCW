@@ -6,7 +6,10 @@ import azure.functions as func
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
-from helper.exceptions import DatabaseDoesNotContainUsernameError, CosmosHttpResponseErrorMessage
+try:
+    from helper.exceptions import DatabaseDoesNotContainUsernameError, CosmosHttpResponseErrorMessage
+except ModuleNotFoundError:
+    from vpq.helper.exceptions import DatabaseDoesNotContainUsernameError, CosmosHttpResponseErrorMessage
 
 function = func.Blueprint()
 

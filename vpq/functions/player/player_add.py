@@ -3,8 +3,14 @@ from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
 import json, logging, os
-from helper.player import Player, UsernameLengthError, PasswordLengthError
-from helper.exceptions import DatabaseContainsUsernameError, CosmosHttpResponseErrorMessage
+
+
+try:
+    from helper.player import Player, UsernameLengthError, PasswordLengthError
+    from helper.exceptions import DatabaseContainsUsernameError, CosmosHttpResponseErrorMessage
+except ModuleNotFoundError:
+    from vpq.helper.player import Player, UsernameLengthError, PasswordLengthError
+    from vpq.helper.exceptions import DatabaseContainsUsernameError, CosmosHttpResponseErrorMessage
 
 function = func.Blueprint("playerAdd")
 

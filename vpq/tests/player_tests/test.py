@@ -16,13 +16,6 @@ class TestPlayerLoginFunction(unittest.TestCase):
     QuiplashDBProxy = MyCosmos.get_database_client('quiplash')
     PlayerContainerProxy = QuiplashDBProxy.get_container_client('player')
 
-    def test(self):
-        from vpq.functions import functions_list
-        import azure.functions as func
-        for function in functions_list:
-            print(function)
-        self.assertEqual("a", "b")
-
     def test_valid_login(self):
         for item in list(self.PlayerContainerProxy.read_all_items()):
             self.PlayerContainerProxy.delete_item(item=item, partition_key=item['id'])
