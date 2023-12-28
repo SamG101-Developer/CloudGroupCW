@@ -2,6 +2,15 @@
 A naming convention for css styles was not decided, using kebab case.
 */
 
+/*!* Highlight the rows and columns in the Bootstrap grid *!*/
+.row {
+    border: 2px solid #3498db; /* Add a border to highlight rows */
+}
+
+[class^="col-"] {
+    border: 2px solid #2ecc71; /* Add a border to highlight columns */
+}
+
 h2 { /* Used for main titles */
     text-align: center;
     font-size: 26pt;
@@ -28,4 +37,18 @@ h2 { /* Used for main titles */
     
     margin: auto;
     padding: 8px;
+}
+
+/*
+The height of the container is 100vh - .navSize height
+ */
+.createContainer {
+    background-color: #c3d2d9;
+    width: 100vw;
+    height: 94vh;
+}
+
+.navSize {
+    height: 6vh;
+    width: 100vw;
 }

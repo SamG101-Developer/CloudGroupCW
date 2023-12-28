@@ -10,32 +10,32 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="/static/main.css" rel="stylesheet">
 
-    <title>ECS Example Game</title>
+    <title>VPQ</title>
 </head>
 
 <body>
     <div id="game">
         <div v-if="connected">
-            <p>Connected</p>
-            <div>
-                <input type="text" @keyup.enter="chat()" v-model="chatmessage" class="form-control" placeholder="Chat">
-                <ul id="chat">
-                    <li v-for="message in messages">{{message}}</li>
-                </ul>
-            </div>
+            <%- include('create'); -%>
+<!--            <div>-->
+<!--                <input type="text" @keyup.enter="chat()" v-model="chatmessage" class="form-control" placeholder="Chat">-->
+<!--                <ul id="chat">-->
+<!--                    <li v-for="message in messages">{{message}}</li>-->
+<!--                </ul>-->
+<!--            </div>-->
 
         </div>
         <div v-else>
             <p>Connecting...</p>
         </div>
 
-        <div class="login-container">
-            <h2 style="grid-column: 1 / -1;">Virtual Pub Quiz</h2>
-            <input style="grid-column: 1 / -1;" type="text" v-model="loginInput.username" placeholder="Username">
-            <input style="grid-column: 1 / -1;" type="password" v-model="loginInput.password" placeholder="Password">
-            <button @click="register">Register</button>
-            <button @click="login">Login</button>
-        </div>
+<!--        <div class="login-container">-->
+<!--            <h2 style="grid-column: 1 / -1;">Virtual Pub Quiz</h2>-->
+<!--            <input style="grid-column: 1 / -1;" type="text" v-model="loginInput.username" placeholder="Username">-->
+<!--            <input style="grid-column: 1 / -1;" type="password" v-model="loginInput.password" placeholder="Password">-->
+<!--            <button @click="register">Register</button>-->
+<!--            <button @click="login">Login</button>-->
+<!--        </div>-->
     </div>
     <!-- Bootstrap Javascript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -48,6 +48,7 @@
 
     <!-- Application Javascript -->
     <script src="/static/client.js"></script>
+
 </body>
 
 </html>
