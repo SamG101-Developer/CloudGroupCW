@@ -32,6 +32,9 @@ var app = new Vue({
         login() {
             socket.emit('login', this.loginInput);
         },
+        deleteUser() {
+            socket.emit('delete', this.loginInput.username);
+        },
         addFriend() {
             socket.emit('add_friend');
         },

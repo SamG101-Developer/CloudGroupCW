@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8a3ca2bc-271f-4986-a4d6-1791aface001" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vpq/front-end/public/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/vpq/front-end/public/client.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vpq/front-end/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/vpq/front-end/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,7 +51,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1703785853680</updated>
-      <workItem from="1703785855267" duration="1645000" />
+      <workItem from="1703785855267" duration="2260000" />
     </task>
     <servers />
   </component>

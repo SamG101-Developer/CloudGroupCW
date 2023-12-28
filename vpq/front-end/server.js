@@ -43,6 +43,22 @@ function handleChat(message) {
     io.emit('chat',message);
 }
 
+//User Deletion
+function handleDeleteUser(delUserJSON) {
+    console.log(`Deleting user '${delUserJSON.username}'`);
+
+    backendDELETE("/api/playerDel", delUserJSON).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
 //Player Login
 function handleLogin(loginJSON){
     console.log(`Logging in with username '${loginJSON.username}' and password '${loginJSON.password}'`);
@@ -170,6 +186,22 @@ function backendPUT(path, body) {
     });
 }
 
+function backendDELETE(path, body) {
+    console.log(BACKEND_ENDPOINT + path);
+    return new Promise((success, failure) => {
+        request.delete(BACKEND_ENDPOINT + path, {
+            json: true,
+            body: body
+        }, function(err, response, body) {
+            if (err) {
+                failure(err);
+            } else {
+                success(body);
+            }
+        });
+    });
+}
+
 /*
 Alternatively, backend requests could work with a callback function (which is called when a response is recieved)
 If you would like to use a callback based function, this is the code:
@@ -211,6 +243,11 @@ io.on('connection', socket => {
     //Handle login
     socket.on('login', (loginJSON) => {
         handleLogin(loginJSON);
+    });
+
+    //Handle delete user
+    socket.on('delete', (delUserJSON) => {
+        handleDeleteUser(delUserJSON);
     });
 
     //Handle add friend
