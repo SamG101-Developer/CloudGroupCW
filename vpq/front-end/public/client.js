@@ -6,6 +6,7 @@ var app = new Vue({
     data: {
         connected: false,
         messages: [],
+        loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
         user: { username: null, password: null, state: null },
         // These variables are for during a quiz
         room: { roomID: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null}
@@ -26,10 +27,10 @@ var app = new Vue({
             this.chatmessage = '';
         },
         register() {
-            socket.emit('register');
+            socket.emit('register', this.loginInput);
         },
         login() {
-            socket.emit('login');
+            socket.emit('login', this.loginInput);
         },
         addFriend() {
             socket.emit('add_friend');

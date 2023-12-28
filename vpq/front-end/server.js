@@ -4,6 +4,9 @@
 const express = require('express');
 const app = express();
 
+// Setup request
+const request = require("request");
+
 //Setup socket.io
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
@@ -23,7 +26,8 @@ app.get('/', (req, res) => {
 
 // URL of the backend API
 // TODO: Add the URL of the function app
-const BACKEND_ENDPOINT = process.env.BACKEND || 'http://localhost:8181';
+const BACKEND_ENDPOINT = process.env.BACKEND || 'http://localhost:7071';
+console.log(BACKEND_ENDPOINT); 
 
 //Start the server
 function startServer() {
@@ -38,6 +42,73 @@ function handleChat(message) {
     console.log('Handling chat: ' + message);
     io.emit('chat',message);
 }
+
+/*
+All backend requests work using promises.
+A backend request can be done by providing:
+- A path ("playerAdd", "playerDel", etc)
+- A body ({username: "user", password: "pass"}, etc)
+
+Here is a use example:
+backendGET("/api/playerAdd", {}).then(
+    function(response) {
+        console.log("Success:", response);
+    },
+    function (error) {
+        console.error("Error:", error);
+    }
+);
+*/
+
+function backendGET(path, body) {
+    console.log(BACKEND_ENDPOINT + path);
+	return new Promise((success, failure) => {
+		request.get(BACKEND_ENDPOINT + path, {
+			json: true,
+			body: body
+		}, function(err, response, body) {
+            if (err) {
+                failure(err);
+            } else {
+			    success(body);
+            }
+		});
+	});
+}
+
+function backendPOST(path, body) {
+	return new Promise((success, failure) => {
+		request.post(BACKEND_ENDPOINT + path, {
+			json: true,
+			body: body
+		}, function(err, response, body) {
+            if (err) {
+                failure(err);
+            } else {
+			    success(body);
+            }
+		});
+	});
+}
+
+/*
+Alternatively, backend requests could work with a callback function (which is called when a response is recieved)
+If you would like to use a callback based function, this is the code:
+
+function backendGETCallback(path, body, callback) {
+	request.get(BACKEND_ENDPOINT + path, {
+		json: true,
+		body: body
+  	}, function(err, response, body) {
+		callback(body);
+  	});
+}
+
+This can be used as per this example: 
+backendGET("/api/playerAdd", json, function(response) {
+    console.log(response);
+});
+*/
 
 //Handle new connection
 io.on('connection', socket => {
@@ -54,13 +125,35 @@ io.on('connection', socket => {
     });
 
     //Handle register
-    socket.on('register', () => {
-        console.log('Registering');
+    socket.on('register', (registerJSON) => {
+        console.log(`Registering with username '${registerJSON.username}' and password '${registerJSON.password}'`);
+
+        backendPOST("/api/playerAdd", registerJSON).then(
+            function(response) {
+                console.log("Success:");
+                console.log(response);
+            },
+            function (error) {
+                console.error("Error:");
+                console.error(error);
+            }
+        );
     });
 
     //Handle login
-    socket.on('login', () => {
-        console.log('Logging in');
+    socket.on('login', (loginJSON) => {
+        console.log(`Logging in with username '${loginJSON.username}' and password '${loginJSON.password}'`);
+
+        backendGET("/api/playerLogin", loginJSON).then(
+            function(response) {
+                console.log("Success:");
+                console.log(response);
+            },
+            function (error) {
+                console.error("Error:");
+                console.error(error);
+            }
+        );
     });
 
     //Handle add friend
