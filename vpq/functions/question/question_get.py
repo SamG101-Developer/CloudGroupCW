@@ -6,17 +6,21 @@ import azure.functions as func
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
-from vpq.helper.exceptions import DatabaseDoesNotContainQuestionError, CosmosHttpResponseErrorMessage
+try:
+    from helper.exceptions import DatabaseDoesNotContainQuestionError, CosmosHttpResponseErrorMessage
+except ModuleNotFoundError:
+    from vpq.helper.exceptions import DatabaseDoesNotContainQuestionError, CosmosHttpResponseErrorMessage
 
 function = func.Blueprint()
-cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
-database = cosmos.get_database_client(os.environ['DatabaseName'])
-questionContainer = database.get_container_client(os.environ['Container_Questions'])
 
 
 @function.route(route="questionGet", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET"])
 def questionGet(req: func.HttpRequest) -> func.HttpResponse:
     try:
+        cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
+        database = cosmos.get_database_client(os.environ['DatabaseName'])
+        questionContainer = database.get_container_client(os.environ['Container_Questions'])
+
         reqJson = req.get_json()
         logging.info(f"Python HTTP trigger function processed a request to get a question's info: JSON: {reqJson}.")
 
