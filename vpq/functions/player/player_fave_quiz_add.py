@@ -1,8 +1,9 @@
 import json
 
-import azure.functions as func
 import logging
 import os
+
+import azure.functions as func
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
