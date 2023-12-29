@@ -1,5 +1,5 @@
-let tabCount = 1;
-let currentTab = 1;
+let tabCount = 0;
+let currentTab = 0;
 let questionTypes = ["Multiple Choice", "Numeric", "Pick the Letter", "Full Answer"];
 /*
 radioNumber needs to be unique for each question therefore it will be incremented each time it is used.
@@ -7,18 +7,23 @@ The number does not correspond to anything and will not be used for identificati
  */
 let radioNumber = 0;
 function addTab(){
+
+    let roundName = prompt("Please enter the name for you round:")
+    // If no round name is entered then don't add a tab
+    if (roundName === null || roundName === "") return;
+
+    let quizTabs = document.getElementById("createQuizTabList");
     // 10 round maximum
-    if (tabCount >= 10) return;
+    if (quizTabs.childNodes.length - 1 >= 10) return;
 
     tabCount++;
 
     // Create a new tab
     let tempDiv = document.createElement("div");
-    tempDiv.innerHTML = '<li class="nav-item" onclick="switchTab(' + tabCount + ')"><a class="nav-link">Round ' + tabCount + '</a></li>';
+    tempDiv.innerHTML = '<li class="nav-item" onclick="switchTab(' + tabCount + ')"><a class="nav-link">' + roundName + '</a></li>';
 
     let newTab = tempDiv.firstChild;
 
-    let quizTabs = document.getElementById("createQuizTabList");
     let addTabButton = quizTabs.lastElementChild;
     quizTabs.insertBefore(newTab, addTabButton);
 
@@ -26,17 +31,35 @@ function addTab(){
     let tabDiv = document.createElement("div");
     tabDiv.classList.add("tab-pane");
     tabDiv.id = "round-" + tabCount + "-content";
-    tabDiv.innerHTML = '<button onclick="addQuestion(' + tabCount + ')">Add Question</button>'
+    tabDiv.innerHTML = '<button class="roundTabButton addQuestionButton" onclick="addQuestion(' + tabCount + ')">Add Question</button>'
 
     let tabContainer = document.getElementById("round-content");
     tabContainer.appendChild(tabDiv);
+
+    //Create a delete round button
+    let deleteRoundButton = document.createElement("button");
+    deleteRoundButton.classList.add("roundTabButton");
+    deleteRoundButton.classList.add("removeRoundButton");
+    deleteRoundButton.innerText = "Remove Round";
+    deleteRoundButton.onclick = function(){
+        let confirmDeletion = confirm("Are you sure you want to delete this round?");
+        if (confirmDeletion){
+            quizTabs.removeChild(newTab);
+            tabContainer.removeChild(tabDiv);
+        }
+    }
+    tabDiv.appendChild(deleteRoundButton);
 }
 
 function switchTab(tabNumber){
     let currentTabContent = document.getElementById("round-" + currentTab.toString() + "-content");
     let newTabContent = document.getElementById("round-" + tabNumber.toString() + "-content");
 
-    currentTabContent.classList.remove("active");
+    try{
+        currentTabContent.classList.remove("active");
+    }catch (err){
+        console.log("Switching from unknown tab");
+    }
     newTabContent.classList.add("active");
     currentTab = tabNumber;
 }
