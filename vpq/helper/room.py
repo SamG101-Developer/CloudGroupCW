@@ -10,10 +10,10 @@ class Room:
             :param
             questionData(dict): Contains all the room data store in the database format
             {
-                'roomAdmin': (string),
-                'playersInRoom': ([string]),
-                'questionSetId': (string),
-                'adultOnly': (boolean),
+                'room_admin': (string),
+                'players_in_room': ([string]),
+                'question_set_id': (string),
+                'adult_only': (boolean),
                 'password': (string)
             }
         """

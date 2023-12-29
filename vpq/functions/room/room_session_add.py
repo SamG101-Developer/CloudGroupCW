@@ -28,16 +28,18 @@ def roomSessionAdd(req: func.HttpRequest) -> func.HttpResponse:
 
         reqJson = req.get_json()
         username = reqJson["username"]
-        roomData = Room({"roomAdmin":username,
-                    "playersInRoom":[],
-                    "questionSetId":"","adultOnly":False,
+        dictData = {"room_admin":username,
+                    "players_in_room":[],
+                    "question_set_id":"","adult_only":False,
                     "password":""
-                    })
-        roomData = roomData.roomToJson()
-        logging.info(f"Python HTTP trigger function processed a request to add a room: JSON: {roomData}.")
+                    }
+        logging.info(f"Python HTTP trigger function processed a request to add a room: JSON: {dictData}.")
+
+        # Check Player Exists
+
 
         # Add the room to the database
-        roomContainer.create_item(body=roomData, enable_automatic_id_generation=True)
+        roomContainer.create_item(body=dictData, enable_automatic_id_generation=True)
         logging.info("Question Added Successfully")
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
 
