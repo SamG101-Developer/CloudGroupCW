@@ -22,4 +22,21 @@
             </div>
         </nav>
     </div>
+    <div class="row">
+        <nav class="navbar nav-tabs navbar-expand-lg" role="tablist">
+            <ul class="navbar-nav" id="createQuizTabList">
+                <li class="nav-item">
+                    <a class="nav-link" onclick="switchTab('1')">Round 1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="addTab()" role="tab">Add Tab</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="tab-content" id="round-content">
+            <div class="tab-pane active" id="round-1-content">
+                <button onclick="addQuestion(1)">Add Question</button>
+            </div>
+        </div>
+    </div>
 </div>

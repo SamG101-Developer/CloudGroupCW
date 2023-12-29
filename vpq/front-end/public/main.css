@@ -52,3 +52,13 @@ The height of the container is 100vh - .navSize height
     height: 6vh;
     width: 100vw;
 }
+
+.questionTemplate {
+    background-color: #9badb7;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    padding-right: 3vh;
+}
