@@ -62,3 +62,15 @@ The height of the container is 100vh - .navSize height
     align-items: center;
     padding-right: 3vh;
 }
+
+.scroller-content {
+    max-height: 85vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.questionSearchOption {
+    border: black solid 2px;
+    padding: 0.5vh;
+    margin-bottom: 1vh;
+}

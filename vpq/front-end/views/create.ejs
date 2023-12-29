@@ -22,18 +22,33 @@
             </div>
         </nav>
     </div>
-    <div class="row">
-        <nav class="navbar nav-tabs navbar-expand-lg" role="tablist">
-            <ul class="navbar-nav" id="createQuizTabList">
-                <li class="nav-item">
-                    <a class="nav-link" onclick="addTab()" role="tab">Add Round</a>
-                </li>
-            </ul>
-        </nav>
-        <div class="tab-content" id="round-content">
-<!--            <div class="tab-pane active" id="round-1-content">-->
-<!--                <button onclick="addQuestion(1)">Add Question</button>-->
-<!--            </div>-->
+    <div class="row" id="createQuizContainer">
+        <div class="col">
+            <div class="row">
+                <nav class="navbar nav-tabs navbar-expand-lg" role="tablist">
+                    <ul class="navbar-nav" id="createQuizTabList">
+                        <li class="nav-item"><a class="nav-link" onclick="addTab()" role="tab">Add Round</a></li>
+                    </ul>
+                </nav>
+                <div class="scroller-content" id="round-content"></div>
+            </div>
+        </div>
+        <div class="col" id="questionSearch">
+            <h2>Question Search</h2>
+            <label>Enter the username you want to search for
+                <input id="usernameToSearch" type="text" v-model="questionSearchUsernameField">
+            </label>
+            <button @click="searchDatabaseForQuestions()">Search</button>
+            <div v-for="question in queriedQuestions" class="row questionSearchOption scroller-content">
+                <button @click="handleAddSearchedQuestion(question)">Add Question</button>
+                {{ question.questionType }}<br>
+                {{ question.questionText }}<br>
+                {{ question.answer }}<br>
+                Options:
+                <div v-for="option in question.options">
+                    {{option}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

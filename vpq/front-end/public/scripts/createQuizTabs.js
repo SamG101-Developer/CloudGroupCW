@@ -9,8 +9,13 @@ let radioNumber = 0;
 function addTab(){
 
     let roundName = prompt("Please enter the name for you round:")
+
     // If no round name is entered then don't add a tab
-    if (roundName === null || roundName === "") return;
+    if (roundName === null) return;
+    else if (roundName === ""){
+        alert("Rounds must be at least 1 character long");
+        return;
+    }
 
     let quizTabs = document.getElementById("createQuizTabList");
     // 10 round maximum
@@ -64,7 +69,7 @@ function switchTab(tabNumber){
     currentTab = tabNumber;
 }
 
-function addQuestion(tabNumber) {
+function addQuestion(tabNumber, question = undefined) {
     // Get the tab we are adding the question to
     let tabContent = document.getElementById("round-" + tabNumber.toString() + "-content");
 
@@ -77,17 +82,17 @@ function addQuestion(tabNumber) {
     let questionTypeDiv = document.createElement("div");
     questionTypeDiv.classList.add("checkbox-row");
 
-    // Create checkboxes
-    createCheckboxes(questionTypeDiv, questionDiv);
-
-    // Add the components to the question div
+    // Add the component to the question div
     questionDiv.appendChild(questionTypeDiv);
+
+    // Create checkboxes
+    createCheckboxes(questionTypeDiv, questionDiv, question);
 
     // Add the question div to the page
     tabContent.appendChild(questionDiv);
 }
 
-function createCheckboxes(questionTypeDiv, questionDiv){
+function createCheckboxes(questionTypeDiv, questionDiv, question){
     // Create the checkboxes
     let checkboxNumber = 1;
     for (let questionType of questionTypes) {
@@ -100,12 +105,7 @@ function createCheckboxes(questionTypeDiv, questionDiv){
         input.type = 'radio';
         input.id = "checkbox" + checkboxNumber.toString();
         input.name = "question-" + radioNumber.toString() + "-radio"
-        input.onclick = function() {loadQuestionType(questionType, questionDiv)};
-
-        // //Check multiple choice by default
-        // if (questionType === "Multiple Choice"){
-        //     input.checked = true;
-        // }
+        input.onclick = function() {loadQuestionType(questionType, questionDiv, question)};
 
         //Create the label
         let label = document.createElement("label");
@@ -115,15 +115,30 @@ function createCheckboxes(questionTypeDiv, questionDiv){
         checkboxLabelPair.appendChild(input);
         checkboxLabelPair.appendChild(label);
         questionTypeDiv.appendChild(checkboxLabelPair);
+
+        //If question is not undefined check the right question type
+        if (question !== undefined)
+            if (questionType === question.questionType){
+                input.checked = true;
+            }
+    }
+
+    if (question !== undefined){
+        loadQuestionType(question.questionType, questionDiv, question);
     }
     radioNumber++;
 }
 
-function loadQuestionType(questionType, questionDiv){
+function loadQuestionType(questionType, questionDiv, question){
     // Create Question Input
     let questionInput = document.createElement("input");
     questionInput.type = "text";
     questionInput.placeholder = "Enter Question...";
+
+    if (question !== undefined){
+        questionInput.value = question.questionText;
+    }
+
     questionDiv.appendChild(questionInput);
 
     while (questionDiv.childNodes.length > 2){
@@ -156,6 +171,13 @@ function loadQuestionType(questionType, questionDiv){
                 option.type = "text";
                 option.placeholder = "Answer" + (i).toString();
 
+                if (question !== undefined){
+                    option.value = question.options[i-1];
+                    if (question.options[i-1] === question.answer){
+                        tickBox.checked = true;
+                    }
+                }
+
                 checkboxOptionPair.appendChild(tickBox);
                 checkboxOptionPair.appendChild(option);
                 optionsContainer.appendChild(checkboxOptionPair);
@@ -177,6 +199,11 @@ function loadQuestionType(questionType, questionDiv){
             let answerInput = document.createElement("input");
             answerInput.type = "text";
             answerInput.placeholder = "Enter Answer...";
+
+            if (question !== undefined) {
+                answerInput.value = question.answer;
+            }
+
             questionDiv.appendChild(answerInput);
             break;
         }
@@ -186,3 +213,10 @@ function loadQuestionType(questionType, questionDiv){
         }
     }
 }
+
+function addFromSearch(question){
+    addQuestion(currentTab, question);
+}
+
+//Make the function globally accessible so that it can be used in the vue app
+window.addFromSearch = addFromSearch;

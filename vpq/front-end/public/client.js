@@ -6,6 +6,33 @@ var app = new Vue({
     data: {
         connected: false,
         messages: [],
+        queriedQuestions: [
+            {
+                questionType: "Multiple Choice",
+                questionText: "How many people are in this group?",
+                answer: "6",
+                options: ["2", "5", "6", "10"]
+            },
+            {
+                questionType: "Numeric",
+                questionText: "How many people are in this group?",
+                answer: "6",
+                options: []
+            },
+            {
+                questionType: "Pick the Letter",
+                questionText: "Who wrote this question?",
+                answer: "(B)en",
+                options: []
+            },
+            {
+                questionType: "Full Answer",
+                questionText: "Who wrote this question?",
+                answer: "Ben",
+                options: []
+            }
+        ], // These are the questions that are loaded using the player_question_groups_get function
+        questionSearchUsernameField: "",
         loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
         user: { username: null, password: null, state: null },
         // These variables are for during a quiz
@@ -15,6 +42,13 @@ var app = new Vue({
         connect();
     },
     methods: {
+        searchDatabaseForQuestions(){
+            //TODO: This will use 'questionSearchUsernameField' and return all the questions of that username into
+            socket.emit('get_player_questions', this.questionSearchUsernameField);
+        },
+        handleAddSearchedQuestion(question){
+          window.addFromSearch(question);
+        },
         // TODO: Add correct data to each of the socket.emit() functions
         handleChat(message) {
             if(this.messages.length + 1 > 10) {
