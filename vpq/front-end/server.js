@@ -123,6 +123,48 @@ function handleDeleteFriend(delFriendJSON){
     );
 }
 
+//Player Get Questions
+function handleGetPlayerQuestions(socket, getQuestionsJSON){
+    console.log(`Getting questions for user '${getQuestionsJSON.username}'`);
+
+    // First get a list of all the id's for the user
+    // Next get all question data for each question ID
+    //Finally, send it to the client
+    backendGET("/api/playerQuestionGroupsGet", getQuestionsJSON).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            let questionIds = response['body'];
+            let questionsRetrieved = [];
+            // For each ID get all the question data and save it to an array
+            for (let id of questionIds){
+                backendGET("/api/questionGet", { "id": id }).then(
+                    function(response) {
+                        console.log("Success:");
+                        console.log(response);
+                        let questionData = response["body"];
+                        questionsRetrieved.append({
+                            questionType: questionData["questionType"],//"Multiple Choice",
+                            questionText: questionData["question"],
+                            answer: questionData["correct_answer"],
+                            options: questionData["answers"]
+                        })
+                    },
+                    function (error) {
+                        console.error("Error:");
+                        console.error(error);
+                    }
+                );
+            }
+            socket.emit('queried_questions', questionsRetrieved);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
 /*
 All backend requests work using promises.
 A backend request can be done by providing:
@@ -304,6 +346,11 @@ io.on('connection', socket => {
     //Handle update quiz
     socket.on('update_quiz', () => {
         console.log('Updating a quiz');
+    });
+
+    //Handle request to get player questions
+    socket.on('get_player_questions', (getQuestionsJSON) => {
+        handleGetPlayerQuestions(socket, getQuestionsJSON);
     });
 });
 

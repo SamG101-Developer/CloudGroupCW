@@ -43,9 +43,12 @@ var app = new Vue({
     },
     methods: {
         searchDatabaseForQuestions(){
-            //TODO: This will use 'questionSearchUsernameField' and return all the questions of that username into
-            socket.emit('get_player_questions', this.questionSearchUsernameField);
+            socket.emit('get_player_questions', { username: this.questionSearchUsernameField });
         },
+        setQueriedQuestions(questionsRetrieved){
+            this.queriedQuestions = questionsRetrieved;
+        },
+        // This function is here so that a vue variable can be passed to an external file
         handleAddSearchedQuestion(question){
           window.addFromSearch(question);
         },
@@ -130,6 +133,11 @@ function connect() {
     //Handle incoming chat message
     socket.on('chat', function(message) {
         app.handleChat(message);
+    });
+
+    //Handle incoming queried questions
+    socket.on('queried_questions', function(questionsRetrieved) {
+        app.setQueriedQuestions(questionsRetrieved);
     });
 
 
