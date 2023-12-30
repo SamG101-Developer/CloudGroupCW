@@ -31,10 +31,11 @@
 
         <div class="login-container">
             <h2 style="grid-column: 1 / -1;">Virtual Pub Quiz</h2>
-            <input style="grid-column: 1 / -1;" type="text" v-model="loginInput.username" placeholder="Username">
-            <input style="grid-column: 1 / -1;" type="password" v-model="loginInput.password" placeholder="Password">
+            <input style="grid-column: 1 / -1;" type="text" v-model="loginData.username" placeholder="Username">
+            <input style="grid-column: 1 / -1;" type="password" v-model="loginData.password" placeholder="Password">
             <button @click="register">Register</button>
             <button @click="login">Login</button>
+            <p style="grid-column: 1 / -1;" class="error-message"> {{ loginData.errorMsg }} </p>
         </div>
     </div>
     <!-- Bootstrap Javascript -->

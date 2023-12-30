@@ -31,7 +31,7 @@ def playerAdd(req: func.HttpRequest) -> func.HttpResponse:
         query = "SELECT * FROM p where p.username='{}'".format(reqJson['username'])
         usernameExists = len(list(playerContainer.query_items(query=query, enable_cross_partition_query=True))) != 0
         if usernameExists:
-            raise DatabaseContainsUsernameError
+            raise DatabaseContainsUsernameError("Username is already taken.")
 
         # Add the player to the database
         playerContainer.create_item(body=reqJson, enable_automatic_id_generation=True)

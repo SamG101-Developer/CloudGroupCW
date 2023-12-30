@@ -6,7 +6,7 @@ var app = new Vue({
     data: {
         connected: false,
         messages: [],
-        loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
+        loginData: { username: "", password: "", errorMsg: "" }, // Different to user since it is connected to the UI
         user: { username: null, password: null, state: null },
         // These variables are for during a quiz
         room: { roomID: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null}
@@ -27,10 +27,13 @@ var app = new Vue({
             this.chatmessage = '';
         },
         register() {
-            socket.emit('register', this.loginInput);
+            socket.emit('register', {username: this.loginData.username, password: this.loginData.password});
         },
         login() {
-            socket.emit('login', this.loginInput);
+            socket.emit('login', {username: this.loginData.username, password: this.loginData.password});
+        },
+        deleteUser() {
+            socket.emit('delete', this.loginData.username);
         },
         addFriend() {
             socket.emit('add_friend');
@@ -69,6 +72,22 @@ var app = new Vue({
     }
 });
 
+function handleLogin(loginJSON) {
+    if (loginJSON.result) { // Login/Register successful
+        app.loginData.errorMsg = "";
+        app.user.username = loginJSON.user.id;
+        app.user.password = loginJSON.user.password;
+        app.user.state = null; // TODO: Add a state, idk what a state is
+
+        if ("room" in loginJSON) {
+            app.room.roomID = loginJSON.room.id;
+        }
+    } else { // Login/Register failed
+        app.loginData.errorMsg = loginJSON.msg;
+        app.loginData.password = "";
+    }
+}
+
 function connect() {
     //Prepare web socket
     socket = io();
@@ -82,6 +101,11 @@ function connect() {
     //Handle connection error
     socket.on('connect_error', function(message) {
         alert('Unable to connect: ' + message);
+    });
+
+    //Handle register/login. Both are sent to one function
+    socket.on('login', function(loginJSON) {
+        handleLogin(loginJSON);
     });
 
     //Handle disconnection

@@ -7,6 +7,12 @@ h2 { /* Used for main titles */
     font-size: 26pt;
 }
 
+.error-message {
+    text-align: center;
+    font-size: 12pt;
+    color: red;
+}
+
 .login-container {
     min-width: 250px;
     width: 25%;
