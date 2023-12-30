@@ -209,7 +209,7 @@ function loadQuestionType(questionType, questionDiv, question){
         }
         default:
         {
-            alert("Unknown Question Type");
+            alert("Unknown Question Type.");
         }
     }
 }

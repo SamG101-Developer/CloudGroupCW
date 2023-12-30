@@ -131,20 +131,20 @@ function handleGetPlayerQuestions(socket, getQuestionsJSON){
     // Next get all question data for each question ID
     //Finally, send it to the client
     backendGET("/api/playerQuestionGroupsGet", getQuestionsJSON).then(
-        function(response) {
+        async function(response) {
             console.log("Success:");
             console.log(response);
             let questionIds = response['body'];
             let questionsRetrieved = [];
             // For each ID get all the question data and save it to an array
             for (let id of questionIds){
-                backendGET("/api/questionGet", { "id": id }).then(
+                 await backendGET("/api/questionGet", id).then(
                     function(response) {
                         console.log("Success:");
                         console.log(response);
                         let questionData = response["body"];
-                        questionsRetrieved.append({
-                            questionType: questionData["questionType"],//"Multiple Choice",
+                        questionsRetrieved.push({
+                            questionType: questionData["question_type"],//"Multiple Choice",
                             questionText: questionData["question"],
                             answer: questionData["correct_answer"],
                             options: questionData["answers"]
@@ -156,6 +156,7 @@ function handleGetPlayerQuestions(socket, getQuestionsJSON){
                     }
                 );
             }
+            console.log(questionsRetrieved);
             socket.emit('queried_questions', questionsRetrieved);
         },
         function (error) {
