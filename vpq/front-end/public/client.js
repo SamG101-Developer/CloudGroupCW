@@ -36,7 +36,8 @@ var app = new Vue({
         loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
         user: { username: null, password: null, state: null },
         // These variables are for during a quiz
-        room: { roomID: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null}
+        room: { roomID: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null},
+        rooms: [],
     },
     mounted: function() {
         connect();
@@ -68,6 +69,9 @@ var app = new Vue({
         },
         login() {
             socket.emit('login', this.loginInput);
+        },
+        roomList() {
+            socket.emit('get_room_list');
         },
         deleteUser() {
             socket.emit('delete', this.loginInput.username);
@@ -117,6 +121,7 @@ function connect() {
     socket.on('connect', function() {
         //Set connected state to true
         app.connected = true;
+        app.roomList();
     });
 
     //Handle connection error
@@ -140,5 +145,14 @@ function connect() {
         app.setQueriedQuestions(questionsRetrieved);
     });
 
-
+    //Handle incoming list of rooms + updates to it
+    socket.on('room_list_all', function(rooms) {
+        app.rooms = rooms;
+    });
+    socket.on("room_list_add", function(room) {
+        app.rooms.push(room);
+    });
+    socket.on("room_list_del", function(roomID) {
+        app.rooms = app.rooms.filter(room => room.roomID !== roomID);
+    });
 }
