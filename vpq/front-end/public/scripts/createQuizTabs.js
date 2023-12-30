@@ -53,6 +53,9 @@ function addTab(){
         if (confirmDeletion){
             quizTabs.removeChild(newTab);
             tabContainer.removeChild(tabDiv);
+            if (quizTabs.childNodes.length){
+                hideQuestionSearch();
+            }
         }
     }
     tabDiv.appendChild(deleteRoundButton);
@@ -68,6 +71,7 @@ function switchTab(tabNumber){
         console.log("Switching from unknown tab");
     }
     newTabContent.style.display = "block";
+    showQuestionSearch();
     currentTab = tabNumber;
 }
 
@@ -214,6 +218,16 @@ function loadQuestionType(questionType, questionDiv, question){
             alert("Unknown Question Type.");
         }
     }
+}
+
+function hideQuestionSearch(){
+    let questionSearchDiv = document.getElementById("questionSearch");
+    questionSearchDiv.style.display = "none";
+}
+
+function showQuestionSearch(){
+    let questionSearchDiv = document.getElementById("questionSearch");
+    questionSearchDiv.style.display = "block";
 }
 
 function addFromSearch(question){

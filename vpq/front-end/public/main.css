@@ -69,6 +69,10 @@ The height of the container is 100vh - .navSize height
     overflow-x: hidden;
 }
 
+#questionSearch {
+    display: none;
+}
+
 .questionSearchOption {
     border: black solid 2px;
     padding: 0.5vh;
