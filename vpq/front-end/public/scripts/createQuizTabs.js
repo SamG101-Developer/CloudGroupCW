@@ -35,8 +35,10 @@ function addTab(){
     // Create the tab content
     let tabDiv = document.createElement("div");
     tabDiv.classList.add("tab-pane");
+    tabDiv.style.display = "none"
     tabDiv.id = "round-" + tabCount + "-content";
     tabDiv.innerHTML = '<button class="roundTabButton addQuestionButton" onclick="addQuestion(' + tabCount + ')">Add Question</button>'
+
 
     let tabContainer = document.getElementById("round-content");
     tabContainer.appendChild(tabDiv);
@@ -61,11 +63,11 @@ function switchTab(tabNumber){
     let newTabContent = document.getElementById("round-" + tabNumber.toString() + "-content");
 
     try{
-        currentTabContent.classList.remove("active");
+        currentTabContent.style.display = "none"
     }catch (err){
         console.log("Switching from unknown tab");
     }
-    newTabContent.classList.add("active");
+    newTabContent.style.display = "block";
     currentTab = tabNumber;
 }
 
