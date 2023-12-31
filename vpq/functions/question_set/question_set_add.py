@@ -56,7 +56,10 @@ def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
                 dbQuestion = list(
                     questionSetContainer.query_items(query=query, enable_cross_partition_query=True))
                 if len(dbQuestion) == 0:
-                    questionAdd(question)
+                    logging.error(req.url)
+                    dummy_request = func.HttpRequest("GET", "/api/questionAdd", body=json.dumps(question))
+                    questionAdd(dummy_request)
+                    logging.error("ITS GOOD")
                     newQuestions.append([question, None])
                     questionSetToAdd[roundCount].append(question[0]['question'])
                 else:
