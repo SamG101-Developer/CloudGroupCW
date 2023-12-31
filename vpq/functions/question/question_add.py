@@ -55,3 +55,5 @@ def questionAdd(req: func.HttpRequest) -> func.HttpResponse:
         message = CosmosHttpResponseErrorMessage()
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
+    except Exception as test:
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": test}), mimetype="application/json")
