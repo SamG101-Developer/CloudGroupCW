@@ -6,32 +6,8 @@ var app = new Vue({
     data: {
         connected: false,
         messages: [],
-        queriedQuestions: [
-            {
-                questionType: "Multiple Choice",
-                questionText: "How many people are in this group?",
-                answer: "6",
-                options: ["2", "5", "6", "10"]
-            },
-            {
-                questionType: "Numeric",
-                questionText: "How many people are in this group?",
-                answer: "6",
-                options: []
-            },
-            {
-                questionType: "Pick the Letter",
-                questionText: "Who wrote this question?",
-                answer: "(B)en",
-                options: []
-            },
-            {
-                questionType: "Full Answer",
-                questionText: "Who wrote this question?",
-                answer: "Ben",
-                options: []
-            }
-        ], // These are the questions that are loaded using the player_question_groups_get function
+        chatmessage: '',
+        queriedQuestions: [], // These are the questions that are loaded using the player_question_groups_get function
         questionSearchUsernameField: "",
         loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
         user: { username: null, password: null, state: null },
@@ -60,7 +36,7 @@ var app = new Vue({
             this.messages.unshift(message);
         },
         chat() {
-            socket.emit('chat',this.chatmessage);
+            socket.emit('chat',"test");
             this.chatmessage = '';
         },
         register() {

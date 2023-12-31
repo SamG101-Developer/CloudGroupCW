@@ -166,6 +166,19 @@ function handleGetPlayerQuestions(socket, getQuestionsJSON){
     );
 }
 
+function handleQuizCreate(quizJSON){
+    backendPOST("/api/questionSetAdd", quizJSON).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
 /*
 All backend requests work using promises.
 A backend request can be done by providing:
@@ -271,6 +284,39 @@ io.on('connection', socket => {
     //Handle on chat message received
     socket.on('chat', message => {
         handleChat(message);
+        let questions = [
+            [{
+                "author": "bsab1g21",
+                "question": "Who made this question?",
+                "answers": [],
+                "correct_answer": "Ben",
+                "question_type": "Full Answer"
+            },
+                {
+                    "author": "bsab1g21",
+                    "question": "Who made this question 2?",
+                    "answers": [],
+                    "correct_answer": "Not Ben",
+                    "question_type": "Full Answer"
+                },
+                {
+                    "author": "bsab1g21",
+                    "question": "What is the capital of France?",
+                    "answers": [
+                        "Paris",
+                        "London",
+                        "Madrid",
+                        "Berlin"
+                    ],
+                    "correct_answer": "Paris",
+                    "question_type": "Multiple Choice"
+                }]
+        ]
+        let quizJSON = {
+            "author": "bsab1g21",
+            "questions": questions
+        }
+        handleQuizCreate(quizJSON);
     });
 
     //Handle disconnection

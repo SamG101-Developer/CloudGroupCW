@@ -7,11 +7,15 @@ from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
 try:
-    from helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainUsernameError, DatabaseDoesNotContainQuestionError
+    from helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainUsernameError, \
+        DatabaseDoesNotContainQuestionError
     from helper.question_set import QuestionSet, QuestionSetQuestionsFormatError
+    from functions.question.question_add import questionAdd
 except ModuleNotFoundError:
-    from vpq.helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainUsernameError, DatabaseDoesNotContainQuestionError
+    from vpq.helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainUsernameError, \
+        DatabaseDoesNotContainQuestionError
     from vpq.helper.question_set import QuestionSet, QuestionSetQuestionsFormatError
+    from vpq.functions.question.question_add import questionAdd
 
 function = func.Blueprint()
 
@@ -37,12 +41,52 @@ def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
         if len(authors) == 0:
             raise DatabaseDoesNotContainUsernameError
 
+        # new
+        newQuestions = []
+        questionSetList = reqJson["questions"]
+        questionSetToAdd = []
+        roundCount = 0
+        for quizRound in questionSetList:
+            questionSetToAdd.append([])
+            for question in quizRound:
+                logging.error(question)
+                query = ("SELECT * FROM c WHERE c.question='{0} AND c.question_type='{1}' AND c.answers='{2}"
+                         " AND c.correct_answer='{3}").format(question['question'], question['question_type'],
+                                                              question['answers'], question['correct_answer'])
+                dbQuestion = list(
+                    questionSetContainer.query_items(query=query, enable_cross_partition_query=True))
+                if len(dbQuestion) == 0:
+                    questionAdd(question)
+                    newQuestions.append([question, None])
+                    questionSetToAdd[roundCount].append(question[0]['question'])
+                else:
+                    questionSetToAdd[roundCount].append(question[0]['id'])
+            roundCount += 1
+
+        # Set the IDs of all the newly added questions
+        # for i in range(len(newQuestions)):
+        #     question = newQuestions[i]
+        #     query = ("SELECT * FROM c WHERE c.question='{0} AND c.question_type='{1}' AND c.answers='{2}"
+        #              " AND c.correct_answer='{3}").format(question['question'], question['question_type'],
+        #                                                   question['answers'], question['correct_answer'])
+        #     dbQuestion = list(
+        #         questionSetContainer.query_items(query=query, enable_cross_partition_query=True))
+        #     newQuestions[i][1] = dbQuestion[0]['id']
+
+        # Replace the questions with their IDs
+        for quizRound in questionSetToAdd:
+            for question in quizRound:
+                for questionIDPair in newQuestions:
+                    if questionIDPair[0] == question['question']:
+                        question = questionIDPair[1]
+
+        # old
         # Check each question exists
-        for question in reqJson['questions']:
-            question_query = "SELECT q.id FROM q where q.id='{}'".format(question['id'])
-            questions = list(questionSetContainer.query_items(query=question_query, enable_cross_partition_query=True))
-            if len(questions) == 0:
-                raise DatabaseDoesNotContainQuestionError
+        # for question in reqJson['questions']:
+        #     question_query = "SELECT q.id FROM q where q.id='{}'".format(question['id'])
+        #     questions = list(questionSetContainer.query_items(query=question_query, enable_cross_partition_query=True))
+        #     if len(questions) == 0:
+        #         raise DatabaseDoesNotContainQuestionError
 
         # Add the question to the database
         questionSetContainer.create_item(body=reqJson, enable_automatic_id_generation=True)
