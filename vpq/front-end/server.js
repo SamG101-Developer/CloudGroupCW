@@ -167,6 +167,7 @@ function handleGetPlayerQuestions(socket, getQuestionsJSON){
 }
 
 function handleQuizCreate(quizJSON){
+    console.log(`Creating a quiz using the JSON '${quizJSON}'`);
     backendPOST("/api/questionSetAdd", quizJSON).then(
         function(response) {
             console.log("Success:");
@@ -284,39 +285,6 @@ io.on('connection', socket => {
     //Handle on chat message received
     socket.on('chat', message => {
         handleChat(message);
-        let questions = [
-            [{
-                "author": "bsab1g21",
-                "question": "Who made this question?",
-                "answers": [],
-                "correct_answer": "Ben",
-                "question_type": "Full Answer"
-            },
-                {
-                    "author": "bsab1g21",
-                    "question": "Who made this question 2?",
-                    "answers": [],
-                    "correct_answer": "Not Ben",
-                    "question_type": "Full Answer"
-                },
-                {
-                    "author": "bsab1g21",
-                    "question": "What is the capital of France?",
-                    "answers": [
-                        "Paris",
-                        "London",
-                        "Madrid",
-                        "Berlin"
-                    ],
-                    "correct_answer": "Paris",
-                    "question_type": "Multiple Choice"
-                }]
-        ]
-        let quizJSON = {
-            "author": "bsab1g21",
-            "questions": questions
-        }
-        handleQuizCreate(quizJSON);
     });
 
     //Handle disconnection
@@ -381,8 +349,8 @@ io.on('connection', socket => {
     });
 
     //Handle create quiz
-    socket.on('create_quiz', () => {
-        console.log('Creating a quiz');
+    socket.on('create_quiz', (quizJSON) => {
+        handleQuizCreate(quizJSON);
     });
 
     //Handle delete quiz

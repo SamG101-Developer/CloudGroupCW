@@ -84,6 +84,15 @@ function addQuestion(tabNumber, question = undefined) {
     questionDiv.classList.add("row");
     questionDiv.classList.add("questionTemplate");
 
+    // Add a delete question button
+    let deleteButton = document.createElement("button");
+    deleteButton.innerText = "Delete Question";
+    deleteButton.className = "deleteQuestion"
+    deleteButton.onclick = function() {
+        tabContent.removeChild(questionDiv);
+    }
+    questionDiv.appendChild(deleteButton);
+
     // Set up the question type row
     let questionTypeDiv = document.createElement("div");
     questionTypeDiv.classList.add("checkbox-row");
@@ -140,6 +149,7 @@ function loadQuestionType(questionType, questionDiv, question){
     let questionInput = document.createElement("input");
     questionInput.type = "text";
     questionInput.placeholder = "Enter Question...";
+    questionInput.classList.add("QuestionInput");
 
     if (question !== undefined){
         questionInput.value = question.questionText;
@@ -147,7 +157,7 @@ function loadQuestionType(questionType, questionDiv, question){
 
     questionDiv.appendChild(questionInput);
 
-    while (questionDiv.childNodes.length > 2){
+    while (questionDiv.childNodes.length > 3){
         questionDiv.removeChild(questionDiv.lastElementChild);
     }
 
@@ -205,6 +215,7 @@ function loadQuestionType(questionType, questionDiv, question){
             let answerInput = document.createElement("input");
             answerInput.type = "text";
             answerInput.placeholder = "Enter Answer...";
+            answerInput.classList.add("AnswerInput");
 
             if (question !== undefined) {
                 answerInput.value = question.answer;

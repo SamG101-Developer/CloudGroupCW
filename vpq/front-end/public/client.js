@@ -36,7 +36,7 @@ var app = new Vue({
             this.messages.unshift(message);
         },
         chat() {
-            socket.emit('chat',"test");
+            socket.emit('chat',this.message);
             this.chatmessage = '';
         },
         register() {
@@ -72,9 +72,9 @@ var app = new Vue({
         usePowerUp() {
             socket.emit('use_power_up')
         },
-        createQuiz() {
+        createQuiz(quizJSON) {
             // TODO: On the server end this will create a new question set and any questions that are new will be added to the database
-            socket.emit('create_quiz')
+            socket.emit('create_quiz', quizJSON);
         },
         deleteQuiz() {
             socket.emit('delete_quiz')
@@ -93,6 +93,7 @@ function connect() {
     socket.on('connect', function() {
         //Set connected state to true
         app.connected = true;
+        window.app = app;
     });
 
     //Handle connection error
@@ -115,6 +116,4 @@ function connect() {
     socket.on('queried_questions', function(questionsRetrieved) {
         app.setQueriedQuestions(questionsRetrieved);
     });
-
-
 }
