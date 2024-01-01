@@ -25,7 +25,7 @@ function addTab(){
 
     // Create a new tab
     let tempDiv = document.createElement("div");
-    tempDiv.innerHTML = '<li class="nav-item" onclick="switchTab(' + tabCount + ')"><a class="nav-link">' + roundName + '</a></li>';
+    tempDiv.innerHTML = '<div class="tab" onclick="switchTab(this,' + tabCount + ')"><h5>' + roundName + '</h5></div>';
 
     let newTab = tempDiv.firstChild;
 
@@ -53,25 +53,25 @@ function addTab(){
         if (confirmDeletion){
             quizTabs.removeChild(newTab);
             tabContainer.removeChild(tabDiv);
-            if (quizTabs.childNodes.length){
-                hideQuestionSearch();
-            }
         }
     }
     tabDiv.appendChild(deleteRoundButton);
 }
 
-function switchTab(tabNumber){
+function switchTab(clickedTab, tabNumber){
     let currentTabContent = document.getElementById("round-" + currentTab.toString() + "-content");
     let newTabContent = document.getElementById("round-" + tabNumber.toString() + "-content");
 
     try{
         currentTabContent.style.display = "none"
+        currentTabContent.classList.remove("selected");
+        document.querySelector(".selected").classList.remove("selected");
     }catch (err){
         console.log("Switching from unknown tab");
     }
     newTabContent.style.display = "block";
-    showQuestionSearch();
+    console.log(clickedTab);
+    clickedTab.classList.add("selected");
     currentTab = tabNumber;
 }
 
@@ -231,18 +231,13 @@ function loadQuestionType(questionType, questionDiv, question){
     }
 }
 
-function hideQuestionSearch(){
-    let questionSearchDiv = document.getElementById("questionSearch");
-    questionSearchDiv.style.display = "none";
-}
-
-function showQuestionSearch(){
-    let questionSearchDiv = document.getElementById("questionSearch");
-    questionSearchDiv.style.display = "block";
-}
-
 function addFromSearch(question){
-    addQuestion(currentTab, question);
+    try{
+        addQuestion(currentTab, question);
+    }catch{
+        alert("Please select a round before adding a question.")
+    }
+
 }
 
 //Make the function globally accessible so that it can be used in the vue app
