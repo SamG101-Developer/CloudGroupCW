@@ -14,6 +14,7 @@ var app = new Vue({
         rooms: [],
         page: "home",
         game_state: "lobby",
+        is_host: false,
     },
     mounted: function() {
         connect();
@@ -70,6 +71,8 @@ var app = new Vue({
         },
         createRoom(questionSetID, adultOnly, password) {
             socket.emit('create_room', {questionSetID: questionSetID, adultOnly: adultOnly, password: password});
+            this.is_host = true;  // TODO: remember to set this to false when the game ends
+            this.page = "game";
         },
         joinRoom(room) {
             this.page = "game"
@@ -90,7 +93,11 @@ var app = new Vue({
         },
         updateQuiz() {
             socket.emit('update_quiz')
-        }
+        },
+        incrementGameState(state) {
+            // Advance the state of the game for all players
+            socket.emit('increment_game_state', {roomID: this.room.roomID, game_state: state});
+        },
     }
 });
 
@@ -137,4 +144,9 @@ function connect() {
     socket.on("room_list_del", function(roomID) {
         app.rooms = app.rooms.filter(room => room.roomID !== roomID);
     });
+
+    //Handle incrementing game state
+    socket.on("increment_game_state", function(state) {
+        app.game_state = state;
+    })
 }

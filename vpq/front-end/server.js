@@ -20,6 +20,8 @@ app.get('/', (req, res) => {
     res.render('client');
 });
 
+let all_players_sockets = {};
+
 // URL of the backend API
 // TODO: Add the URL of the function app
 const BACKEND_ENDPOINT = process.env.BACKEND || 'http://localhost:7071';
@@ -56,8 +58,9 @@ function handleDeleteUser(delUserJSON) {
 }
 
 //Player Login
-function handleLogin(loginJSON){
+function handleLogin(socket, loginJSON){
     console.log(`Logging in with username '${loginJSON.username}' and password '${loginJSON.password}'`);
+    all_players_sockets[loginJSON.username] = socket;
 
     backendGET("/api/playerLogin", loginJSON).then(
         function(response) {
@@ -185,6 +188,33 @@ function handleGetRoomList(socket) {
             console.log("Success:");
             console.log(response);
             socket.emit('room_list_all', response["rooms"]);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+//Increment Room State
+function handleIncrementRoomState(socket, info) {
+    console.log(`Incrementing the state of the room`);
+
+    const room_id = info["roomID"];
+    const game_state = info["game_state"];
+
+    // Get all the players in the room
+    backendGET("/api/roomPlayersGet", {room_id: room_id}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            let players = response["body"];
+
+            // For each player in the room, send them an increment state message
+            for (let player of players) {
+                const player_socket = all_players_sockets[player];
+                player_socket.emit('increment_game_state', game_state);
+            }
         },
         function (error) {
             console.error("Error:");
@@ -368,7 +398,7 @@ io.on('connection', socket => {
 
     //Handle login
     socket.on('login', (loginJSON) => {
-        handleLogin(loginJSON);
+        handleLogin(socket, loginJSON);
     });
 
     //Handle delete user
@@ -440,6 +470,11 @@ io.on('connection', socket => {
     //Handle request to get a list of all rooms
     socket.on('get_room_list', () => {
         handleGetRoomList(socket);
+    });
+
+    //Handle telling all the players in a lobby/game to increment their gae state
+    socket.on('increment_room_state', (info) => {
+        handleIncrementRoomState(socket, info);
     });
 });
 
