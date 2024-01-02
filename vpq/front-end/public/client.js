@@ -6,13 +6,38 @@ var app = new Vue({
     data: {
         connected: false,
         messages: [],
-        chatmessage: '',
-        queriedQuestions: [], // These are the questions that are loaded using the player_question_groups_get function
+        queriedQuestions: [
+            {
+                questionType: "Multiple Choice",
+                questionText: "How many people are in this group?",
+                answer: "6",
+                options: ["2", "5", "6", "10"]
+            },
+            {
+                questionType: "Numeric",
+                questionText: "How many people are in this group?",
+                answer: "6",
+                options: []
+            },
+            {
+                questionType: "Pick the Letter",
+                questionText: "Who wrote this question?",
+                answer: "(B)en",
+                options: []
+            },
+            {
+                questionType: "Full Answer",
+                questionText: "Who wrote this question?",
+                answer: "Ben",
+                options: []
+            }
+        ], // These are the questions that are loaded using the player_question_groups_get function
         questionSearchUsernameField: "",
         loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
         user: { username: null, password: null, state: null },
         // These variables are for during a quiz
-        room: { roomID: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null}
+        room: { roomID: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null},
+        rooms: [],
     },
     mounted: function() {
         connect();
@@ -44,6 +69,9 @@ var app = new Vue({
         },
         login() {
             socket.emit('login', this.loginInput);
+        },
+        roomList() {
+            socket.emit('get_room_list');
         },
         deleteUser() {
             socket.emit('delete', this.loginInput.username);
@@ -94,6 +122,7 @@ function connect() {
         //Set connected state to true
         app.connected = true;
         window.app = app;
+        // app.roomList();
     });
 
     //Handle connection error
@@ -115,5 +144,16 @@ function connect() {
     //Handle incoming queried questions
     socket.on('queried_questions', function(questionsRetrieved) {
         app.setQueriedQuestions(questionsRetrieved);
+    });
+
+    //Handle incoming list of rooms + updates to it
+    socket.on('room_list_all', function(rooms) {
+        app.rooms = rooms;
+    });
+    socket.on("room_list_add", function(room) {
+        app.rooms.push(room);
+    });
+    socket.on("room_list_del", function(roomID) {
+        app.rooms = app.rooms.filter(room => room.roomID !== roomID);
     });
 }

@@ -189,6 +189,64 @@ function handleQuizCreate(quizJSON){
     );
 }
 
+//Get Room List
+function handleGetRoomList(socket) {
+    console.log(`Getting a list of all rooms`);
+
+    backendGET("/api/roomAllGet", {}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            socket.emit('room_list_all', response["rooms"]);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+//Create Room
+function handleCreateRoom(socket) {
+    console.log(`Creating a room`);
+
+    backendPOST("/api/roomSessionAdd", {}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            socket.emit('room_list_add', response);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+//Join Room
+function handleJoinRoom(socket) {
+    console.log(`Joining a room`);
+    // TODO
+}
+
+//Leave Room
+function handleLeaveRoom(socket) {
+    console.log(`Leaving a room`);
+
+    backendDELETE("/api/roomSessionDel", {}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            socket.emit('room_list_del', response);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+
 /*
 All backend requests work using promises.
 A backend request can be done by providing:
@@ -339,17 +397,17 @@ io.on('connection', socket => {
 
     //Handle create room
     socket.on('create_room', () => {
-        console.log('Creating a room');
+        handleCreateRoom(socket);
     });
 
     //Handle join room
     socket.on('join_room', () => {
-        console.log('Joining a room');
+        handleJoinRoom(socket)
     });
 
     //Handle leave room
     socket.on('leave_room', () => {
-        console.log('Leaving a room');
+        handleLeaveRoom(socket);
     });
 
     //Handle use power up
@@ -375,6 +433,12 @@ io.on('connection', socket => {
     //Handle request to get player questions
     socket.on('get_player_questions', (getQuestionsJSON) => {
         handleGetPlayerQuestions(socket, getQuestionsJSON);
+    });
+
+    //Handle request to get a list of all rooms
+    socket.on('get_room_list', () => {
+        console.log('Getting a list of all rooms');
+        handleGetRoomList(socket);
     });
 });
 
