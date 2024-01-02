@@ -6,43 +6,23 @@ var app = new Vue({
     data: {
         connected: false,
         messages: [],
-        queriedQuestions: [
-            {
-                questionType: "Multiple Choice",
-                questionText: "How many people are in this group?",
-                answer: "6",
-                options: ["2", "5", "6", "10"]
-            },
-            {
-                questionType: "Numeric",
-                questionText: "How many people are in this group?",
-                answer: "6",
-                options: []
-            },
-            {
-                questionType: "Pick the Letter",
-                questionText: "Who wrote this question?",
-                answer: "(B)en",
-                options: []
-            },
-            {
-                questionType: "Full Answer",
-                questionText: "Who wrote this question?",
-                answer: "Ben",
-                options: []
-            }
-        ], // These are the questions that are loaded using the player_question_groups_get function
         questionSearchUsernameField: "",
         loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
         user: { username: null, password: null, state: null },
         // These variables are for during a quiz
         room: { roomID: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null},
         rooms: [],
+        page: "home",
     },
     mounted: function() {
         connect();
     },
     methods: {
+        setPage(page) {
+            alert("Changing page to " + page + "...")
+            this.page = page;
+        },
+
         searchDatabaseForQuestions(){
             socket.emit('get_player_questions', { username: this.questionSearchUsernameField });
         },
@@ -91,8 +71,8 @@ var app = new Vue({
         createRoom() {
             socket.emit('create_room');
         },
-        joinRoom() {
-            socket.emit('join_room');
+        joinRoom(room) {
+            socket.emit('join_room', room);
         },
         leaveRoom() {
             socket.emit('leave_room');
@@ -122,7 +102,7 @@ function connect() {
         //Set connected state to true
         app.connected = true;
         window.app = app;
-        // app.roomList();
+        app.roomList();
     });
 
     //Handle connection error

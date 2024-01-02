@@ -17,21 +17,8 @@ app.use('/static', express.static('public'));
 
 //Handle client interface on /
 app.get('/', (req, res) => {
-    res.render('home');
+    res.render('client');
 });
-app.get('/home', (req, res) => {
-    res.render('home');
-});
-app.get('/create', (req, res) => {
-    res.render('create');
-});
-app.get('/host', (req, res) => {
-    res.render('host');
-});
-app.get('/join', (req, res) => {
-    res.render('join');
-});
-
 
 // URL of the backend API
 // TODO: Add the URL of the function app
@@ -224,26 +211,16 @@ function handleCreateRoom(socket) {
 }
 
 //Join Room
-function handleJoinRoom(socket) {
+function handleJoinRoom(socket, room) {
     console.log(`Joining a room`);
+    console.log(room)
     // TODO
 }
 
 //Leave Room
 function handleLeaveRoom(socket) {
     console.log(`Leaving a room`);
-
-    backendDELETE("/api/roomSessionDel", {}).then(
-        function(response) {
-            console.log("Success:");
-            console.log(response);
-            socket.emit('room_list_del', response);
-        },
-        function (error) {
-            console.error("Error:");
-            console.error(error);
-        }
-    );
+    // TODO
 }
 
 
@@ -401,8 +378,8 @@ io.on('connection', socket => {
     });
 
     //Handle join room
-    socket.on('join_room', () => {
-        handleJoinRoom(socket)
+    socket.on('join_room', (room) => {
+        handleJoinRoom(socket, room)
     });
 
     //Handle leave room
@@ -437,7 +414,6 @@ io.on('connection', socket => {
 
     //Handle request to get a list of all rooms
     socket.on('get_room_list', () => {
-        console.log('Getting a list of all rooms');
         handleGetRoomList(socket);
     });
 });
