@@ -1,0 +1,22 @@
+<%- include('meta_header.ejs'); -%>
+<div id="game">
+    <div v-if="page == 'home'">
+        <%- include('join'); -%>
+    </div>
+    <div v-else-if="page == 'create'">
+        <%- include('create'); -%>
+    </div>
+    <div v-else-if="page == 'host'">
+        <%- include('host'); -%>
+    </div>
+    <div v-else-if="page == 'join'">
+        <%- include('join'); -%>
+    </div>
+    <div v-else-if="page == 'game'">
+        <%- include('game'); -%>
+    </div>
+    <div v-else>
+        <p>Invalid Page!</p>
+    </div>
+</div>
+<%- include('meta_footer.ejs'); -%>
