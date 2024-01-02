@@ -30,26 +30,10 @@ h2 { /* Used for main titles */
     padding: 8px;
 }
 
-/*
-The height of the container is 100vh - .navSize height
- */
-.createContainer {
-    background-color: #c3d2d9;
-    width: 100vw;
-    height: 94vh;
-}
-
 .navSize {
     height: 6vh;
     width: 100vw;
 }
-
-.checkbox-row {
-    display: flex;
-    align-items: center;
-    padding-right: 3vh;
-}
-
 
 /* Create Quiz Styling */
 
@@ -64,6 +48,9 @@ body {
     overflow-x: hidden;
 }
 
+/*
+The height of the container is 100vh - .navSize height
+ */
 #createQuizContainer {
     background-color: #424141;
     display: flex;
@@ -134,6 +121,12 @@ body {
     border-radius: 3vh;
     width: fit-content;
     height: fit-content;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    padding-right: 3vh;
 }
 
 .roundTabButton:hover {
@@ -310,5 +303,5 @@ body {
 }
 
 ::-webkit-scrollbar {
-    width: 1vh; /* Width of the entire scrollbar */
+    width: 1vh;
 }
