@@ -201,7 +201,7 @@ function handleCreateRoom(socket) {
         function(response) {
             console.log("Success:");
             console.log(response);
-            socket.emit('room_list_add', response);
+            io.emit('room_list_add', {id: Math.random().toString(), room_admin: "TestAccount", adult_only: Math.random() < 0.5})
         },
         function (error) {
             console.error("Error:");
@@ -214,13 +214,34 @@ function handleCreateRoom(socket) {
 function handleJoinRoom(socket, room) {
     console.log(`Joining a room`);
     console.log(room)
-    // TODO
+
+    backendPUT("/api/roomPlayerAdd", room).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
 }
 
 //Leave Room
 function handleLeaveRoom(socket) {
     console.log(`Leaving a room`);
-    // TODO
+    console.log(room)
+
+    backendDELETE("/api/roomPlayerDel", {}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
 }
 
 

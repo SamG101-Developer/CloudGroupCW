@@ -8,7 +8,7 @@ var app = new Vue({
         messages: [],
         questionSearchUsernameField: "",
         loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
-        user: { username: null, password: null, state: null },
+        user: { username: "Guest1", password: null, state: null },
         // These variables are for during a quiz
         room: { roomID: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null},
         rooms: [],
@@ -19,7 +19,6 @@ var app = new Vue({
     },
     methods: {
         setPage(page) {
-            alert("Changing page to " + page + "...")
             this.page = page;
         },
 
@@ -68,11 +67,11 @@ var app = new Vue({
         deleteFavouriteQuiz() {
             socket.emit('del_favourite_quiz');
         },
-        createRoom() {
-            socket.emit('create_room');
+        createRoom(questionSetID, adultOnly, password) {
+            socket.emit('create_room', {questionSetID: questionSetID, adultOnly: adultOnly, password: password});
         },
         joinRoom(room) {
-            socket.emit('join_room', room);
+            socket.emit('join_room', {id: room.id, player: this.user.username});
         },
         leaveRoom() {
             socket.emit('leave_room');
