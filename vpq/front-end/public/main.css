@@ -1,15 +1,6 @@
-/* 
+/*
 A naming convention for css styles was not decided, using kebab case.
 */
-
-/*!* Highlight the rows and columns in the Bootstrap grid *!*/
-.row {
-    border: 2px solid #3498db; /* Add a border to highlight rows */
-}
-
-[class^="col-"] {
-    border: 2px solid #2ecc71; /* Add a border to highlight columns */
-}
 
 h2 { /* Used for main titles */
     text-align: center;
@@ -51,10 +42,6 @@ The height of the container is 100vh - .navSize height
 .navSize {
     height: 6vh;
     width: 100vw;
-}
-
-.questionTemplate {
-    background-color: #9badb7;
 }
 
 .checkbox-row {
@@ -114,6 +101,14 @@ body {
     cursor: pointer;
 }
 
+.tab:hover {
+    transform: scaleY(1.05);
+}
+
+.tab:active {
+    transform: scaleY(0.95);
+}
+
 .tab.selected {
     background-color: #dadada;
     color: black;
@@ -133,11 +128,74 @@ body {
     margin-right: 0;
 }
 
+.roundTabButton {
+    margin-right: 1vh;
+    padding: 1vh;
+    border-radius: 3vh;
+    width: fit-content;
+    height: fit-content;
+}
+
+.roundTabButton:hover {
+    transform: scale(1.05);
+}
+
+.roundTabButton:active {
+    transform: scale(0.95);
+}
+
+.addQuestionButton {
+    background: linear-gradient(to right, #47ff6d 0%, #28a745 100%);
+    color: white;
+}
+
+.removeButton {
+    background: linear-gradient(to right, #ff6e6e 0%, #a72828 100%);
+    color:white;
+}
+
+.deleteQuestion {
+    padding: 0.5vh;
+}
+
+.questionTemplate {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    background-color: #9badb7;
+    padding: 1vh;
+    margin-top: 1vh;
+    border-radius: 3vh;
+    border: black solid 2px;
+}
+
+.tab-pane {
+    padding: 1vh;
+}
+
+.multipleChoiceOptionsContainer {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 1vh;
+}
+
+.multipleChoiceOptionsContainer .checkbox-row{
+    display: flex;
+    flex-direction: row;
+    gap: 0.5vh;
+}
+
+.inputFieldRound {
+    border-radius: 1vh;
+}
+
 /* Style the buttons */
 #buttonRow {
     display: flex;
-    justify-content: flex-end;
-    padding: 1vh 1vw;
+    justify-content: flex-start;
+    margin-top: 1vw;
+    margin-left: 1vw;
     background-color: inherit;
 }
 
@@ -145,27 +203,44 @@ body {
     border-radius: 3vh;
     width: fit-content;
     height: fit-content;
+    background: linear-gradient(to right, #5bb3ff 0%, #7de7ec 100%);
+}
+
+#createQuizButton:hover {
+    transform: scale(1.1);
+}
+
+#createQuizButton:active {
+    transform: scale(0.9);
 }
 
 /* Styling the question search */
 #questionSearch {
     flex: 1;
     margin: 1vw;
-    /*padding: 1vw;*/
     background: #dadada;
     border-radius: 3vh;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 1vh;
 }
 
-.question-search input[type="text"] {
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid #cccccc;
-    width: 80%;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+#searchButton {
+    border-radius: 3vh;
+    width: fit-content;
+    height: fit-content;
+    background: linear-gradient(to right, #5bb3ff 0%, #7de7ec 100%);
+    padding: 0.75vh;
+}
+
+#searchButton:hover {
+    transform: scale(1.1);
+}
+
+#searchButton:active {
+    transform: scale(0.9);
 }
 
 .titleContainer {
@@ -180,9 +255,35 @@ body {
 
 .questionSearchOption {
     border: black solid 2px;
-    padding: 0.5vh;
+    border-radius: 3vh;
+    padding: 1vh;
     margin: 1vh;
     width: 95%;
+    background-color: #9badb7;
+}
+
+.questionInfo {
+    margin-top: 1vh;
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+}
+
+.questionData {
+    padding: 0.3vh;
+    border-radius: 2vh;
+    background-color: white;
+    box-shadow:
+            0 2px 4px rgba(0, 0, 0, 0.2),
+            0 3px 10px rgba(0, 0, 0, 0.1),
+            inset 0 4px 2px rgba(255, 255, 255, 0.5),
+            inset 0 -3px 2px rgba(0, 0, 0, 0.1);
+}
+
+.questionDataText {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .question-scroller {
@@ -193,4 +294,21 @@ body {
     padding: 10px;
     background: #dadada;
     width: 100%;
+}
+
+
+/* Style the scroll bar*/
+::-webkit-scrollbar-track {
+    background-color: #d8d8d8;
+    border-radius: 3vh;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 3vh;
+    border: 0.1vh solid #d8d8d8;
+}
+
+::-webkit-scrollbar {
+    width: 1vh; /* Width of the entire scrollbar */
 }

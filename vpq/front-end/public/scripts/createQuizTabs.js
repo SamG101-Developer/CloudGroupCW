@@ -46,7 +46,7 @@ function addTab(){
     //Create a delete round button
     let deleteRoundButton = document.createElement("button");
     deleteRoundButton.classList.add("roundTabButton");
-    deleteRoundButton.classList.add("removeRoundButton");
+    deleteRoundButton.classList.add("removeButton");
     deleteRoundButton.innerText = "Remove Round";
     deleteRoundButton.onclick = function(){
         let confirmDeletion = confirm("Are you sure you want to delete this round?");
@@ -88,6 +88,8 @@ function addQuestion(tabNumber, question = undefined) {
     let deleteButton = document.createElement("button");
     deleteButton.innerText = "Delete Question";
     deleteButton.className = "deleteQuestion"
+    deleteButton.classList.add("removeButton");
+    deleteButton.classList.add("roundTabButton");
     deleteButton.onclick = function() {
         tabContent.removeChild(questionDiv);
     }
@@ -121,6 +123,8 @@ function createCheckboxes(questionTypeDiv, questionDiv, question){
         input.id = "checkbox" + checkboxNumber.toString();
         input.name = "question-" + radioNumber.toString() + "-radio"
         input.onclick = function() {loadQuestionType(questionType, questionDiv, question)};
+        input.classList.add("inputFieldRound")
+
 
         //Create the label
         let label = document.createElement("label");
@@ -150,6 +154,8 @@ function loadQuestionType(questionType, questionDiv, question){
     questionInput.type = "text";
     questionInput.placeholder = "Enter Question...";
     questionInput.classList.add("QuestionInput");
+    questionInput.classList.add("inputFieldRound")
+
 
     if (question !== undefined){
         questionInput.value = question.questionText;
@@ -182,10 +188,13 @@ function loadQuestionType(questionType, questionDiv, question){
                 tickBox.type = 'radio';
                 tickBox.id = "checkbox" + i.toString();
                 tickBox.name = "option-" + radioNumber.toString() + "-radio"
+                tickBox.classList.add("inputFieldRound")
+
 
                 let option = document.createElement("input");
                 option.type = "text";
                 option.placeholder = "Answer" + (i).toString();
+                option.classList.add("inputFieldRound")
 
                 if (question !== undefined){
                     option.value = question.options[i-1];
@@ -216,6 +225,7 @@ function loadQuestionType(questionType, questionDiv, question){
             answerInput.type = "text";
             answerInput.placeholder = "Enter Answer...";
             answerInput.classList.add("AnswerInput");
+            answerInput.classList.add("inputFieldRound")
 
             if (question !== undefined) {
                 answerInput.value = question.answer;

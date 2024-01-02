@@ -38,19 +38,30 @@
                 <div class="titleContainer">
                     <h4>Question Search</h4>
                 </div>
-                <label>Enter the username you want to search for
-                    <input id="usernameToSearch" type="text" v-model="questionSearchUsernameField">
+                <label>Search for:
+                    <input id="usernameToSearch"  class="inputFieldRound" type="text" v-model="questionSearchUsernameField" placeholder="Username">
                 </label>
-                <button @click="searchDatabaseForQuestions()">Search</button>
+                <button id="searchButton" @click="searchDatabaseForQuestions()">Search</button>
                 <div class="question-scroller">
                     <div v-for="question in queriedQuestions" class="questionSearchOption">
-                        <button @click="handleAddSearchedQuestion(question)">Add Question</button>
-                        {{ question.questionType }}<br>
-                        {{ question.questionText }}<br>
-                        {{ question.answer }}<br>
-                        Options:
-                        <div v-for="option in question.options">
-                            {{option}}
+                        <button class="addQuestionButton roundTabButton" @click="handleAddSearchedQuestion(question)">Add Question</button>
+                        <br>
+                        <div class="questionInfo">
+                            <div class="questionData">
+                                <p>Question Type: {{question.questionType}}</p>
+                            </div>
+                            <div class="questionData">
+                                <p>Question: {{question.questionText}}</p>
+                            </div>
+                            <div class="questionData">
+                                <p>Answer: {{question.answer}}</p>
+                            </div>
+                            <div v-if="question.questionType === 'Multiple Choice'" class="questionData">
+                                Options:<br>
+                                <ul v-for="option in question.options" >
+                                    <li style="padding: 0.1vh">{{option}}</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
