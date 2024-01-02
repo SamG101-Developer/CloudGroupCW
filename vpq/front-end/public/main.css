@@ -290,6 +290,27 @@ The height of the container is 100vh - .navSize height
 }
 
 
+/*
+The height of the container is 100vh - .navSize height
+ */
+#joinLobbyContainer {
+    background-color: #424141;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 94vh;
+}
+
+#joinLobbyOption {
+    width: 80vw;
+    background-color: #9badb7;
+    border-radius: 3vh;
+    padding: 1vh;
+    margin: 1vh;
+}
+
+
+
 /* Style the scroll bar*/
 ::-webkit-scrollbar-track {
     background-color: #d8d8d8;
