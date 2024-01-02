@@ -219,6 +219,8 @@ function handleJoinRoom(socket, room) {
         function(response) {
             console.log("Success:");
             console.log(response);
+
+            // TODO : Get list of everyone in the room -> Send to everyone on the list
         },
         function (error) {
             console.error("Error:");
@@ -236,6 +238,8 @@ function handleLeaveRoom(socket) {
         function(response) {
             console.log("Success:");
             console.log(response);
+
+            // TODO : Get list of everyone in the room -> Send to everyone on the list
         },
         function (error) {
             console.error("Error:");
