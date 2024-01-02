@@ -1,0 +1,12 @@
+<%- include('meta_header.ejs'); -%>
+
+<div id="game">
+    <div v-if="connected">
+        <%- include('navbar.ejs'); -%>>
+    </div>
+    <div v-else>
+        <p>Connecting...</p>
+    </div>
+</div>
+
+<%- include('meta_footer.ejs'); -%>
