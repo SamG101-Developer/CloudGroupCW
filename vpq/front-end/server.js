@@ -17,12 +17,21 @@ app.use('/static', express.static('public'));
 
 //Handle client interface on /
 app.get('/', (req, res) => {
-    res.render('client');
+    res.render('home');
 });
-//Handle display interface on /display
-// app.get('/display', (req, res) => {
-//     res.render('display');
-// });
+app.get('/home', (req, res) => {
+    res.render('home');
+});
+app.get('/create', (req, res) => {
+    res.render('create');
+});
+app.get('/host', (req, res) => {
+    res.render('host');
+});
+app.get('/join', (req, res) => {
+    res.render('join');
+});
+
 
 // URL of the backend API
 // TODO: Add the URL of the function app
