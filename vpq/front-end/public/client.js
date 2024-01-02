@@ -13,6 +13,7 @@ var app = new Vue({
         room: { roomID: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null},
         rooms: [],
         page: "home",
+        game_state: "lobby",
     },
     mounted: function() {
         connect();
@@ -71,6 +72,7 @@ var app = new Vue({
             socket.emit('create_room', {questionSetID: questionSetID, adultOnly: adultOnly, password: password});
         },
         joinRoom(room) {
+            this.page = "game"
             socket.emit('join_room', {id: room.id, player: this.user.username});
         },
         leaveRoom() {
