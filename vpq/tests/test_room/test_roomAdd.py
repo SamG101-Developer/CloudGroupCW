@@ -1,11 +1,9 @@
 import json
-import logging
 import unittest
-
 import requests
 
 from vpq.tests.MetaTest import MetaTest
-from vpq.helper.room import UserInRoomAlready,UserDoesNotExist
+from vpq.helper.room import UserInRoomAlready,UserDoesNotExist,RoomDoesNotExist
 
 class TestRoomAdd(unittest.TestCase, MetaTest):
     PUBLIC_URL_ROOM_ADD = None
@@ -13,13 +11,9 @@ class TestRoomAdd(unittest.TestCase, MetaTest):
     TEST_URL_ROOM_ADD = LOCAL_URL_ROOM_ADD
     TEST_URL_PLAYER_ADD = "http://localhost:7071/api/playerAdd?code={}".format(MetaTest.key)
     TEST_URL_ROOM_DELETE = "http://localhost:7071/api/roomSessionDelete?code={}".format(MetaTest.key)
+    TEST_URL_ROOM_PLAYER_ADD = "http://localhost:7071/api/roomPlayerAdd?code={}".format(MetaTest.key)
 
-    def tearDown(self):
-        try:
-            requests.delete(self.TEST_URL_ROOM_DELETE, data=json.dumps({"username":self.DEFAULT_PLAYER_JSON['username']}))
-        except Exception as e:
-            print(f"An error occurred during tearDown: {e}")
-    def testValidRoomAdd(self):
+    def setUp(self):
         # If the default player already exists, delete it
         query = "SELECT * FROM p where p.username='{}'".format(self.DEFAULT_PLAYER_JSON['username'])
         users = list(self.playerContainer.query_items(query=query, enable_cross_partition_query=True))
@@ -28,6 +22,14 @@ class TestRoomAdd(unittest.TestCase, MetaTest):
 
         # Add the player to the database
         response = requests.post(self.TEST_URL_PLAYER_ADD, data=json.dumps(self.DEFAULT_PLAYER_JSON))
+
+    def tearDown(self):
+        try:
+            requests.delete(self.TEST_URL_ROOM_DELETE, data=json.dumps({"username":self.DEFAULT_PLAYER_JSON['username']}))
+        except Exception as e:
+            print(f"An error occurred during tearDown: {e}")
+
+    def testValidRoomAdd(self):
 
         # Create room
         username = self.DEFAULT_PLAYER_JSON['username']
@@ -43,6 +45,8 @@ class TestRoomAdd(unittest.TestCase, MetaTest):
         roomID = list(self.roomContainer.query_items(query=roomIDQuery, enable_cross_partition_query=True))[0]['id']
         responseOutput = {'result': True, "msg": "Room created with id:{}".format(roomID)}
         self.assertEqual(responseOutput, response.json())
+
+
 
     def testUsernameAlreadyAdmin(self):
         # Try to create a room
