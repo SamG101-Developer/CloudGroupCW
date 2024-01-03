@@ -8,7 +8,6 @@
 
     "DatabaseName": "vpq-db",
     "Container_Players": "Players",
-    "Container_Rooms": "Rooms",
     "Container_QuestionSets": "QuestionSet",
     "Container_Questions": "Questions",
     "Container_Rooms": "Sessions",
