@@ -1,5 +1,7 @@
 <div class="container-fluid">
-    <input type="text" placeholder="Username" v-model="username"/>
-    <input type="password" placeholder="Password" v-model="password"/>
-    <button @click="login(username, password)">Login</button>
+    <form>
+        <input type="text" placeholder="Username" name="username" autocomplete="on" v-model="username"/>
+        <input type="password" placeholder="Password" name="password" autocomplete="on" v-model="password"/>
+        <button @click="login(username, password)" type="submit">Login</button>
+    </form>
 </div>
