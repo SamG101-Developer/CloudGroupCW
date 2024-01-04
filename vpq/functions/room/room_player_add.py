@@ -8,11 +8,11 @@ from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
 try:
-    from helper.exceptions import CosmosHttpResponseErrorMessage
+    from helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainUsernameError
     from helper.room import Room,UserDoesNotExist,UserInRoomAlready,RoomDoesNotExist
 
 except ModuleNotFoundError:
-    from vpq.helper.exceptions import CosmosHttpResponseErrorMessage
+    from vpq.helper.exceptions import CosmosHttpResponseErrorMessage,DatabaseDoesNotContainUsernameError
     from vpq.helper.room import Room,UserDoesNotExist,UserInRoomAlready,RoomDoesNotExist
 
 function = func.Blueprint()
@@ -30,6 +30,14 @@ def roomPlayerAdd(req: func.HttpRequest) -> func.HttpResponse:
         reqJson = req.get_json()
         adminUsername = reqJson['adminUsername']
         usernameToAdd = reqJson['usernameToAdd']
+
+        # Check both players exist in players database
+        adminUsernameQuery = "SELECT * FROM r where r.username='{}'".format(adminUsername)
+        usernameToAddQuery = "SELECT * FROM r where r.username='{}'".format(adminUsername)
+        adminUsernameCheck = len(list(playerContainer.query_items(query=adminUsernameQuery, enable_cross_partition_query=True))) == 0
+        usernameToAddCheck = len(list(playerContainer.query_items(query=usernameToAddQuery, enable_cross_partition_query=True))) == 0
+        if adminUsernameCheck or usernameToAddCheck:
+            raise DatabaseDoesNotContainUsernameError
 
         # Get room data from admin username
         query = "SELECT * FROM r where r.room_admin='{}'".format(adminUsername)
@@ -70,6 +78,11 @@ def roomPlayerAdd(req: func.HttpRequest) -> func.HttpResponse:
         message = RoomDoesNotExist.getMessage()
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, 'msg': message}), mimetype="application/json")
+
+    except DatabaseDoesNotContainUsernameError:
+        message = DatabaseDoesNotContainUsernameError.getMessage()
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 
     except CosmosHttpResponseError:
         message = CosmosHttpResponseErrorMessage()
