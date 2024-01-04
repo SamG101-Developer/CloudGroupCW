@@ -20,6 +20,10 @@
         <%- include('navbar'); -%>
         <%- include('game'); -%>
     </div>
+    <div v-else-if="page == 'login'">
+        <%- include('navbar'); -%>
+        <%- include('login'); -%>
+    </div>
     <div v-else>
         <%- include('navbar'); -%>
         <p>Invalid Page!</p>
