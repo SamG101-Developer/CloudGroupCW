@@ -25,7 +25,7 @@ def roomPlayersGet(req: func.HttpRequest) -> func.HttpResponse:
         logging.info('Python HTTP trigger function processed a request to get room info. JSON: {}'.format(reqJson))
 
         # Get all rooms
-        query = f"SELECT p.players_list FROM p WHERE p.id = {reqJson['room_id']}"
+        query = f"SELECT p.players_list FROM p WHERE p.room_admin = {reqJson['adminUsername']}"
         rooms = list(roomContainer.query_items(query=query, enable_cross_partition_query=True))
 
         # Return the response

@@ -1,14 +1,17 @@
 import json
 
+
 class UserDoesNotExist(ValueError):
     @staticmethod
     def getMessage():
         return "Admin username does not exist in the database."
 
+
 class UserInRoomAlready(ValueError):
     @staticmethod
     def getMessage():
         return "User is already in another room."
+
 
 class RoomDoesNotExist(ValueError):
     @staticmethod
@@ -17,8 +20,7 @@ class RoomDoesNotExist(ValueError):
 
 
 class Room:
-
-    def __init__(self,roomData):
+    def __init__(self, roomData):
         """""
         Constructor for room object
 

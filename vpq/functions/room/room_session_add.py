@@ -28,11 +28,13 @@ def roomSessionAdd(req: func.HttpRequest) -> func.HttpResponse:
 
         reqJson = req.get_json()
         username = reqJson["username"]
-        dictData = {"room_admin":username,
-                    "players_in_room":[],
-                    "question_set_id":"","adult_only":False,
-                    "password":""
-                    }
+        dictData = {
+            "room_admin": username,
+            "players_in_room": [],
+            "question_set_id": reqJson["questionSetID"],
+            "adult_only": reqJson["adultOnly"],
+            "password": reqJson["password"]}
+
         logging.info(f"Python HTTP trigger function processed a request to add a room: JSON: {dictData}.")
 
         # Check username exists in players
@@ -53,8 +55,8 @@ def roomSessionAdd(req: func.HttpRequest) -> func.HttpResponse:
         # Add the room to the database
         roomContainer.create_item(body=dictData, enable_automatic_id_generation=True)
         logging.info("Question Added Successfully")
-        roomID = list(roomContainer.query_items(query=query,enable_cross_partition_query=True))[0]['id']
-        responseOutput = {'result': True, "msg": "Room created with id:{}".format(roomID)}
+        roomID = list(roomContainer.query_items(query=query, enable_cross_partition_query=True))[0]['id']
+        responseOutput = {'result': True, "msg": "Room created with id:{}".format(roomID), 'adminUsername': username}
         return func.HttpResponse(body=json.dumps(responseOutput), mimetype="application/json")
 
     except UserDoesNotExist:
@@ -71,6 +73,3 @@ def roomSessionAdd(req: func.HttpRequest) -> func.HttpResponse:
         message = CosmosHttpResponseErrorMessage()
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
-
-
-
