@@ -224,14 +224,14 @@ function handleIncrementRoomState(socket, info) {
 }
 
 //Create Room
-function handleCreateRoom(socket) {
+function handleCreateRoom(socket, info) {
     console.log(`Creating a room`);
 
-    backendPOST("/api/roomSessionAdd", {}).then(
+    backendPOST("/api/roomSessionAdd", info).then(
         function(response) {
             console.log("Success:");
             console.log(response);
-            io.emit('room_list_add', {id: Math.random().toString(), room_admin: "TestAccount", adult_only: Math.random() < 0.5})
+            io.emit('room_list_add', {adminUsername: info['username'], adultOnly: info['adult_only']})
         },
         function (error) {
             console.error("Error:");
@@ -245,12 +245,29 @@ function handleJoinRoom(socket, room) {
     console.log(`Joining a room`);
     console.log(room)
 
-    backendPUT("/api/roomPlayerAdd", room).then(
+    backendPOST("/api/roomPlayerAdd", room).then(
         function(response) {
             console.log("Success:");
             console.log(response);
 
-            // TODO : Get list of everyone in the room -> Send to everyone on the list
+            backendGET("/api/roomPlayersGet", {adminUsername: room['adminUsername']}).then(
+                function(response) {
+                    console.log("Success:");
+                    console.log(response);
+                    let players = response["body"];
+
+                    // For each player in the room, send them an increment state message
+                    for (let player of players) {
+                        const player_socket = all_players_sockets[player];
+                        player_socket.emit('room_player_list', players);
+                    }
+                },
+
+                function (error) {
+                    console.error("Error:");
+                    console.error(error);
+                }
+            );
         },
         function (error) {
             console.error("Error:");
@@ -428,8 +445,8 @@ io.on('connection', socket => {
     });
 
     //Handle create room
-    socket.on('create_room', () => {
-        handleCreateRoom(socket);
+    socket.on('create_room', (info) => {
+        handleCreateRoom(socket, info);
     });
 
     //Handle join room

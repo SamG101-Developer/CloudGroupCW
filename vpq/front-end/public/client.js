@@ -1,4 +1,13 @@
+function hashUsername(username) {
+    for (var h = 0, i = 0; i < username.length; h &= h) {
+        h = 31 * h + username.charCodeAt(i++);
+    }
+    return Math.abs(h);
+}
+
+
 var socket = null;
+
 
 //Prepare game
 var app = new Vue({
@@ -7,10 +16,10 @@ var app = new Vue({
         connected: false,
         messages: [],
         questionSearchUsernameField: "",
-        loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
-        user: { username: "Guest1", password: null, state: null },
+        // loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
+        user: { username: null, password: null, state: null },
         // These variables are for during a quiz
-        room: { roomID: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null},
+        room: { id: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null},
         rooms: [],
         page: "home",
         game_state: "lobby",
@@ -21,6 +30,10 @@ var app = new Vue({
     },
     methods: {
         setPage(page) {
+            if (["create", "host", "join"].includes(page) && !this.user.username) {
+                alert("You must be logged in to do that.");
+                return;
+            }
             this.page = page;
         },
 
@@ -45,17 +58,22 @@ var app = new Vue({
             socket.emit('chat',this.message);
             this.chatmessage = '';
         },
-        register() {
-            socket.emit('register', this.loginInput);
+        register(username, password) {
+            socket.emit('register', {"username": username, "password": password});
         },
-        login() {
-            socket.emit('login', this.loginInput);
+        login(username, password) {
+            socket.emit('login', {"username": username, "password": password});
+            this.user.username = username;
+            this.user.password = password;
+
+            // TODO: check username & password are correct
+            this.setPage("join");
         },
         roomList() {
             socket.emit('get_room_list');
         },
-        deleteUser() {
-            socket.emit('delete', this.loginInput.username);
+        deleteUser(username, password) {
+            socket.emit('delete', {"username": username, "password": password});
         },
         addFriend() {
             socket.emit('add_friend');
@@ -70,13 +88,13 @@ var app = new Vue({
             socket.emit('del_favourite_quiz');
         },
         createRoom(questionSetID, adultOnly, password) {
-            socket.emit('create_room', {questionSetID: questionSetID, adultOnly: adultOnly, password: password});
+            socket.emit('create_room', {username: this.user.username, questionSetID: questionSetID, adultOnly: adultOnly, password: password});
             this.is_host = true;  // TODO: remember to set this to false when the game ends
             this.page = "game";
         },
         joinRoom(room) {
             this.page = "game"
-            socket.emit('join_room', {id: room.id, player: this.user.username});
+            socket.emit('join_room', {adminUsername: room.adminUsername, usernameToAdd: this.user.username});
         },
         leaveRoom() {
             socket.emit('leave_room');
@@ -95,8 +113,8 @@ var app = new Vue({
             socket.emit('update_quiz')
         },
         incrementGameState(state) {
-            // Advance the state of the game for all players
-            socket.emit('increment_game_state', {roomID: this.room.roomID, game_state: state});
+            // Advance the state of the game for all players.
+            socket.emit('increment_game_state', {adminUsername: this.room.adminUsername, game_state: state});
         },
     }
 });
@@ -136,13 +154,17 @@ function connect() {
 
     //Handle incoming list of rooms + updates to it
     socket.on('room_list_all', function(rooms) {
-        app.rooms = rooms;
+        for (let room of rooms) {
+            room["id"] = hashUsername(room.adminUsername);
+            app.rooms.push(room);
+        }
     });
     socket.on("room_list_add", function(room) {
+        room["id"] = hashUsername(room.adminUsername);
         app.rooms.push(room);
     });
-    socket.on("room_list_del", function(roomID) {
-        app.rooms = app.rooms.filter(room => room.roomID !== roomID);
+    socket.on("room_list_del", function(adminUsername) {
+        app.rooms = app.rooms.filter(room => room.adminUsername !== adminUsername);
     });
 
     //Handle incrementing game state
