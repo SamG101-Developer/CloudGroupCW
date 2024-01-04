@@ -73,3 +73,8 @@ def roomSessionAdd(req: func.HttpRequest) -> func.HttpResponse:
         message = CosmosHttpResponseErrorMessage()
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
+
+    except Exception as e:
+        message = str(e)
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")

@@ -30,14 +30,14 @@ def roomPlayersGet(req: func.HttpRequest) -> func.HttpResponse:
 
         # Return the response
         logging.info("Room players retrieved Successfully")
-        return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success", "rooms": rooms}), mimetype="application/json")
+        return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success", "players": rooms}), mimetype="application/json")
 
     except CosmosHttpResponseError as e:
         message = CosmosHttpResponseErrorMessage()
-        logging.error(message + " " + str(e))
-        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
+        logging.error(message + " " + str(e) + "!")
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json", status_code=500)
 
     except Exception as e:
         message = str(e)
         logging.error(message)
-        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json", status_code=500)
