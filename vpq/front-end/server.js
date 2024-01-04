@@ -257,7 +257,6 @@ function handleJoinRoom(socket, room) {
                     let players = response["players"];
 
                     players.push(room['adminUsername']);
-                    players.push(room['usernameToAdd']);
 
                     // For each player in the room, send them an increment state message
                     for (let player of players) {
