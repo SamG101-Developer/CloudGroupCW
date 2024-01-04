@@ -23,6 +23,7 @@ class MetaTest:
     playerContainer = database.get_container_client(os.environ['Container_Players'])
     questionContainer = database.get_container_client(os.environ['Container_Questions'])
     questionSetContainer = database.get_container_client(os.environ['Container_QuestionSets'])
+    roomContainer = database.get_container_client(os.environ['Container_Rooms'])
 
     PUBLIC_URL: str
     LOCAL_URL: str
@@ -47,4 +48,12 @@ class MetaTest:
         'overall_score': 0,
         'friends': [],
         'fave_quizzes': []
+    }
+
+    DEFAULT_ROOM_JSON = {
+        'room_admin': 'ethan',
+        'players_in_room': [1,2],
+        'question_set_id': '',
+        'adult_only': False,
+        'password': '',
     }
