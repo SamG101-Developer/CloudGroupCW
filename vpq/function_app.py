@@ -23,6 +23,7 @@ bp = func.Blueprint("test")
 error = "..."
 import pkgutil
 
+
 @bp.route("test", methods=["GET"])
 def test(req: func.HttpRequest) -> func.HttpResponse:
     return func.HttpResponse(
@@ -60,6 +61,7 @@ try:
     from functions.room.room_flag_password_set import function as room_flag_password_set
     from functions.room.room_player_add import function as room_player_add
     from functions.room.room_player_del import function as room_player_del
+    from functions.room.room_players_get import function as room_players_get
     from functions.room.room_question_group_set import function as room_question_group_set
     from functions.room.room_session_add import function as room_session_add
     from functions.room.room_session_del import function as room_session_del
@@ -88,6 +90,7 @@ try:
         room_flag_password_set,
         room_player_add,
         room_player_del,
+        room_players_get,
         room_question_group_set,
         room_session_add,
         room_session_del
@@ -97,8 +100,6 @@ try:
         app.register_blueprint(function)
 
 
-
 except Exception as e:
     import logging
-
     error = str(e)
