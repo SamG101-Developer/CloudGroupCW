@@ -88,6 +88,9 @@ var app = new Vue({
             socket.emit('del_favourite_quiz');
         },
         createRoom(questionSetID, adultOnly, password) {
+            if (!adultOnly) { adultOnly = false; }
+            if (!password) { password = ""; }
+
             socket.emit('create_room', {username: this.user.username, questionSetID: questionSetID, adultOnly: adultOnly, password: password});
             this.is_host = true;  // TODO: remember to set this to false when the game ends
             this.page = "game";
@@ -114,7 +117,7 @@ var app = new Vue({
         },
         incrementGameState(state) {
             // Advance the state of the game for all players.
-            socket.emit('increment_game_state', {adminUsername: this.room.adminUsername, game_state: state});
+            socket.emit('increment_game_state', {adminUsername: this.room.adminUsername, gameState: state});
         },
     }
 });

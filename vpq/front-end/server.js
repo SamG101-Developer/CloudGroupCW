@@ -200,15 +200,15 @@ function handleGetRoomList(socket) {
 function handleIncrementRoomState(socket, info) {
     console.log(`Incrementing the state of the room`);
 
-    const room_id = info["roomID"];
-    const game_state = info["game_state"];
+    const room_id = info["adminUsername"];
+    const game_state = info["gameState"];
 
     // Get all the players in the room
-    backendGET("/api/roomPlayersGet", {room_id: room_id}).then(
+    backendGET("/api/roomPlayersGet", {adminUsername: room_id}).then(
         function(response) {
             console.log("Success:");
             console.log(response);
-            let players = response["body"];
+            let players = response["players"];
 
             // For each player in the room, send them an increment state message
             for (let player of players) {
@@ -231,7 +231,7 @@ function handleCreateRoom(socket, info) {
         function(response) {
             console.log("Success:");
             console.log(response);
-            io.emit('room_list_add', {adminUsername: info['username'], adultOnly: info['adult_only']})
+            io.emit('room_list_add', {adminUsername: info['username'], adultOnly: info['adultOnly']})
         },
         function (error) {
             console.error("Error:");
@@ -254,7 +254,7 @@ function handleJoinRoom(socket, room) {
                 function(response) {
                     console.log("Success:");
                     console.log(response);
-                    let players = response["body"];
+                    let players = response["players"];
 
                     // For each player in the room, send them an increment state message
                     for (let player of players) {
@@ -446,6 +446,7 @@ io.on('connection', socket => {
 
     //Handle create room
     socket.on('create_room', (info) => {
+        console.log("Creating room with info " + Object.entries(info))
         handleCreateRoom(socket, info);
     });
 
