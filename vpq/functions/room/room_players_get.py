@@ -24,13 +24,18 @@ def roomPlayersGet(req: func.HttpRequest) -> func.HttpResponse:
         reqJson = req.get_json()
         logging.info('Python HTTP trigger function processed a request to get room info. JSON: {}'.format(reqJson))
 
-        # Get all rooms
-        query = f"SELECT p.players_list FROM p WHERE p.room_admin = {reqJson['adminUsername']}"
-        rooms = list(roomContainer.query_items(query=query, enable_cross_partition_query=True))
+        # Get all players
+        query = f"SELECT p.players_list FROM p WHERE p.room_admin = '{reqJson['adminUsername']}'"
+        players = list(roomContainer.query_items(query=query, enable_cross_partition_query=True))
+
+        formattedPlayers = []
+        if players and players[0]:
+            for player in players:
+                formattedPlayers.append(player['players_list'])
 
         # Return the response
         logging.info("Room players retrieved Successfully")
-        return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success", "players": rooms}), mimetype="application/json")
+        return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success", "players": formattedPlayers}), mimetype="application/json")
 
     except CosmosHttpResponseError as e:
         message = CosmosHttpResponseErrorMessage()

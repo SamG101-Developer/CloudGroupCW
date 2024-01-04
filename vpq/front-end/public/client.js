@@ -174,4 +174,9 @@ function connect() {
     socket.on("increment_game_state", function(state) {
         app.game_state = state;
     })
+
+    //Handle incoming room player list for the current room this client is in
+    socket.on('room_player_list', function(players) {
+        app.room.players = players;
+    });
 }
