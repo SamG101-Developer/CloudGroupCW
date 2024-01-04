@@ -3,15 +3,25 @@ import os
 import logging
 
 import azure.functions as func
+import requests
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
+import requests
 
 try:
-    from helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainUsernameError, DatabaseDoesNotContainQuestionError
+    from helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainUsernameError, \
+        DatabaseDoesNotContainQuestionError
     from helper.question_set import QuestionSet, QuestionSetQuestionsFormatError
+    from functions.question.question_add import questionAdd
+    key = os.environ["FunctionAppKey"]
+    URL = "https://vpq.azurewebsites.net/api/questionAdd?code={}".format(key)
 except ModuleNotFoundError:
-    from vpq.helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainUsernameError, DatabaseDoesNotContainQuestionError
+    from vpq.helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainUsernameError, \
+        DatabaseDoesNotContainQuestionError
     from vpq.helper.question_set import QuestionSet, QuestionSetQuestionsFormatError
+    from vpq.functions.question.question_add import questionAdd
+    key = os.environ["FunctionAppKey"]
+    URL = "http://localhost:7071/api/questionAdd?code={}".format(key)
 
 function = func.Blueprint()
 
@@ -21,7 +31,8 @@ def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
     try:
         cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
         database = cosmos.get_database_client(os.environ['DatabaseName'])
-        questionSetContainer = database.get_container_client(os.environ['Container_Questions'])
+        questionSetContainer = database.get_container_client(os.environ['Container_QuestionSets'])
+        questionContainer = database.get_container_client(os.environ['Container_Questions'])
         playerContainer = database.get_container_client(os.environ['Container_Players'])
 
         reqJson = req.get_json()
@@ -37,13 +48,63 @@ def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
         if len(authors) == 0:
             raise DatabaseDoesNotContainUsernameError
 
-        # Check each question exists
-        for question in reqJson['questions']:
-            question_query = "SELECT q.id FROM q where q.id='{}'".format(question['id'])
-            questions = list(questionSetContainer.query_items(query=question_query, enable_cross_partition_query=True))
-            if len(questions) == 0:
-                raise DatabaseDoesNotContainQuestionError
+        # new
+        newQuestions = []
+        questionSetList = reqJson["questions"]
+        questionSetToAdd = []
+        roundCount = 0
+        for quizRound in questionSetList:
+            questionSetToAdd.append([])
+            for question in quizRound:
+                query = ("SELECT * FROM c WHERE c.question='{0}' AND c.question_type='{1}' AND c.answers={2}"
+                         " AND c.correct_answer='{3}'").format(question['question'], question['question_type'],
+                                                               question['answers'], question['correct_answer'])
 
+                dbQuestion = list(questionContainer.query_items(query=query, enable_cross_partition_query=True))
+                if len(dbQuestion) == 0:
+                    response = requests.post(URL, data=json.dumps(question))
+                    newQuestions.append([question, None])
+                    questionSetToAdd[roundCount].append(question['question'])
+                else:
+                    questionSetToAdd[roundCount].append(dbQuestion[0]['id'])
+            roundCount += 1
+
+        # Set the IDs of all the newly added questions
+        for i in range(len(newQuestions)):
+            question = newQuestions[i][0]
+            query = ("SELECT * FROM c WHERE c.question='{0}' AND c.question_type='{1}' AND c.answers={2}"
+                     " AND c.correct_answer='{3}'").format(question['question'], question['question_type'],
+                                                           question['answers'], question['correct_answer'])
+            dbQuestion = list(
+                questionContainer.query_items(query=query, enable_cross_partition_query=True))
+            newQuestions[i][1] = dbQuestion[0]['id']
+
+        logging.error(newQuestions)
+        # Replace the questions with their IDs
+        logging.error(questionSetToAdd)
+        # for quizRound in questionSetToAdd:
+        #     for question in quizRound:
+        #         for questionIDPair in newQuestions:
+        #             if questionIDPair[0]['question'] == question:
+        #                 question = questionIDPair[1]
+        for quizRoundIndex, quizRound in enumerate(questionSetToAdd):
+            for questionIndex, question in enumerate(quizRound):
+                for questionIDPair in newQuestions:
+                    if questionIDPair[0]['question'] == question:
+                        # Update the question in quizRound directly using indices
+                        questionSetToAdd[quizRoundIndex][questionIndex] = questionIDPair[1]
+
+        logging.error(questionSetToAdd)
+
+        # old
+        # Check each question exists
+        # for question in reqJson['questions']:
+        #     question_query = "SELECT q.id FROM q where q.id='{}'".format(question['id'])
+        #     questions = list(questionSetContainer.query_items(query=question_query, enable_cross_partition_query=True))
+        #     if len(questions) == 0:
+        #         raise DatabaseDoesNotContainQuestionError
+
+        reqJson['questions'] = questionSetToAdd
         # Add the question to the database
         questionSetContainer.create_item(body=reqJson, enable_automatic_id_generation=True)
         logging.info("Question Set Added Successfully")
