@@ -16,7 +16,7 @@ var app = new Vue({
         connected: false,
         messages: [],
         questionSearchUsernameField: "",
-        // loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
+
         user: { username: null, password: null, state: null },
 
         room: {
@@ -49,13 +49,16 @@ var app = new Vue({
         searchDatabaseForQuestions(){
             socket.emit('get_player_questions', { username: this.questionSearchUsernameField });
         },
+
         setQueriedQuestions(questionsRetrieved){
             this.queriedQuestions = questionsRetrieved;
         },
+
         // This function is here so that a vue variable can be passed to an external file
         handleAddSearchedQuestion(question){
           window.addFromSearch(question);
         },
+
         // TODO: Add correct data to each of the socket.emit() functions
         handleChat(message) {
             if(this.messages.length + 1 > 10) {
@@ -63,6 +66,7 @@ var app = new Vue({
             }
             this.messages.unshift(message);
         },
+
         chat() {
             socket.emit('chat',this.message);
             this.chatmessage = '';
@@ -72,11 +76,7 @@ var app = new Vue({
         },
         login(username, password) {
             socket.emit('login', {"username": username, "password": password});
-            this.user.username = username;
-            this.user.password = password;
-
-            // TODO: check username & password are correct
-            this.setPage("join");
+            this.showLoading();
         },
         roomList() {
             socket.emit('get_room_list');
@@ -99,14 +99,13 @@ var app = new Vue({
         createRoom(questionSetID, adultOnly, password) {
             if (!adultOnly) { adultOnly = false; }
             if (!password) { password = ""; }
-
             socket.emit('create_room', {username: this.user.username, questionSetID: questionSetID, adultOnly: adultOnly, password: password});
-            this.is_host = true;  // TODO: remember to set this to false when the game ends
-            this.page = "game";
+            this.showLoading();
         },
         joinRoom(room) {
             this.page = "game"
             socket.emit('join_room', {adminUsername: room.adminUsername, usernameToAdd: this.user.username});
+            this.showLoading();
         },
         leaveRoom() {
             socket.emit('leave_room');
@@ -128,6 +127,13 @@ var app = new Vue({
             // Advance the state of the game for all players.
             socket.emit('increment_game_state', {adminUsername: this.room.adminUsername, gameState: state});
         },
+
+        showLoading() {
+            document.getElementById("loading").style.display = "block";
+        },
+        hideLoading() {
+            document.getElementById("loading").style.display = "none";
+        }
     }
 });
 
@@ -142,6 +148,12 @@ function connect() {
         window.app = app;
         app.roomList();
     });
+    socket.on('confirm_login', function(info) {
+        app.hideLoading();
+        app.user.username = info["username"];
+        app.user.password = info["password"];
+        app.setPage("join");
+    })
 
     //Handle connection error
     socket.on('connect_error', function(message) {
@@ -180,12 +192,34 @@ function connect() {
     });
 
     //Handle incrementing game state
-    socket.on("increment_game_state", function(state) {
-        app.game_state = state;
+    socket.on("increment_game_state", function(state, info) {
+        app.room.state = state;
+
+        if (app.room.state === "round_splash_screen") {
+            app.room.currentRound = info["round"]
+            app.room.currentQuestion = -1
+        }
+
+        if (app.room.state === "question") {
+            app.room.currentQuestion += 1
+        }
     })
 
     //Handle incoming room player list for the current room this client is in
     socket.on('room_player_list', function(players) {
+        app.hideLoading();
         app.room.players = players;
     });
+
+    //Handle (as admin) a room open request being granted
+    socket.on('confirm_admin_room_create', function() {
+        app.hideLoading();
+        app.room.is_host = true;
+        app.page = "game";
+    })
+
+    //Handle an error
+    socket.on('error', function(error) {
+        alert(error);
+    })
 }
