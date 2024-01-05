@@ -7,12 +7,9 @@ from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
 
 try:
-    from helper.exceptions import CosmosHttpResponseErrorMessage
-    from helper.room import Room, RoomDoesNotExist
-
+    from helper.exceptions import CosmosHttpResponseErrorMessage, RoomDoesNotExist
 except ModuleNotFoundError:
-    from vpq.helper.exceptions import CosmosHttpResponseErrorMessage
-    from vpq.helper.room import Room, RoomDoesNotExist
+    from vpq.helper.exceptions import CosmosHttpResponseErrorMessage, RoomDoesNotExist
 
 function = func.Blueprint()
 
@@ -24,20 +21,20 @@ def roomSessionDel(req: func.HttpRequest) -> func.HttpResponse:
         roomContainer = database.get_container_client(os.environ['Container_Rooms'])
 
         reqJson = req.get_json()
-        roomID = reqJson["roomID"]
+        adminUsername = reqJson["adminUsername"]
+        logging.info(f"Python HTTP trigger function processed a request to delete a room: Admin Username: {adminUsername}.")
 
-        logging.info(f"Python HTTP trigger function processed a request to delete a room: Room ID: {roomID}.")
-
-
-        query = "SELECT * FROM r where r.id='{}'".format(roomID)
-        roomExists = len(list(roomContainer.query_items(query=query, enable_cross_partition_query=True)))
-        if (roomExists == 0):
+        # Query to find the room by admin username
+        query = "SELECT r.id FROM r WHERE r.room_admin='{}'".format(adminUsername)
+        rooms = list(roomContainer.query_items(query=query, enable_cross_partition_query=True))
+        if len(rooms) == 0:
             raise RoomDoesNotExist
 
-
+        # Retrieve room ID and delete the room
+        roomID = rooms[0]['id']
         roomContainer.delete_item(item=roomID, partition_key=roomID)
-        logging.info("Room Deleted Successfully")
-        return func.HttpResponse(body=json.dumps({'result': True, 'msg': 'Room deleted successfully'}), mimetype="application/json")
+        logging.info(f"Room with ID {roomID} deleted successfully.")
+        return func.HttpResponse(body=json.dumps({'result': True, 'msg': f'Room with ID {roomID} deleted successfully'}), mimetype="application/json")
 
     except RoomDoesNotExist:
         message = RoomDoesNotExist.getMessage()
@@ -48,4 +45,3 @@ def roomSessionDel(req: func.HttpRequest) -> func.HttpResponse:
         message = CosmosHttpResponseErrorMessage()
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
-
