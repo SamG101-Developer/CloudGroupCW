@@ -355,3 +355,22 @@ The height of the container is 100vh - .navSize height
     top: 45%;
     left: 45%;
 }
+
+/* Answer boxes (multi choice) */
+
+.grid {
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 5vh;
+}
+
+.answer-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3vh;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}

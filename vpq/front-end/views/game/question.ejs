@@ -1,9 +1,12 @@
 <div>
     <h1>Question {{ room.currentQuestion }}</h1>
-    <h2>{{ room.questions[room.currentRound][room.currentQuestion] }}</h2>
+    <h2>{{ room.questions[room.currentRound][room.currentQuestion]["question"] }}</h2>
 
-    <div v-if="room.questions[room.currentRound][room.currentQuestion].question_type == 'MultipleChoice'">
-        <h3>Multiple choice</h3>
+    <div v-if="room.questions[room.currentRound][room.currentQuestion]['question_type'] == 'Multiple Choice'" class="grid">
+        <button class="answer-box" style="background-color: gold"       >{{ room.questions[room.currentRound][room.currentQuestion]['answers'][0] }}</button>
+        <button class="answer-box" style="background-color: orangered"  >{{ room.questions[room.currentRound][room.currentQuestion]['answers'][1] }}</button>
+        <button class="answer-box" style="background-color: deeppink"   >{{ room.questions[room.currentRound][room.currentQuestion]['answers'][2] }}</button>
+        <button class="answer-box" style="background-color: deepskyblue">{{ room.questions[room.currentRound][room.currentQuestion]['answers'][3] }}</button>
     </div>
 
     <h1 id="timer">10</h1>
