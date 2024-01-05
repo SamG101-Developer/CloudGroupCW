@@ -47,6 +47,7 @@ try:
     from functions.player.player_info_set import function as player_info_set
     from functions.player.player_question_groups_get import function as player_question_groups_get
     from functions.player.player_login import function as player_login
+    from functions.player.player_get_all import function as player_get_all
     from functions.question.question_add import function as question_add
     from functions.question.question_del import function as question_del
     from functions.question.question_get import function as question_get
@@ -74,6 +75,7 @@ try:
         player_info_set,
         player_question_groups_get,
         player_login,
+        player_get_all,
         question_add,
         question_del,
         question_get,
