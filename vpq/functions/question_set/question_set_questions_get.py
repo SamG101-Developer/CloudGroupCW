@@ -32,7 +32,7 @@ def questionSetQuestionsGet(req: func.HttpRequest) -> func.HttpResponse:
         rounds_of_questions = []
         for round_of_questions in info["questions"]:
             # Use the ARRAY_CONTAINS to get all the questions from this round
-            query = f"SELECT * FROM p WHERE ARRAY_CONTAINS({round_of_questions}, p.id)"
+            query = f"SELECT p.question, p.answers, p.correct_answer, p.question_type FROM p WHERE ARRAY_CONTAINS({round_of_questions}, p.id)"
             questions = list(questionsContainer.query_items(query=query, enable_cross_partition_query=True))
             rounds_of_questions.append(questions)
 
