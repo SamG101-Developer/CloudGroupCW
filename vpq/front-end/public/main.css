@@ -347,3 +347,11 @@ The height of the container is 100vh - .navSize height
     left: 240px;
     z-index: 100;
 }
+
+#timer {
+    position: fixed;
+    width: 10%;
+    height: 10%;
+    top: 45%;
+    left: 45%;
+}
