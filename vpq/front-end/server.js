@@ -273,6 +273,8 @@ function handleJoinRoom(socket, room) {
 
                     if (response["result"]) {
                         let room_questions;
+                        let players = response["players"];
+                        players.push(room['adminUsername']);
 
                         // Get the questions belonging to the question set for this room.
                         backendGET("/api/questionSetQuestionsGet", {question_set_id: response['question_set_id']}).then(
@@ -280,6 +282,13 @@ function handleJoinRoom(socket, room) {
                                 console.log("Success:");
                                 console.log(response);
                                 room_questions = response["questions"];
+
+                                // For each player in the room, send them an increment state message
+                                for (let player of players) {
+                                    const player_socket = all_players_sockets[player];
+                                    player_socket.emit('confirm_join_room', room_questions);
+                                    player_socket.emit('room_player_list', players);
+                                }
                             },
                             function (error) {
                                 console.error("Error:");
@@ -287,15 +296,6 @@ function handleJoinRoom(socket, room) {
                             }
                         );
 
-                        let players = response["players"];
-                        players.push(room['adminUsername']);
-
-                        // For each player in the room, send them an increment state message
-                        for (let player of players) {
-                            const player_socket = all_players_sockets[player];
-                            player_socket.emit('confirm_join_room', room_questions);
-                            player_socket.emit('room_player_list', players);
-                        }
                     }
                     else {
                         socket.emit("error", response["msg"]);
