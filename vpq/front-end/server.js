@@ -211,7 +211,7 @@ function handleIncrementGameState(socket, info) {
     const gameState = info["gameState"];
 
     // Get all the players in the room
-    backendGET("/api/roomPlayersGet", {adminUsername: adminUsername}).then(
+    backendGET("/api/roomInfoGet", {adminUsername: adminUsername}).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -259,24 +259,41 @@ function handleJoinRoom(socket, room) {
     console.log(`Joining a room`);
     console.log(room)
 
+    // Send a POST request to the room to add a player to it.
     backendPOST("/api/roomPlayerAdd", room).then(
         function(response) {
             console.log("Success:");
             console.log(response);
 
-            backendGET("/api/roomPlayersGet", {adminUsername: room['adminUsername']}).then(
+            // Get all the players in the room
+            backendGET("/api/roomInfoGet", {adminUsername: room['adminUsername']}).then(
                 function(response) {
                     console.log("Success:");
                     console.log(response);
 
                     if (response["result"]) {
-                        let players = response["players"];
+                        let room_questions;
 
+                        // Get the questions belonging to the question set for this room.
+                        backendGET("/api/questionSetQuestionsGet", {question_set_id: response['question_set_id']}).then(
+                            function(response) {
+                                console.log("Success:");
+                                console.log(response);
+                                room_questions = response["questions"];
+                            },
+                            function (error) {
+                                console.error("Error:");
+                                console.error(error);
+                            }
+                        );
+
+                        let players = response["players"];
                         players.push(room['adminUsername']);
 
                         // For each player in the room, send them an increment state message
                         for (let player of players) {
                             const player_socket = all_players_sockets[player];
+                            player_socket.emit('confirm_join_room', room_questions);
                             player_socket.emit('room_player_list', players);
                         }
                     }
