@@ -204,7 +204,7 @@ function handleGetRoomList(socket) {
 }
 
 //Increment Room State
-function handleIncrementRoomState(socket, info) {
+function handleIncrementGameState(socket, info) {
     console.log(`Incrementing the state of the room`);
 
     const room_id = info["adminUsername"];
@@ -512,8 +512,8 @@ io.on('connection', socket => {
     });
 
     //Handle telling all the players in a lobby/game to increment their gae state
-    socket.on('increment_room_state', (info) => {
-        handleIncrementRoomState(socket, info);
+    socket.on('increment_game_state', (info) => {
+        handleIncrementGameState(socket, info);
     });
 });
 

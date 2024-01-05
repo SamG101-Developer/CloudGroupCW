@@ -125,7 +125,8 @@ var app = new Vue({
         },
         incrementGameState(state) {
             // Advance the state of the game for all players.
-            socket.emit('increment_game_state', {adminUsername: this.room.adminUsername, gameState: state});
+            socket.emit('increment_game_state', {adminUsername: this.user.username, gameState: state});
+            this.showLoading();
         },
 
         showLoading() {
@@ -193,10 +194,11 @@ function connect() {
 
     //Handle incrementing game state
     socket.on("increment_game_state", function(state, info) {
+        app.hideLoading();
         app.room.state = state;
 
-        if (app.room.state === "round_splash_screen") {
-            app.room.currentRound = info["round"]
+        if (app.room.state === "round_splash") {
+            app.room.currentRound = "?"  // TODO : get info from json when available
             app.room.currentQuestion = -1
         }
 
@@ -221,5 +223,6 @@ function connect() {
     //Handle an error
     socket.on('error', function(error) {
         alert(error);
+        app.hideLoading();
     })
 }
