@@ -173,7 +173,7 @@ The height of the container is 100vh - .navSize height
     gap: 1vh;
 }
 
-.multipleChoiceOptionsContainer .checkbox-row{
+.multipleChoiceOptionsContainer .checkbox-row {
     display: flex;
     flex-direction: row;
     gap: 0.5vh;
@@ -358,19 +358,27 @@ The height of the container is 100vh - .navSize height
 
 /* Answer boxes (multi choice) */
 
-.grid {
-    height: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 5vh;
-}
-
-.answer-box {
+.grid-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.grid {
+    margin-top: 10vh;
+    height: 50vh;
+    width: 50vh;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 1vh;
+}
+
+.answer-box {
     border-radius: 3vh;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    width: 10vw;
+    height: 10vw;
+    border: none;
 }

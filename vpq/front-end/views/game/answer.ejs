@@ -1,5 +1,8 @@
 <div>
     <div v-if="!room.is_host">
         <h1>The correct answer is...</h1>
+        <div class="answer-box" style="background-color: #47ff6d">
+            {{ room.questions[room.currentRound][room.currentQuestion]['correct_answer'] }}
+        </div>
     </div>
 </div>
