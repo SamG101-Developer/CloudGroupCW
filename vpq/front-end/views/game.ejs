@@ -2,7 +2,7 @@
     <div v-if="room.state == 'lobby'">
         <%- include('game/lobby'); -%>
         <div v-if="room.is_host">
-            <button @click="incrementGameState('round_splash')">Start Game</button>
+            <button @click="startGame()">Start Game</button>
         </div>
     </div>
     <div v-else-if="room.state == 'round_splash'">
@@ -12,12 +12,7 @@
         <%- include('game/question'); -%>
     </div>
     <div v-else-if="room.state == 'answer'">
-        <div v-if="room.is_host">
-            <%- include('game/answer_countdown'); -%>
-        </div>
-        <div v-else>
-            <%- include('game/answer'); -%>
-        </div>
+        <%- include('game/answer'); -%>
     </div>
     <div v-else-if="room.state == 'round_score'">
         <%- include('game/round_score'); -%>
