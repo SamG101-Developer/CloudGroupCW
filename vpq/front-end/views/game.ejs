@@ -1,31 +1,31 @@
 <div>
-    <div v-if="game_state == 'lobby'">
+    <div v-if="room.state == 'lobby'">
         <%- include('game/lobby'); -%>
-        <div v-if="is_host">
-            <button @click="incrementGameState()">Start Game</button>
+        <div v-if="room.is_host">
+            <button @click="incrementGameState('round_splash')">Start Game</button>
         </div>
     </div>
-    <div v-else-if="game_state == 'round_splash'">
+    <div v-else-if="room.state == 'round_splash'">
         <%- include('game/round_splash'); -%>
     </div>
-    <div v-else-if="game_state == 'question'">
+    <div v-else-if="room.state == 'question'">
         <%- include('game/question'); -%>
     </div>
-    <div v-else-if="game_state == 'answer'">
-        <div v-if="is_host">
+    <div v-else-if="room.state == 'answer'">
+        <div v-if="room.is_host">
             <%- include('game/answer_countdown'); -%>
         </div>
         <div v-else>
             <%- include('game/answer'); -%>
         </div>
     </div>
-    <div v-else-if="game_state == 'round_score'">
+    <div v-else-if="room.state == 'round_score'">
         <%- include('game/round_score'); -%>
     </div>
-    <div v-else-if="game_state == 'final_score'">
+    <div v-else-if="room.state == 'final_score'">
         <%- include('game/final_score'); -%>
     </div>
     <div v-else>
-        <h1>Error!</h1>
+        <h1>{{ room.state }}</h1>
     </div>
 </div>

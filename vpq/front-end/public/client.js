@@ -18,12 +18,21 @@ var app = new Vue({
         questionSearchUsernameField: "",
         // loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
         user: { username: null, password: null, state: null },
-        // These variables are for during a quiz
-        room: { id: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null},
+
+        room: {
+            id: null,
+            adminUsername: null,
+            players: [],
+            questions: [],
+            isAdultOnly: null,
+            state: "lobby",
+            currentRound: null,
+            currentQuestion: -1,
+            is_host: false
+        },
+
         rooms: [],
         page: "home",
-        game_state: "lobby",
-        is_host: false,
     },
     mounted: function() {
         connect();
