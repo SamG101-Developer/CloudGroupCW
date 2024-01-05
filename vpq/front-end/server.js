@@ -38,7 +38,7 @@ function startServer() {
 //Chat message
 function handleChat(message) {
     console.log('Handling chat: ' + message);
-    io.emit('chat',message);
+    io.emit('chat', message);
 }
 
 //User Deletion
@@ -60,12 +60,19 @@ function handleDeleteUser(delUserJSON) {
 //Player Login
 function handleLogin(socket, loginJSON){
     console.log(`Logging in with username '${loginJSON.username}' and password '${loginJSON.password}'`);
-    all_players_sockets[loginJSON.username] = socket;
 
     backendGET("/api/playerLogin", loginJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
+
+            if (response["result"]) {
+                all_players_sockets[loginJSON.username] = socket;
+                socket.emit("confirm_login", loginJSON)
+            }
+            else {
+                socket.emit("error", response["msg"])
+            }
         },
         function (error) {
             console.error("Error:");
@@ -231,7 +238,13 @@ function handleCreateRoom(socket, info) {
         function(response) {
             console.log("Success:");
             console.log(response);
-            io.emit('room_list_add', {adminUsername: info['username'], adultOnly: info['adultOnly']})
+            if (response["result"]) {
+                io.emit('room_list_add', {adminUsername: info['username'], adultOnly: info['adultOnly']})
+                socket.emit('confirm_admin_room_create')
+            }
+            else {
+                socket.emit('error', response["msg"])
+            }
         },
         function (error) {
             console.error("Error:");
@@ -254,14 +267,20 @@ function handleJoinRoom(socket, room) {
                 function(response) {
                     console.log("Success:");
                     console.log(response);
-                    let players = response["players"];
 
-                    players.push(room['adminUsername']);
+                    if (response["result"]) {
+                        let players = response["players"];
 
-                    // For each player in the room, send them an increment state message
-                    for (let player of players) {
-                        const player_socket = all_players_sockets[player];
-                        player_socket.emit('room_player_list', players);
+                        players.push(room['adminUsername']);
+
+                        // For each player in the room, send them an increment state message
+                        for (let player of players) {
+                            const player_socket = all_players_sockets[player];
+                            player_socket.emit('room_player_list', players);
+                        }
+                    }
+                    else {
+                        socket.emit("error", response["msg"]);
                     }
                 },
 
