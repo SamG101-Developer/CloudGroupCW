@@ -207,20 +207,21 @@ function handleGetRoomList(socket) {
 function handleIncrementGameState(socket, info) {
     console.log(`Incrementing the state of the room`);
 
-    const room_id = info["adminUsername"];
-    const game_state = info["gameState"];
+    const adminUsername = info["adminUsername"];
+    const gameState = info["gameState"];
 
     // Get all the players in the room
-    backendGET("/api/roomPlayersGet", {adminUsername: room_id}).then(
+    backendGET("/api/roomPlayersGet", {adminUsername: adminUsername}).then(
         function(response) {
             console.log("Success:");
             console.log(response);
             let players = response["players"];
 
             // For each player in the room, send them an increment state message
+            all_players_sockets[adminUsername].emit("increment_game_state", gameState);
             for (let player of players) {
                 const player_socket = all_players_sockets[player];
-                player_socket.emit('increment_game_state', game_state);
+                player_socket.emit('increment_game_state', gameState);
             }
         },
         function (error) {
