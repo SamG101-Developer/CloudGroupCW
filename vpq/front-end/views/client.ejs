@@ -1,5 +1,8 @@
 <%- include('meta_header.ejs'); -%>
 <div id="game">
+    <div id="loading" style="display: none">
+        <img id="loading-image" src="static/assets/loading.gif" alt="Loading"/>
+    </div>
     <div v-if="page == 'home'">
         <%- include('navbar'); -%>
         <%- include('home'); -%>
