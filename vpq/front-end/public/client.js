@@ -134,40 +134,33 @@ var app = new Vue({
         },
 
         flowGameRound() {
-            setTimeout(() => socket.emit('increment_game_state', {
-                adminUsername: this.user.username,
-                gameState: "question"
-            }), 5000);
-            setTimeout(() => socket.emit('increment_game_state', {
-                adminUsername: this.user.username,
-                gameState: "answer"
-            }), 10000);
-
-            if (this.room.currentQuestion < this.room.questions[this.room.currentRound].length) {
-                setTimeout(() => socket.emit('increment_game_state', {
+            setTimeout(() => {
+                socket.emit('increment_game_state', {
                     adminUsername: this.user.username,
                     gameState: "question"
-                }), 5000);
-            }
+                })
 
-            else {
-                if (this.room.currentRound < this.room.questions.length) {
-                    setTimeout(() => socket.emit('increment_game_state', {
+                setTimeout(() => {
+                    socket.emit('increment_game_state', {
                         adminUsername: this.user.username,
-                        gameState: "round_score"
-                    }), 5000);
-                } else {
-                    setTimeout(() => socket.emit('increment_game_state', {
-                        adminUsername: this.user.username,
-                        gameState: "final_score"
-                    }), 5000);
-                }
-            }
+                        gameState: "answer"
+                    })
 
-            setTimeout(() => socket.emit('increment_game_state', {
-                adminUsername: this.user.username,
-                gameState: "round_splash"
-            }), 5000);
+                    setTimeout(() => {
+                        socket.emit('increment_game_state', {
+                            adminUsername: this.user.username,
+                            gameState: this.room.currentQuestion + 1 < this.room.questions[this.room.currentRound].length ? "question" : this.room.currentRound + 1 < this.room.questions.length ? "round_score" : "final_score"
+                        })
+
+                        if (this.room.state !== "final_score") {
+                            setTimeout(() => socket.emit('increment_game_state', {
+                                adminUsername: this.user.username,
+                                gameState: "round_splash"
+                            }), 5000);
+                        }
+                    }, 5000);
+                }, 10000);
+            }, 5000);
         },
 
         showLoading() {
@@ -269,7 +262,6 @@ function connect() {
 
     //Handle an error
     socket.on('error', function(error) {
-        alert(error);
         app.hideLoading();
     })
 }
