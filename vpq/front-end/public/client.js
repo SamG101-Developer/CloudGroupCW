@@ -23,10 +23,10 @@ var app = new Vue({
             id: null,
             adminUsername: null,
             players: [],
-            questions: [],
+            questions: [],  // [[..], [..]]
             isAdultOnly: null,
             state: "lobby",
-            currentRound: null,
+            currentRound: -1,
             currentQuestion: -1,
             is_host: false
         },
@@ -41,6 +41,10 @@ var app = new Vue({
         setPage(page) {
             if (["create", "host", "join"].includes(page) && !this.user.username) {
                 alert("You must be logged in to do that.");
+                return;
+            }
+            if (["login"].includes(page) && this.user.username) {
+                alert("You are already logged in. Log out first.");
                 return;
             }
             this.page = page;
@@ -123,10 +127,47 @@ var app = new Vue({
         updateQuiz() {
             socket.emit('update_quiz')
         },
-        incrementGameState(state) {
-            // Advance the state of the game for all players.
-            socket.emit('increment_game_state', {adminUsername: this.user.username, gameState: state});
+        startGame() {
+            // First thing is to move to the first round
+            socket.emit('increment_game_state', {adminUsername: this.user.username, gameState: "round_splash"});
             this.showLoading();
+        },
+
+        flowGameRound() {
+            setTimeout(() => socket.emit('increment_game_state', {
+                adminUsername: this.user.username,
+                gameState: "question"
+            }), 5000);
+            setTimeout(() => socket.emit('increment_game_state', {
+                adminUsername: this.user.username,
+                gameState: "answer"
+            }), 10000);
+
+            if (this.room.currentQuestion < this.room.questions[this.room.currentRound].length) {
+                setTimeout(() => socket.emit('increment_game_state', {
+                    adminUsername: this.user.username,
+                    gameState: "question"
+                }), 5000);
+            }
+
+            else {
+                if (this.room.currentRound < this.room.questions.length) {
+                    setTimeout(() => socket.emit('increment_game_state', {
+                        adminUsername: this.user.username,
+                        gameState: "round_score"
+                    }), 5000);
+                } else {
+                    setTimeout(() => socket.emit('increment_game_state', {
+                        adminUsername: this.user.username,
+                        gameState: "final_score"
+                    }), 5000);
+                }
+            }
+
+            setTimeout(() => socket.emit('increment_game_state', {
+                adminUsername: this.user.username,
+                gameState: "round_splash"
+            }), 5000);
         },
 
         showLoading() {
@@ -193,13 +234,16 @@ function connect() {
     });
 
     //Handle incrementing game state
-    socket.on("increment_game_state", function(state, info) {
+    socket.on("increment_game_state", function(state) {
         app.hideLoading();
         app.room.state = state;
 
         if (app.room.state === "round_splash") {
-            app.room.currentRound = "?"  // TODO : get info from json when available
-            app.room.currentQuestion = -1
+            app.room.currentRound += 1;  // todo : name of round instead
+            app.room.currentQuestion = -1;
+            if (app.room.is_host) {
+                app.flowGameRound();
+            }
         }
 
         if (app.room.state === "question") {
@@ -209,9 +253,12 @@ function connect() {
 
     //Handle incoming room player list for the current room this client is in
     socket.on('room_player_list', function(players) {
-        app.hideLoading();
         app.room.players = players;
     });
+    socket.on("confirm_join_room", function(questions) {
+        app.hideLoading();
+        app.room.questions = questions;
+    })
 
     //Handle (as admin) a room open request being granted
     socket.on('confirm_admin_room_create', function() {
