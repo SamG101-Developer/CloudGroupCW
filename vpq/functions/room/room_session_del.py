@@ -19,6 +19,7 @@ function = func.Blueprint()
 @function.route(route="roomSessionDel", auth_level=func.AuthLevel.ANONYMOUS, methods=["DELETE"])
 def roomSessionDel(req: func.HttpRequest) -> func.HttpResponse:
     try:
+        logging.info("DELETE REQUEST SENT WITH {}".format(req.get_json()))
         cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
         database = cosmos.get_database_client(os.environ['DatabaseName'])
         roomContainer = database.get_container_client(os.environ['Container_Rooms'])
@@ -38,7 +39,7 @@ def roomSessionDel(req: func.HttpRequest) -> func.HttpResponse:
         roomID = rooms[0]['id']
         roomContainer.delete_item(item=roomID, partition_key=roomID)
         logging.info(f"Room with ID {roomID} deleted successfully.")
-        return func.HttpResponse(body=json.dumps({'result': True, 'msg': f'Room with ID {roomID} deleted successfully'}), mimetype="application/json")
+        return func.HttpResponse(body=json.dumps({'result': True, 'msg': 'Room with ID {roomID} deleted successfully'.format(roomID)}), mimetype="application/json")
 
     except RoomDoesNotExist:
         message = RoomDoesNotExist.getMessage()

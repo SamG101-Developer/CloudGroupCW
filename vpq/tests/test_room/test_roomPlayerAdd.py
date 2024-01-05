@@ -10,7 +10,7 @@ class TestRoomPlayerAdd(unittest.TestCase, MetaTest):
     LOCAL_URL_ROOM_ADD = "http://localhost:7071/api/roomSessionAdd?code={}".format(MetaTest.key)
     TEST_URL_ROOM_ADD = LOCAL_URL_ROOM_ADD
     TEST_URL_PLAYER_ADD = "http://localhost:7071/api/playerAdd?code={}".format(MetaTest.key)
-    TEST_URL_ROOM_DELETE = "http://localhost:7071/api/roomSessionDelete?code={}".format(MetaTest.key)
+    TEST_URL_ROOM_DELETE = "http://localhost:7071/api/roomSessionDel?code={}".format(MetaTest.key)
     TEST_URL_ROOM_PLAYER_ADD = "http://localhost:7071/api/roomPlayerAdd?code={}".format(MetaTest.key)
     Test_URL_PLAYER_DELETE = "http://localhost:7071/api/playerDelete?code={}".format(MetaTest.key)
 
