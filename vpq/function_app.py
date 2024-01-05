@@ -52,6 +52,7 @@ try:
     from functions.question.question_del import function as question_del
     from functions.question.question_get import function as question_get
     from functions.question.question_set import function as question_set
+    from functions.question_set.question_set_questions_get import function as question_set_questions_get
     from functions.question_set.question_set_add import function as question_set_add
     from functions.question_set.question_set_del import function as question_set_del
     from functions.question_set.question_set_set import function as question_set_set
@@ -61,7 +62,7 @@ try:
     from functions.room.room_flag_password_set import function as room_flag_password_set
     from functions.room.room_player_add import function as room_player_add
     from functions.room.room_player_del import function as room_player_del
-    from functions.room.room_players_get import function as room_players_get
+    from functions.room.room_info_get import function as room_info_get
     from functions.room.room_question_group_set import function as room_question_group_set
     from functions.room.room_session_add import function as room_session_add
     from functions.room.room_session_del import function as room_session_del
@@ -81,6 +82,7 @@ try:
         question_del,
         question_get,
         question_set,
+        question_set_questions_get,
         question_set_add,
         question_set_del,
         question_set_set,
@@ -90,7 +92,7 @@ try:
         room_flag_password_set,
         room_player_add,
         room_player_del,
-        room_players_get,
+        room_info_get,
         room_question_group_set,
         room_session_add,
         room_session_del

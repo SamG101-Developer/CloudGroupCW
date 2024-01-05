@@ -1,9 +1,8 @@
+import json, logging, os
+
 import azure.functions as func
 from azure.cosmos import CosmosClient
 from azure.cosmos.exceptions import CosmosHttpResponseError
-
-import json, logging, os
-
 
 try:
     from helper.exceptions import CosmosHttpResponseErrorMessage
@@ -13,8 +12,8 @@ except ModuleNotFoundError:
 function = func.Blueprint()
 
 
-@function.route(route="roomPlayersGet", auth_level=func.AuthLevel.FUNCTION, methods=["GET"])
-def roomPlayersGet(req: func.HttpRequest) -> func.HttpResponse:
+@function.route(route="roomInfoGet", auth_level=func.AuthLevel.FUNCTION, methods=["GET"])
+def roomInfoGet(req: func.HttpRequest) -> func.HttpResponse:
     try:
         cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
         database = cosmos.get_database_client(os.environ['DatabaseName'])
@@ -25,16 +24,16 @@ def roomPlayersGet(req: func.HttpRequest) -> func.HttpResponse:
         logging.info('Python HTTP trigger function processed a request to get room info. JSON: {}'.format(reqJson))
 
         # Get all players
-        query = f"SELECT p.players_in_room FROM p WHERE p.room_admin = '{reqJson['adminUsername']}'"
-        logging.error("query: " + query)
-        players = list(roomContainer.query_items(query=query, enable_cross_partition_query=True))[0]
-        logging.error("players: " + str(players))
+        query = f"SELECT p.players_in_room, p.question_set_id FROM p WHERE p.room_admin = '{reqJson['adminUsername']}'"
+        logging.error(query)
+        info = list(roomContainer.query_items(query=query, enable_cross_partition_query=True))[0]
 
-        players = players['players_in_room'] if players else []
+        question_set_id = info["question_set_id"]
+        players = info["players_in_room"] if info else []
 
         # Return the response
         logging.info("Room players retrieved Successfully")
-        return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success", "players": players}), mimetype="application/json")
+        return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success", "players": players, "question_set_id": question_set_id}), mimetype="application/json")
 
     except CosmosHttpResponseError as e:
         message = CosmosHttpResponseErrorMessage()
