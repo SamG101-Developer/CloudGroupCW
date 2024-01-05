@@ -54,10 +54,29 @@ class TestRoomAdd(unittest.TestCase, MetaTest):
         requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username": username}))
         response = requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username": username}))
 
-        # Delete room with id
-        #self.roomContainer.delete_item(item=self.roomID, partition_key=self.roomID)
 
         self.assertEqual({'result': False, "msg":"User is already in another room."}, response.json())
+
+    def testUsernameNotInDatabase(self):
+
+        # If the default player already exists, delete it
+        query = "SELECT * FROM p where p.username='{}'".format(self.DEFAULT_PLAYER_JSON['username'])
+        users = list(self.playerContainer.query_items(query=query, enable_cross_partition_query=True))
+        if len(users) != 0:
+            self.playerContainer.delete_item(item=users[0]['id'], partition_key=users[0]['id'])
+
+        # Create room
+        username = self.DEFAULT_PLAYER_JSON['username']
+        response = requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username": username}))
+
+        # Check room has not been created
+        query = "SELECT * FROM p where p.room_admin='{}'".format(self.DEFAULT_PLAYER_JSON['username'])
+        roomExists = len(list(self.roomContainer.query_items(query=query, enable_cross_partition_query=True)))
+        self.assertEqual(True, (roomExists == 0))
+
+        # Check correct output message received
+        responseOutput = {'result': False,'msg':UserDoesNotExist.getMessage()}
+        self.assertEqual(responseOutput, response.json())
 
 
 
