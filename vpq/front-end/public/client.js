@@ -81,7 +81,25 @@ var app = new Vue({
         },
         updateQuiz() {
             socket.emit('update_quiz')
-        }
+        },
+        moveToCreateQuiz() {
+            socket.emit('move_to_create_quiz')
+        },
+        moveToHostQuiz() {
+            socket.emit('move_to_host_quiz')
+        },
+        moveToJoinQuiz() {
+            socket.emit('move_to_join_quiz')
+        },
+        moveToManageAccount() {
+            socket.emit('move_to_manage_account')
+        },
+        moveToFriends() {
+            socket.emit('move_to_friends')
+        },
+        moveToLogout() {
+            socket.emit('move_to_logout')
+        },
     }
 });
 

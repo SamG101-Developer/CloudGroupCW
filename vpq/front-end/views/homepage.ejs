@@ -6,13 +6,12 @@
     <h1 class="login">Welcome to Virtual Pub Quiz</h1>
     <p class="login">Choose an option:</p>
     <div class="btn-container-login">
-      <button @click="createQuiz" class="btn btn-primary btn-login">Create Quiz</button>
-      <button @click="hostQuiz" class="btn btn-secondary btn-login">Host Quiz</button>
-      <button @click="joinQuiz" class="btn btn-success btn-login">Join Quiz</button>
-      <button @click="manageAccount" class="btn btn-info btn-login">Manage Account</button>
-      <button @click="friends" class="btn btn-warning btn-login">Friends</button>
+      <button @click="moveToCreateQuiz" class="btn btn-primary btn-login">Create Quiz</button>
+      <button @click="moveToHostQuiz" class="btn btn-secondary btn-login">Host Quiz</button>
+      <button @click="moveToJoinQuiz" class="btn btn-success btn-login">Join Quiz</button>
+      <button @click="moveToManageAccount" class="btn btn-info btn-login">Manage Account</button>
+      <button @click="moveToFriends" class="btn btn-warning btn-login">Friends</button>
     </div>
-    <!-- Logout Button -->
-    <button @click="logout" class="btn btn-danger logout-btn-login">Logout</button>
+    <button @click="moveToLogout" class="btn btn-danger logout-btn-login">Logout</button>
   </div>
 </body>

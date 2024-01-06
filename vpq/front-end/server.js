@@ -367,6 +367,36 @@ io.on('connection', socket => {
     socket.on('get_player_questions', (getQuestionsJSON) => {
         handleGetPlayerQuestions(socket, getQuestionsJSON);
     });
+
+    //Handles request to move to creating a quiz page
+    socket.on('move_to_create_quiz', () => {
+        console.log('Moving to creating quiz page');
+    });
+
+    //Handles request to move to host a quiz page
+    socket.on('move_to_host_quiz', () => {
+        console.log('Moving to host quiz page');
+    });
+
+    //Handles request to move to join a quiz page
+    socket.on('move_to_join_quiz', () => {
+        console.log('Moving to join quiz page');
+    });
+
+    //Handles request to move to manage account page
+    socket.on('move_to_manage_account', () => {
+        console.log('Moving to manage account page');
+    });
+
+    //Handles request to move to friends page
+    socket.on('move_to_friends', () => {
+        console.log('Moving to friends page');
+    });
+
+    //Handles request to log out of account page
+    socket.on('move_to_logout', () => {
+        console.log('Moving to logout');
+    });
 });
 
 //Start server
