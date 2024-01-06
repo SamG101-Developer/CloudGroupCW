@@ -4,6 +4,7 @@ import requests
 
 from vpq.tests.MetaTest import MetaTest
 from vpq.helper.room import UserInRoomAlready,UserDoesNotExist,RoomDoesNotExist
+from vpq.helper.exceptions import DatabaseDoesNotContainUsernameError
 
 class TestRoomSetAdultOnly(unittest.TestCase, MetaTest):
 
@@ -17,7 +18,6 @@ class TestRoomSetAdultOnly(unittest.TestCase, MetaTest):
     def setUp(self):
         # Add the player to the database
         requests.post(self.TEST_URL_PLAYER_ADD, data=json.dumps(self.DEFAULT_PLAYER_JSON))
-        requests.post(self.TEST_URL_PLAYER_ADD, data=json.dumps(self.DEFAULT_PLAYER_JSON_2))
 
         # Create room
         username = self.DEFAULT_PLAYER_JSON['username']
@@ -32,8 +32,8 @@ class TestRoomSetAdultOnly(unittest.TestCase, MetaTest):
 
     def testValidSetAdultOnly(self):
 
-        # Add player to room
-        response = requests.post(self.TEST_URL_ROOM_SET_ADULT_ONLY, data=json.dumps({"adminUsername": self.DEFAULT_PLAYER_JSON['username'],"valueToSet": True}))
+        # Set adult only flag
+        response = requests.post(self.TEST_URL_ROOM_SET_ADULT_ONLY, data=json.dumps({"adminUsername": self.DEFAULT_PLAYER_JSON['username'], "valueToSet": True}))
 
         # Check adult only flag is True
         roomQuery = "SELECT * FROM r where r.room_admin='{}'".format(self.DEFAULT_PLAYER_JSON['username'])
@@ -42,3 +42,32 @@ class TestRoomSetAdultOnly(unittest.TestCase, MetaTest):
 
         # Check correct http response given
         self.assertEqual({'result': True, "msg": "Successfully changed adult only flag to: True"}, response.json())
+
+    def testAdminNotInDatabase(self):
+
+        # Set adult only flag
+        response = requests.post(self.TEST_URL_ROOM_SET_ADULT_ONLY, data=json.dumps({"adminUsername": "","valueToSet": True}))
+
+        # Check correct http response given
+        self.assertEqual({'result': False, "msg": DatabaseDoesNotContainUsernameError.getMessage()}, response.json())
+
+    def testNotBooleanValue(self):
+
+        # Set adult only flag
+        response = requests.post(self.TEST_URL_ROOM_SET_ADULT_ONLY, data=json.dumps({"adminUsername": self.DEFAULT_PLAYER_JSON['username'],"valueToSet": ""}))
+
+        # Check correct http response given
+        self.assertEqual({'result': False, "msg": "valueToSet is not a boolean value"}, response.json())
+
+    def testSettingFalse(self):
+
+        # Set adult only flag
+        response = requests.post(self.TEST_URL_ROOM_SET_ADULT_ONLY, data=json.dumps({"adminUsername": self.DEFAULT_PLAYER_JSON['username'], "valueToSet": False}))
+
+        # Check adult only flag is True
+        roomQuery = "SELECT * FROM r where r.room_admin='{}'".format(self.DEFAULT_PLAYER_JSON['username'])
+        adultOnlyValue = list(self.roomContainer.query_items(query=roomQuery, enable_cross_partition_query=True))[0]['adult_only']
+        self.assertFalse(adultOnlyValue)
+
+        # Check correct http response given
+        self.assertEqual({'result': True, "msg": "Successfully changed adult only flag to: False"}, response.json())

@@ -2,6 +2,7 @@ import unittest
 import json
 import requests
 
+from vpq.helper.exceptions import DatabaseDoesNotContainUsernameError
 from vpq.tests.MetaTest import MetaTest
 from vpq.helper.room import UserInRoomAlready,UserDoesNotExist,RoomDoesNotExist
 
@@ -51,7 +52,7 @@ class TestRoomPlayerAdd(unittest.TestCase, MetaTest):
         response = requests.post(self.TEST_URL_ROOM_PLAYER_ADD, data=json.dumps({"adminUsername": "", "usernameToAdd": "player1"}))
 
         # Check correct http response given
-        self.assertEqual({'result': False, "msg": "Database DOES NOT contain username."}, response.json())
+        self.assertEqual({'result': False, "msg": DatabaseDoesNotContainUsernameError.getMessage()}, response.json())
 
     def testPlayerToAddNotInDatabase(self):
 
@@ -59,7 +60,7 @@ class TestRoomPlayerAdd(unittest.TestCase, MetaTest):
         response = requests.post(self.TEST_URL_ROOM_PLAYER_ADD, data=json.dumps({"adminUsername": self.DEFAULT_PLAYER_JSON['username'], "usernameToAdd": ""}))
 
         # Check correct http response given
-        self.assertEqual({'result': False, "msg": "Database DOES NOT contain username."}, response.json())
+        self.assertEqual({'result': False, "msg": DatabaseDoesNotContainUsernameError.getMessage()}, response.json())
 
     def testAdminPlayerAlreadyInRoom(self):
 
