@@ -55,7 +55,7 @@ try:
     from functions.question_set.question_set_del import function as question_set_del
     from functions.question_set.question_set_set import function as question_set_set
     from functions.room.room_admin_set import function as room_admin_set
-    from functions.room.room_flag_adultonly_set import function as room_flag_adultonly_set
+    from functions.room.room_adultonly_set import function as room_adultonly_set
     from functions.room.room_flag_password_set import function as room_flag_password_set
     from functions.room.room_player_add import function as room_player_add
     from functions.room.room_player_del import function as room_player_del
@@ -82,7 +82,7 @@ try:
         question_set_del,
         question_set_set,
         room_admin_set,
-        room_flag_adultonly_set,
+        room_adultonly_set,
         room_flag_password_set,
         room_player_add,
         room_player_del,

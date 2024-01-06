@@ -50,6 +50,18 @@ class MetaTest:
         'fave_quizzes': []
     }
 
+    DEFAULT_PLAYER_JSON_2 = {
+        "username": "player1",
+        "password": "pass123",
+        "firstname": "John",
+        "lastname": "Doe",
+        "currency": 0,
+        "premium_currency": 0,
+        "overall_score": 0,
+        "friends": [],
+        "fave_quizzes": [],
+    }
+
     DEFAULT_ROOM_JSON = {
         'room_admin': 'ethan',
         'players_in_room': [1,2],
