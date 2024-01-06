@@ -18,8 +18,8 @@ except ModuleNotFoundError:
 function = func.Blueprint()
 
 
-@function.route(route="roomFlagAdultOnlySet", auth_level=func.AuthLevel.ANONYMOUS, methods=['POST'])
-def roomFlagAdultOnlySet(req: func.HttpRequest) -> func.HttpResponse:
+@function.route(route="roomAdultOnlySet", auth_level=func.AuthLevel.ANONYMOUS, methods=['POST'])
+def roomAdultOnlySet(req: func.HttpRequest) -> func.HttpResponse:
     try:
         cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
         database = cosmos.get_database_client(os.environ['DatabaseName'])

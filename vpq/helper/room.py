@@ -15,6 +15,11 @@ class RoomDoesNotExist(ValueError):
     def getMessage():
         return "Room with given admin username does not exist."
 
+class UserNotInRoom(ValueError):
+    @staticmethod
+    def getMessage():
+        return "User is already in the room"
+
 
 class Room:
 
