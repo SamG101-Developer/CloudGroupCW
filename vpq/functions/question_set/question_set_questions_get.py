@@ -5,9 +5,9 @@ from azure.cosmos.exceptions import CosmosHttpResponseError
 import json, logging, os
 
 try:
-    from helper.exceptions import CosmosHttpResponseErrorMessage
+    from helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainQuestionSetIDError
 except ModuleNotFoundError:
-    from vpq.helper.exceptions import CosmosHttpResponseErrorMessage
+    from vpq.helper.exceptions import CosmosHttpResponseErrorMessage, DatabaseDoesNotContainQuestionSetIDError
 
 function = func.Blueprint()
 
@@ -27,6 +27,8 @@ def questionSetQuestionsGet(req: func.HttpRequest) -> func.HttpResponse:
         # Get all questions IDs
         query = f"SELECT p.questions FROM p WHERE p.id = '{reqJson['question_set_id']}'"
         info = list(questionSetContainer.query_items(query=query, enable_cross_partition_query=True))[0]
+        if not info:
+            raise DatabaseDoesNotContainQuestionSetIDError
 
         # Get all questions from the IDs
         rounds_of_questions = []
@@ -44,6 +46,11 @@ def questionSetQuestionsGet(req: func.HttpRequest) -> func.HttpResponse:
         message = CosmosHttpResponseErrorMessage()
         logging.error(message + " " + str(e) + "!")
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json", status_code=500)
+
+    except DatabaseDoesNotContainQuestionSetIDError:
+        message = DatabaseDoesNotContainQuestionSetIDError.getMessage()
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
 
     except Exception as e:
         message = str(e)

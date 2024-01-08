@@ -13,6 +13,7 @@ except ModuleNotFoundError:
 
 function = func.Blueprint()
 
+
 @function.route(route="playerInfoGet", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET"])
 def playerInfoGet(req: func.HttpRequest) -> func.HttpResponse:
     try:
