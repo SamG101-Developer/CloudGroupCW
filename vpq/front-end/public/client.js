@@ -9,6 +9,9 @@ var app = new Vue({
         chatmessage: '',
         queriedQuestions: [], // These are the questions that are loaded using the player_question_groups_get function
         questionSearchUsernameField: "",
+        findingFriendsField: "",    //This field is used to find the name of the friend for the friends page
+        successMessage: "",         //If action has been completed succesfully
+        errorMessage: "",           //If there is an error in doing something
         loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
         user: { username: null, password: null, state: null },
         // These variables are for during a quiz
@@ -49,7 +52,7 @@ var app = new Vue({
             socket.emit('delete', this.loginInput.username);
         },
         addFriend() {
-            socket.emit('add_friend');
+            socket.emit('add_friend', {username: this.user.username , friendUsername:this.findingFriendsField});
         },
         deleteFriend() {
             socket.emit('del_friend');
@@ -70,38 +73,51 @@ var app = new Vue({
             socket.emit('leave_room');
         },
         usePowerUp() {
-            socket.emit('use_power_up')
+            socket.emit('use_power_up');
         },
         createQuiz(quizJSON) {
             // TODO: On the server end this will create a new question set and any questions that are new will be added to the database
             socket.emit('create_quiz', quizJSON);
         },
         deleteQuiz() {
-            socket.emit('delete_quiz')
+            socket.emit('delete_quiz');
         },
         updateQuiz() {
-            socket.emit('update_quiz')
+            socket.emit('update_quiz');
         },
         moveToCreateQuiz() {
-            socket.emit('move_to_create_quiz')
+            socket.emit('move_to_create_quiz');
         },
         moveToHostQuiz() {
-            socket.emit('move_to_host_quiz')
+            socket.emit('move_to_host_quiz');
         },
         moveToJoinQuiz() {
-            socket.emit('move_to_join_quiz')
+            socket.emit('move_to_join_quiz');
         },
         moveToManageAccount() {
-            socket.emit('move_to_manage_account')
+            socket.emit('move_to_manage_account');
         },
         moveToFriends() {
-            socket.emit('move_to_friends')
+            socket.emit('move_to_friends');
         },
         moveToLogout() {
-            socket.emit('move_to_logout')
+            socket.emit('move_to_logout');
         },
+        handleMessage (incomingMessage, status) {
+            if(status == 'success'){ //Success message
+                this.successMessage = incomingMessage;
+            } else {
+                this.errorMessage = incomingMessage;    //error message
+            }
+            setTimeout(clearError, 3000);
+        }
     }
 });
+
+function clearError() {
+    app.errorMessage = null;
+    app.successMessage = null;
+}
 
 function connect() {
     //Prepare web socket
@@ -134,4 +150,15 @@ function connect() {
     socket.on('queried_questions', function(questionsRetrieved) {
         app.setQueriedQuestions(questionsRetrieved);
     });
+
+    //Handle success messages received
+    socket.on('successMessage', function(incomingMessage) {
+        app.handleMessage(incomingMessage, 'success');
+    });
+
+    //Handle error messages received
+    socket.on('errorMessage', function(incomingMessage) {
+        app.handleMessage(incomingMessage, 'error');
+    });
+
 }

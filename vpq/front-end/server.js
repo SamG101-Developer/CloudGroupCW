@@ -92,13 +92,20 @@ function handleRegister(registerJSON){
 }
 
 //Player Add Friend
-function handleAddFriend(addFriendJSON){
+function handleAddFriend(addFriendJSON, socket){
     console.log(`Adding friend '${addFriendJSON.friendUsername}' for user '${addFriendJSON.username}'`);
 
     backendPUT("/api/playerFriendAdd", addFriendJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
+            //Code to deal with if it is a success message or not
+            if (response.msg == 'Success'){
+                socket.emit('successMessage', 'The user ' + addFriendJSON.friendUsername + ' has been successfully been added as a friend');
+            } else {
+                socket.emit('errorMessage', response.msg);
+            }
+
         },
         function (error) {
             console.error("Error:");
@@ -309,7 +316,7 @@ io.on('connection', socket => {
 
     //Handle add friend
     socket.on('add_friend', (addFriendJSON) => {
-        handleAddFriend(addFriendJSON)
+        handleAddFriend(addFriendJSON, socket)
 
     });
 

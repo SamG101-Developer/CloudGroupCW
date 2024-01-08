@@ -1,0 +1,10 @@
+<div v-if="errorMessage" class="alert alert-danger">
+    {{errorMessage}}
+</div>
+
+<div v-if="successMessage" class="alert alert-success">
+    {{successMessage}}
+</div>
+
+<input type="text" v-model="findingFriendsField" class="form-control mb-3" placeholder="Enter username">
+<button @click="addFriend" class="btn btn-primary btn-block">Add Friend</button>
