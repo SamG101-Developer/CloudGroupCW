@@ -7,7 +7,7 @@ class DatabaseContainsUsernameError(ValueError):
 class DatabaseDoesNotContainUsernameError(ValueError):
     @staticmethod
     def getMessage():
-        return "Database DOES NOT contain username."
+        return "This player DOES NOT exist."
 
 
 class UsersAlreadyFriendsError(ValueError):
