@@ -102,6 +102,7 @@ function handleAddFriend(addFriendJSON, socket){
             //Code to deal with if it is a success message or not
             if (response.msg == 'Success'){
                 socket.emit('successMessage', 'The user ' + addFriendJSON.friendUsername + ' has been successfully been added as a friend');
+                updateFriends({username: addFriendJSON.username}, socket);
             } else {
                 socket.emit('errorMessage', response.msg);
             }
@@ -114,14 +115,32 @@ function handleAddFriend(addFriendJSON, socket){
     );
 }
 
+//Updates friends when logged in, added a player or removed a player. The input is a string of the username
+function updateFriends(usernameJson, socket){
+    console.log('Updating friends list for user ' + usernameJson.username);
+
+    backendGET("/api/playerInfoGet", usernameJson).then(
+        function(response) {
+            socket.emit("updateFriends", response.body.friends);
+
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
 //Player Delete Friend
-function handleDeleteFriend(delFriendJSON){
+function handleDeleteFriend(delFriendJSON, socket){
     console.log(`Deleting friend '${delFriendJSON.friendUsername}' for user '${delFriendJSON.username}'`);
 
     backendPUT("/api/playerFriendDel", delFriendJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
+            socket.emit('successMessage', 'The user ' + delFriendJSON.friendUsername + ' has been successfully removed as a friend');
+            updateFriends({username: delFriendJSON.username}, socket);
         },
         function (error) {
             console.error("Error:");
@@ -322,7 +341,7 @@ io.on('connection', socket => {
 
     //Handle delete friend
     socket.on('del_friend', (delFriendJSON) => {
-        handleDeleteFriend(delFriendJSON)
+        handleDeleteFriend(delFriendJSON, socket)
     });
 
     //Handle add favourite quiz

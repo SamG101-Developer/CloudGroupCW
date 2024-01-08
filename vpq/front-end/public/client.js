@@ -13,7 +13,7 @@ var app = new Vue({
         successMessage: "",         //If action has been completed succesfully
         errorMessage: "",           //If there is an error in doing something
         loginInput: { username: "", password: "" }, // Different to user since it is connected to the UI
-        user: { username: null, password: null, state: null },
+        user: { username: "player1", password: null, state: null, friends: []},
         // These variables are for during a quiz
         room: { roomID: null, adminUsername: null, players: [], questions: [], isAdultOnly: null, state: null}
     },
@@ -54,8 +54,8 @@ var app = new Vue({
         addFriend() {
             socket.emit('add_friend', {username: this.user.username , friendUsername:this.findingFriendsField});
         },
-        deleteFriend() {
-            socket.emit('del_friend');
+        deleteFriend(friend) {
+            socket.emit('del_friend', {username: this.user.username , friendUsername: friend});
         },
         addFavouriteQuiz() {
             socket.emit('add_favourite_quiz');
@@ -110,7 +110,10 @@ var app = new Vue({
                 this.errorMessage = incomingMessage;    //error message
             }
             setTimeout(clearError, 3000);
-        }
+        },
+        updateFriends(friendsList){
+            this.user.friends = friendsList;
+        },
     }
 });
 
@@ -159,6 +162,11 @@ function connect() {
     //Handle error messages received
     socket.on('errorMessage', function(incomingMessage) {
         app.handleMessage(incomingMessage, 'error');
+    });
+
+    //Handles updating friends list
+    socket.on('updateFriends', function(friendsList) {
+        app.updateFriends(friendsList);
     });
 
 }

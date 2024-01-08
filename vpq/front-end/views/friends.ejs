@@ -1,10 +1,25 @@
+<!-- Displays error messages -->
 <div v-if="errorMessage" class="alert alert-danger">
     {{errorMessage}}
 </div>
 
+<!-- Displays success messages -->
 <div v-if="successMessage" class="alert alert-success">
     {{successMessage}}
 </div>
 
+<!-- Way to add new friends -->
 <input type="text" v-model="findingFriendsField" class="form-control mb-3" placeholder="Enter username">
 <button @click="addFriend" class="btn btn-primary btn-block">Add Friend</button>
+
+<!-- Message displayed if the user has no friends  -->
+<div v-if="user.friends.length == 0" >
+    <p>You do not currently have any friends right now. Why don't you try adding some?</p>
+</div>
+
+<!-- Shows a list of friends   -->
+<div v-for="friend of user.friends" class="col-sm-2 text-center">
+    <div class="friend">
+        <strong>{{friend}}</strong>     <button @click="deleteFriend(friend)" class=" btn btn-danger btn-sm">X</button>
+    </div>
+</div>
