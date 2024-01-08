@@ -1,25 +1,36 @@
-<!-- Displays error messages -->
-<div v-if="errorMessage" class="alert alert-danger">
+
+  <h1>Friends Page</h1>
+
+  <!-- Displays error messages -->
+  <div v-if="errorMessage" class="alert alert-danger">
     {{errorMessage}}
-</div>
+  </div>
 
-<!-- Displays success messages -->
-<div v-if="successMessage" class="alert alert-success">
+  <!-- Displays success messages -->
+  <div v-if="successMessage" class="alert alert-success">
     {{successMessage}}
-</div>
+  </div>
 
-<!-- Way to add new friends -->
-<input type="text" v-model="findingFriendsField" class="form-control mb-3" placeholder="Enter username">
-<button @click="addFriend" class="btn btn-primary btn-block">Add Friend</button>
+  <div id="addFriendsContainer">
+    <!-- Way to add new friends -->
+    <p>Enter the username of the friend that you would like to add:</p>
+    <input type="text" v-model="findingFriendsField" class="form-control mb-3" placeholder="Enter username">
+    <button @click="addFriend" class="btn btn-primary btn-block">Add Friend</button>
+  </div>
 
-<!-- Message displayed if the user has no friends  -->
-<div v-if="user.friends.length == 0" >
-    <p>You do not currently have any friends right now. Why don't you try adding some?</p>
-</div>
-
-<!-- Shows a list of friends   -->
-<div v-for="friend of user.friends" class="col-sm-2 text-center">
-    <div class="friend">
-        <strong>{{friend}}</strong>     <button @click="deleteFriend(friend)" class=" btn btn-danger btn-sm">X</button>
+  <div id="friendsListContainer">
+    <!-- Message displayed if the user has no friends  -->
+    <div v-if="user.friends.length == 0" class="no-friends-message">
+      <p>You do not currently have any friends right now. Why don't you try adding some?</p>
     </div>
-</div>
+
+    <!-- Shows a list of friends   -->
+    <div v-if="user.friends.length > 0" class="friends-list">
+      <div v-for="friend of user.friends" class="friend">
+        <strong>{{friend}}</strong>
+        <button @click="deleteFriend(friend)" class="btn btn-danger btn-sm">X</button>
+      </div>
+    </div>
+  </div>
+
+

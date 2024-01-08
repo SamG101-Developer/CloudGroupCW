@@ -350,8 +350,8 @@ body.login {
     .btn-container-login {
       display: flex;
       flex-direction: column;
-      gap: 10px; /* Reduced gap between buttons */
-      margin-bottom: 20px; /* Reduced margin below the buttons container */
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
     .btn-login {
@@ -363,7 +363,7 @@ body.login {
     }
 
     .btn-login:hover {
-      background-color: #0056b3; /* Updated hover color for buttons */
+      background-color: #0056b3;
       color: #fff;
     }
 
@@ -372,7 +372,7 @@ body.login {
     }
 
     .logout-btn-login {
-      margin-top: 15px; /* Reduced space above the logout button */
+      margin-top: 15px;
       display: inline-block;
       font-size: 1.3rem;
       padding: 15px 30px;
@@ -381,3 +381,104 @@ body.login {
       color: #fff;
       transition: background-color 0.3s, color 0.3s;
     }
+
+
+    /*  This contains css for all of the friends page*/
+/* General styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 50px;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+}
+
+.alert {
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+}
+
+.btn-danger.btn-sm {
+  padding: 5px 10px;
+  margin-left: 5px;
+  border-radius: 50%;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+/* Friends List */
+#addFriendsContainer {
+  max-width: 300px;
+  margin: auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#friendsListContainer {
+  max-width: 800px;
+  margin: 20px auto;
+  overflow-y: auto; /* Vertical scrolling only when needed */
+}
+
+.no-friends-message {
+  text-align: center;
+  padding: 20px;
+  background-color: #f8f9fa; /* Muted color */
+  border: 1px solid #e2e3e5; /* Light border */
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.no-friends-message p {
+  color: #6c757d; /* Muted text color */
+}
+
+
+.friends-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+.friend {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
