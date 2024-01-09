@@ -134,33 +134,37 @@ var app = new Vue({
         },
 
         flowGameRound() {
-            setTimeout(() => {
-                socket.emit('increment_game_state', {
-                    adminUsername: this.user.username,
-                    gameState: "question"
-                })
-
+            // Only run from the admin.
+            const num_questions_this_round = this.room.questions[this.room.currentRound].length;
+            for (const i in this.room.questions[this.room.currentRound]) {
                 setTimeout(() => {
                     socket.emit('increment_game_state', {
                         adminUsername: this.user.username,
-                        gameState: "answer"
-                    })
+                        gameState: "question"
+                    });
 
                     setTimeout(() => {
                         socket.emit('increment_game_state', {
                             adminUsername: this.user.username,
-                            gameState: this.room.currentQuestion + 1 < this.room.questions[this.room.currentRound].length ? "question" : this.room.currentRound + 1 < this.room.questions.length ? "round_score" : "final_score"
-                        })
-
-                        if (this.room.state !== "final_score") {
-                            setTimeout(() => socket.emit('increment_game_state', {
-                                adminUsername: this.user.username,
-                                gameState: "round_splash"
-                            }), 5000);
-                        }
+                            gameState: "answer"
+                        });
                     }, 5000);
-                }, 10000);
-            }, 5000);
+                }, 5000 + (i * 10000));
+            }
+
+            setTimeout(() => {
+                socket.emit('increment_game_state', {
+                    adminUsername: this.user.username,
+                    gameState: "round_score"
+                });
+
+                setTimeout(() => {
+                    socket.emit('increment_game_state', {
+                        adminUsername: this.user.username,
+                        gameState: "round_splash"
+                    });
+                }, 5000);
+            }, 5000 + (num_questions_this_round * 10000));
         },
 
         showLoading() {
