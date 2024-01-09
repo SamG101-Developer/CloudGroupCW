@@ -65,7 +65,6 @@ try:
         room_admin_set,
         room_all_get,
         room_adultonly_set,
-        room_adultonly_set,
         room_flag_password_set,
         room_player_add,
         room_player_del,
