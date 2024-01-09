@@ -257,6 +257,24 @@ function handlePlayerScoreUpdate(socket, info) {
     );
 }
 
+// Delete Room
+function handleDeleteRoom(info) {
+    console.log(`Deleting a room`);
+
+    backendDELETE("/api/roomSessionDel", {adminUsername: info['adminUsername']}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+
+            // TODO : Get list of everyone in the room -> Send to everyone on the list
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
 //Create Room
 function handleCreateRoom(socket, info) {
     console.log(`Creating a room`);
@@ -471,11 +489,15 @@ io.on('connection', socket => {
     //Handle disconnection
     socket.on('disconnect', () => {
         console.log('Dropped connection');
+
+        // Remove the username-socket pair from the list
         for (let [key, value] of Object.entries(all_players_sockets)) {
             if (value === socket) {
                 delete all_players_sockets[key];
             }
         }
+
+        handleDeleteRoom();
     });
 
     //Handle register
