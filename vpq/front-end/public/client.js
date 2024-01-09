@@ -152,8 +152,9 @@ var app = new Vue({
             this.room.whenLastQuestionAnswered = Date.now();
 
             // Disable all the buttons
-            // const grid = document.getElementById("answer-container").children[0];
-            // Array.from(grid.children).forEach(button => button.disabled = true);
+            const answer_buttons = document.getElementsByClassName("answer-box");
+            Array.from(answer_buttons).forEach(button => button.disabled = true);
+            setTimeout(() => Array.from(answer_buttons).forEach(button => button.disabled = false), 10000 - (this.room.whenLastQuestionAnswered - this.room.whenLastQuestionAsked));
 
         },
         flowGameRound() {
