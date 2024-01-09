@@ -28,7 +28,9 @@ var app = new Vue({
             state: "lobby",
             currentRound: -1,
             currentQuestion: -1,
-            is_host: false
+            is_host: false,
+            currentAnswer: null,
+            score: 0,
         },
 
         rooms: [],
@@ -132,7 +134,9 @@ var app = new Vue({
             socket.emit('increment_game_state', {adminUsername: this.user.username, gameState: "round_splash"});
             this.showLoading();
         },
-
+        selectMultiChoiceAnswer(number) {
+            this.room.currentAnswer = number;
+        },
         flowGameRound() {
             // Only run from the admin.
             const num_questions_this_round = this.room.questions[this.room.currentRound].length;
@@ -172,6 +176,22 @@ var app = new Vue({
         },
         hideLoading() {
             document.getElementById("loading").style.display = "none";
+        },
+
+        handleAnswerPage() {
+            this.$nextTick(() => {
+                const answerBoxes = document.getElementById("answer-container-2").childNodes[0].childNodes;
+                const correctAnswer = this.room.questions[this.room.currentRound][this.room.currentQuestion]["correct_answer"];
+                const correctAnswerBox = Array.from(answerBoxes).find(box => box.innerText === correctAnswer);
+
+                // Make the selected answer box red, and the correct answer box green (green will override red).
+                answerBoxes[this.room.currentAnswer].style.backgroundColor = "red";
+                correctAnswerBox.style.backgroundColor = "green";
+
+                if (answerBoxes[this.room.currentAnswer].innerText === this.room.questions[this.room.currentRound][this.room.currentQuestion]["correct_answer"]) {
+                    this.room.score += 1;
+                }
+            });
         }
     }
 });
@@ -244,7 +264,12 @@ function connect() {
         }
 
         if (app.room.state === "question") {
-            app.room.currentQuestion += 1
+            app.room.currentQuestion += 1;
+            app.room.currentAnswer = null;
+        }
+
+        if (app.room.state === "answer") {
+            app.handleAnswerPage();
         }
     })
 
