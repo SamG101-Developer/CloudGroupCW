@@ -258,10 +258,18 @@ function handlePlayerScoreUpdate(socket, info) {
 }
 
 // Delete Room
-function handleDeleteRoom(info) {
+function handleDeleteRoom(socket) {
     console.log(`Deleting a room`);
 
-    backendDELETE("/api/roomSessionDel", {adminUsername: info['adminUsername']}).then(
+    let adminUsername = "";
+    for (let [key, value] of Object.entries(all_players_sockets)) {
+        if (value === socket) {
+            adminUsername = key;
+        }
+    }
+    console.log(adminUsername)
+
+    backendDELETE("/api/roomSessionDel", {username: adminUsername}).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -490,14 +498,14 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         console.log('Dropped connection');
 
+        handleDeleteRoom(socket);
+
         // Remove the username-socket pair from the list
         for (let [key, value] of Object.entries(all_players_sockets)) {
             if (value === socket) {
                 delete all_players_sockets[key];
             }
         }
-
-        handleDeleteRoom();
     });
 
     //Handle register
