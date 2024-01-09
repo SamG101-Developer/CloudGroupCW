@@ -376,9 +376,11 @@ The height of the container is 100vh - .navSize height
 
 .answer-box {
     border-radius: 3vh;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
     cursor: pointer;
     width: 10vw;
     height: 10vw;
     border: none;
+    font-size: 1vw;
+    font-weight: bold;
 }
