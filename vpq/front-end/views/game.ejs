@@ -17,8 +17,8 @@
     <div v-else-if="room.state == 'round_score'">
         <%- include('game/round_score'); -%>
     </div>
-    <div v-else-if="room.state == 'final_score'">
-        <%- include('game/final_score'); -%>
+    <div v-else-if="room.state == 'end_game'">
+        <%- include('game/end_game'); -%>
     </div>
     <div v-else>
         <h1>Error! [{{ room.state }}]</h1>

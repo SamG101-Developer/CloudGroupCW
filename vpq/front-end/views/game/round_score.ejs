@@ -1,3 +1,6 @@
 <div>
     <h1>Scores after {{ room.currentRound }}</h1>
+    <div v-for="record in Object.entries(room.leaderboard)">
+        <p>{{ record[0] }}: {{ record[1] }}</p>
+    </div>
 </div>
