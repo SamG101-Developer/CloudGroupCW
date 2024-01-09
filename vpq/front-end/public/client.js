@@ -213,7 +213,12 @@ var app = new Vue({
         },
 
         handlePlayerScoreUpdate(info) {
-            this.room.leaderboard[info.username] = info.score;
+            this.room.leaderboard[info["username"]] = info["score"];
+
+            const leaderboard = document.getElementById("leaderboard");
+            const new_player = document.createElement("div");
+            new_player.innerHTML = info["username"] + ": " + info["score"];
+            leaderboard.appendChild(new_player);
         }
     }
 });
@@ -288,6 +293,7 @@ function connect() {
         if (app.room.state === "question") {
             app.room.currentQuestion += 1;
             app.room.currentAnswer = null;
+            app.room.leaderboard = {};
             app.room.whenLastQuestionAsked = Date.now();
         }
 
