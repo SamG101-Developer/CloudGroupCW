@@ -213,9 +213,7 @@ var app = new Vue({
         },
 
         handlePlayerScoreUpdate(info) {
-            for (const item of info) {
-                this.room.leaderboard[item.username] = item.score;
-            }
+            this.room.leaderboard[info.username] = info.score;
         }
     }
 });
