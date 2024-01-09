@@ -1,8 +1,14 @@
 <div>
-    <div v-if="!room.is_host">
-        <h1>The correct answer is...</h1>
-        <div class="answer-box" style="background-color: #47ff6d">
-            {{ room.questions[room.currentRound][room.currentQuestion]['correct_answer'] }}
+    <h1>Round {{ room.currentRound }}</h1>
+    <h1>Question {{ room.currentQuestion }}</h1>
+    <h2>Answer:</h2>
+
+    <div class="grid-wrapper" id="answer-container-2">
+        <div class="grid" v-if="room.questions[room.currentRound][room.currentQuestion]['question_type'] == 'Multiple Choice'">
+            <button class="answer-box">{{ room.questions[room.currentRound][room.currentQuestion]['answers'][0] }}</button>
+            <button class="answer-box">{{ room.questions[room.currentRound][room.currentQuestion]['answers'][1] }}</button>
+            <button class="answer-box">{{ room.questions[room.currentRound][room.currentQuestion]['answers'][2] }}</button>
+            <button class="answer-box">{{ room.questions[room.currentRound][room.currentQuestion]['answers'][3] }}</button>
         </div>
     </div>
 </div>
