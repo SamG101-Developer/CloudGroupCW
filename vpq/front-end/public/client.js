@@ -112,6 +112,15 @@ var app = new Vue({
             this.showLoading();
         },
         joinRoom(room) {
+            if (room.password) {
+                const password = prompt("Enter the password for this room");
+                if (password !== room.password) {
+                    alert("Incorrect password");
+                    return;
+                }
+            }
+
+
             this.page = "game"
             this.room.adminUsername = room.adminUsername;
             socket.emit('join_room', {adminUsername: room.adminUsername, usernameToAdd: this.user.username});

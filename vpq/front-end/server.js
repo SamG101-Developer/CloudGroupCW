@@ -292,7 +292,7 @@ function handleCreateRoom(socket, info) {
             console.log("Success:");
             console.log(response);
             if (response["result"]) {
-                io.emit('room_list_add', {adminUsername: info['username'], adultOnly: info['adultOnly']})
+                io.emit('room_list_add', {adminUsername: info['username'], adultOnly: info['adultOnly'], password: info['password']})
                 socket.emit('confirm_admin_room_create')
             }
             else {
