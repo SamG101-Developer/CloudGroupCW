@@ -32,7 +32,7 @@ def roomPlayerAdd(req: func.HttpRequest) -> func.HttpResponse:
 
         # Check both players exist in players database
         adminUsernameQuery = "SELECT * FROM r where r.username='{}'".format(adminUsername)
-        usernameToAddQuery = "SELECT * FROM r where r.username='{}'".format(adminUsername)
+        usernameToAddQuery = "SELECT * FROM r where r.username='{}'".format(usernameToAdd)
         adminUsernameCheck = len(list(playerContainer.query_items(query=adminUsernameQuery, enable_cross_partition_query=True))) == 0
         usernameToAddCheck = len(list(playerContainer.query_items(query=usernameToAddQuery, enable_cross_partition_query=True))) == 0
         if adminUsernameCheck or usernameToAddCheck:

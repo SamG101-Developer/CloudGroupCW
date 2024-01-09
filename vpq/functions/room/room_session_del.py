@@ -1,9 +1,52 @@
-import azure.functions as func
+import json
 import logging
+import os
+
+import azure.functions as func
+from azure.cosmos import CosmosClient
+from azure.cosmos.exceptions import CosmosHttpResponseError
+
+try:
+    from helper.exceptions import CosmosHttpResponseErrorMessage
+    from helper.room import Room, RoomDoesNotExist
+
+except ModuleNotFoundError:
+    from vpq.helper.exceptions import CosmosHttpResponseErrorMessage
+    from vpq.helper.room import Room, RoomDoesNotExist
 
 function = func.Blueprint()
 
-
-@function.route(route="roomSessionDel", auth_level=func.AuthLevel.ANONYMOUS)
+@function.route(route="roomSessionDel", auth_level=func.AuthLevel.ANONYMOUS, methods=["DELETE"])
 def roomSessionDel(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
+    try:
+        logging.info("DELETE REQUEST SENT WITH {}".format(req.get_json()))
+        cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
+        database = cosmos.get_database_client(os.environ['DatabaseName'])
+        roomContainer = database.get_container_client(os.environ['Container_Rooms'])
+
+        reqJson = req.get_json()
+
+        username = reqJson["username"]
+        logging.info(f"Python HTTP trigger function processed a request to delete a room: Admin Username: {username}.")
+
+        # Query to find the room by admin username (room_admin)
+        query = "SELECT * FROM r where r.room_admin='{}'".format(username)
+        rooms = list(roomContainer.query_items(query=query, enable_cross_partition_query=True))
+        if len(rooms) == 0:
+            raise RoomDoesNotExist
+
+        # Retrieve room ID and delete the room
+        roomID = rooms[0]['id']
+        roomContainer.delete_item(item=roomID, partition_key=roomID)
+        logging.info(f"Room with ID {roomID} deleted successfully.")
+        return func.HttpResponse(body=json.dumps({'result': True, 'msg': 'Room with ID {roomID} deleted successfully'.format(roomID)}), mimetype="application/json")
+
+    except RoomDoesNotExist:
+        message = RoomDoesNotExist.getMessage()
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, 'msg': message}), mimetype="application/json")
+
+    except CosmosHttpResponseError:
+        message = CosmosHttpResponseErrorMessage()
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
