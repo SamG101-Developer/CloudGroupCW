@@ -31,6 +31,9 @@ var app = new Vue({
             is_host: false,
             currentAnswer: null,
             score: 0,
+            whenLastQuestionAsked: null,
+            whenLastQuestionAnswered: null,
+            leaderboard: {},
         },
 
         rooms: [],
@@ -110,6 +113,7 @@ var app = new Vue({
         },
         joinRoom(room) {
             this.page = "game"
+            this.room.adminUsername = room.adminUsername;
             socket.emit('join_room', {adminUsername: room.adminUsername, usernameToAdd: this.user.username});
             this.showLoading();
         },
@@ -136,6 +140,12 @@ var app = new Vue({
         },
         selectMultiChoiceAnswer(number) {
             this.room.currentAnswer = number;
+            this.room.whenLastQuestionAnswered = Date.now();
+
+            // Disable all the buttons
+            // const grid = document.getElementById("answer-container").children[0];
+            // Array.from(grid.children).forEach(button => button.disabled = true);
+
         },
         flowGameRound() {
             // Only run from the admin.
@@ -185,13 +195,27 @@ var app = new Vue({
                 const correctAnswerBox = Array.from(answerBoxes).find(box => box.innerText === correctAnswer);
 
                 // Make the selected answer box red, and the correct answer box green (green will override red).
-                answerBoxes[this.room.currentAnswer].style.backgroundColor = "crimson";
+                if (this.room.currentAnswer) {
+                    answerBoxes[this.room.currentAnswer].style.backgroundColor = "crimson";
+                }
+                else {
+                    Array.from(answerBoxes).forEach(box => box.style.backgroundColor = "crimson");
+                }
+
                 correctAnswerBox.style.backgroundColor = "#47ff6d";
 
                 if (answerBoxes[this.room.currentAnswer].innerText === this.room.questions[this.room.currentRound][this.room.currentQuestion]["correct_answer"]) {
-                    this.room.score += 1;
+                    this.room.score += 5000 - (this.room.whenLastQuestionAnswered - this.room.whenLastQuestionAsked);
+                    this.room.whenLastQuestionAnswered = null;
+                    this.room.whenLastQuestionAsked = null;
                 }
             });
+        },
+
+        handlePlayerScoreUpdate(info) {
+            for (const item of info) {
+                this.room.leaderboard[item.username] = item.score;
+            }
         }
     }
 });
@@ -266,10 +290,15 @@ function connect() {
         if (app.room.state === "question") {
             app.room.currentQuestion += 1;
             app.room.currentAnswer = null;
+            app.room.whenLastQuestionAsked = Date.now();
         }
 
         if (app.room.state === "answer") {
             app.handleAnswerPage();
+        }
+
+        if (app.room.state === "round_score") {
+            socket.emit('player_score_update', {adminUsername: app.room.adminUsername, username: app.user.username, score: app.room.score});
         }
     })
 
@@ -286,6 +315,7 @@ function connect() {
     socket.on('confirm_admin_room_create', function() {
         app.hideLoading();
         app.room.is_host = true;
+        app.room.adminUsername = app.user.username;
         app.page = "game";
     })
 
@@ -293,4 +323,9 @@ function connect() {
     socket.on('error', function(error) {
         app.hideLoading();
     })
+
+    //Handle receiving the scores of each player in the game
+    socket.on('player_score_update', function(info) {
+        app.handlePlayerScoreUpdate(info);
+    });
 }

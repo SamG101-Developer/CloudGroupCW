@@ -231,6 +231,32 @@ function handleIncrementGameState(socket, info) {
     );
 }
 
+function handlePlayerScoreUpdate(socket, info) {
+    console.log(`Updating the scores of the players in the room`);
+
+    const adminUsername = info["adminUsername"];
+
+    // Get all the players in the room
+    backendGET("/api/roomInfoGet", {adminUsername: adminUsername}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            let players = response["players"];
+
+            // For each player in the room, send them an increment state message
+            all_players_sockets[adminUsername].emit("player_score_update", info);
+            for (let player of players) {
+                const player_socket = all_players_sockets[player];
+                player_socket.emit('player_score_update', info);
+            }
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
 //Create Room
 function handleCreateRoom(socket, info) {
     console.log(`Creating a room`);
@@ -534,9 +560,15 @@ io.on('connection', socket => {
         handleGetRoomList(socket);
     });
 
-    //Handle telling all the players in a lobby/game to increment their gae state
+    //Handle telling all the players in a lobby/game to increment their game state
     socket.on('increment_game_state', (info) => {
         handleIncrementGameState(socket, info);
+    });
+
+    //Handle telling all the players in a lobby/game to receive the scores for the round that just happened
+    socket.on('player_score_update', (info) => {
+        console.log("Received player score update " + Object.entries(info));
+        handlePlayerScoreUpdate(socket, info);
     });
 });
 
