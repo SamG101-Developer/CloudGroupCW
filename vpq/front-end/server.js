@@ -445,6 +445,11 @@ io.on('connection', socket => {
     //Handle disconnection
     socket.on('disconnect', () => {
         console.log('Dropped connection');
+        for (let [key, value] of Object.entries(all_players_sockets)) {
+            if (value === socket) {
+                delete all_players_sockets[key];
+            }
+        }
     });
 
     //Handle register
