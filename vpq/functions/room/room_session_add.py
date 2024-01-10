@@ -47,21 +47,34 @@ def roomSessionAdd(req: func.HttpRequest) -> func.HttpResponse:
         query = "SELECT * FROM r where r.room_admin='{}'".format(username)
         query2 = "SELECT * FROM r WHERE ARRAY_CONTAINS(r.players_in_room, @username)"
         query_params = [{"name": "@username", "value": username}]
+        logging.error("PRE QUERY 1 [CHECK]")
         usernameInRoom = len(list(roomContainer.query_items(query=query2, parameters=query_params, enable_cross_partition_query=True))) != 0
+        logging.error("POST QUERY 1 [CHECK]")
+        logging.error("PRE QUERY 2 [CHECK]")
         usernameIsAdmin = len(list(roomContainer.query_items(query=query, enable_cross_partition_query=True))) != 0
+        logging.error("POST QUERY 2 [CHECK]")
         if usernameIsAdmin or usernameInRoom:
             raise UserInRoomAlready
 
         # Check the question set exists
         query3 = f"SELECT * from p where p.id = '{dictData['question_set_id']}'"
+        logging.error("PRE QUERY 3 [CHECK]")
         question_set_exists = len(list(questionSetContainer.query_items(query=query3, enable_cross_partition_query=True))) != 0
+        logging.error("POST QUERY 3 [CHECK]")
         if not question_set_exists:
             raise DatabaseDoesNotContainQuestionSetIDError
 
         # Add the room to the database
+        logging.error("PRE QUERY 4 [CREATE]")
         roomContainer.create_item(body=dictData, enable_automatic_id_generation=True)
+        logging.error("POST QUERY 4 [CREATE]")
+
         logging.info("Question Added Successfully")
+
+        logging.error("PRE QUERY 5 [GET]")
         roomID = list(roomContainer.query_items(query=query, enable_cross_partition_query=True))[0]['id']
+        logging.error("POST QUERY 5 [GET]")
+
         responseOutput = {'result': True, "msg": "Room created with id:{}".format(roomID), 'adminUsername': username}
         return func.HttpResponse(body=json.dumps(responseOutput), mimetype="application/json")
 
