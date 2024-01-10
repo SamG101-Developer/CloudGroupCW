@@ -106,7 +106,6 @@ var app = new Vue({
         login(username, password) {
             this.showLoading();
             socket.emit('login', {"username": username, "password": password});
-            document.getElementById("nav-profile-button").innerText += " (" + username + ")";
             // document.getElementById("login-password").value = "";
             // document.getElementById("register-password").value = "";
         },
@@ -322,6 +321,7 @@ function connect() {
     });
     socket.on('confirm_login', function(info) {
         app.hideLoading();
+        document.getElementById("nav-profile-button").innerText += " (" + info["username"] + ")";
         app.user.username = info["username"];
         app.user.password = info["password"] || "";
         app.setPage("join");
@@ -386,6 +386,11 @@ function connect() {
             app.room.currentAnswer = null;
             app.room.leaderboard = {};
             app.room.whenLastQuestionAsked = Date.now();
+
+            if (app.room.is_host) {
+                const answer_buttons = document.getElementsByClassName("answer-box");
+                Array.from(answer_buttons).forEach(button => button.disabled = true);
+            }
         }
 
         if (app.room.state === "answer") {
