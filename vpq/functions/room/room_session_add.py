@@ -48,12 +48,12 @@ def roomSessionAdd(req: func.HttpRequest) -> func.HttpResponse:
         query2 = "SELECT * FROM r WHERE ARRAY_CONTAINS(r.players_in_room, @username)"
         query_params = [{"name": "@username", "value": username}]
         logging.error("PRE QUERY 1 [CHECK]")
-        usernameInRoom = len(list(roomContainer.query_items(query=query2, parameters=query_params, enable_cross_partition_query=True))) != 0
+        # usernameInRoom = len(list(roomContainer.query_items(query=query2, parameters=query_params, enable_cross_partition_query=True))) != 0
         logging.error("POST QUERY 1 [CHECK]")
         logging.error("PRE QUERY 2 [CHECK]")
         usernameIsAdmin = len(list(roomContainer.query_items(query=query, enable_cross_partition_query=True))) != 0
         logging.error("POST QUERY 2 [CHECK]")
-        if usernameIsAdmin or usernameInRoom:
+        if usernameIsAdmin:  # or usernameInRoom:
             raise UserInRoomAlready
 
         # Check the question set exists
