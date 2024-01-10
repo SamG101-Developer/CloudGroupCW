@@ -485,8 +485,11 @@ function connect() {
     //Handle being kicked from the room
     socket.on("kick_from_room", function() {
         for (const timer of app.timers) { clearTimeout(timer); }
-        app.setPage("join");
-        alert("You have been kicked from the room.");
+
+        if (app.room.state !== "end_game") {
+            alert("You have been kicked from the room.");
+            app.setPage("join");
+        }
     });
 
     //Handle quiz create success
