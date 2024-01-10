@@ -527,6 +527,41 @@ function handleUpdateProfileInfo(socket, info){
         }
     )
 }
+
+
+function handleUpdateOverallScore(socket, info) {
+    console.log('Updating overall score')
+    const username = info["username"]
+    const increase_score_by = info["score"]
+
+    let url = "/api/playerInfoGet?code=" + process.env.FUNCTION_APP_KEY;
+    backendGET(url, {username: username}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            let current_score = response["body"]["overall_score"]
+            let new_score = current_score + increase_score_by
+
+            let url = "/api/playerInfoSet?code=" + process.env.FUNCTION_APP_KEY;
+            backendPUT(url, {username: username, overall_score: new_score}).then(
+                function(response) {
+                    console.log("Success:");
+                    console.log(response);
+                },
+                function (error) {
+                    console.error("Error:");
+                    console.error(error);
+                }
+            );
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+
 /*
 All backend requests work using promises.
 A backend request can be done by providing:
@@ -769,6 +804,10 @@ io.on('connection', socket => {
     });
     socket.on('update_profile_info', (info) => {
         handleUpdateProfileInfo(socket,info);
+    })
+
+    socket.on("update_overall_score", (info) => {
+        handleUpdateOverallScore(socket, info);
     })
 });
 
