@@ -401,6 +401,21 @@ function connect() {
         if (app.room.state === "round_score") {
             socket.emit('player_score_update', {adminUsername: app.room.adminUsername, username: app.user.username, score: app.room.score});
         }
+
+        if (app.room.state === "end_game") {
+            if (app.room.is_host) {
+                socket.emit('delete_room', {adminUsername: app.user.username});
+            }
+            app.room.state = "lobby";
+            app.room.currentRound = -1;
+            app.room.currentQuestion = -1;
+            app.room.is_host = false;
+            app.room.currentAnswer = null;
+            app.room.score = 0;
+            app.room.whenLastQuestionAsked = null;
+            app.room.whenLastQuestionAnswered = null;
+            app.room.leaderboard = {};
+        }
     })
 
     //Handle incoming room player list for the current room this client is in

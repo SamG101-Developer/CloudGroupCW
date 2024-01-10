@@ -669,6 +669,11 @@ io.on('connection', socket => {
         handleLeaveRoom(socket);
     });
 
+    //Handle deleting room
+    socket.on('delete_room', (info) => {
+        handleDeleteRoom(all_players_sockets[info['username']]);
+    })
+
     //Handle use power up
     socket.on('use_power_up', () => {
         console.log('Using a power up');
