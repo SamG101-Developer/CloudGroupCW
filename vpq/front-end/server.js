@@ -24,7 +24,7 @@ let all_players_sockets = {};
 
 // URL of the backend API
 // TODO: Add the URL of the function app
-const BACKEND_ENDPOINT = 'http://localhost:7071' // 'https://vpq.azurewebsites.net' // process.env.BACKEND || 'http://localhost:7071';
+const BACKEND_ENDPOINT = process.env.BACKEND || 'http://localhost:7071';
 console.log(process.env.BACKEND);
 console.log(BACKEND_ENDPOINT); 
 
@@ -46,7 +46,8 @@ function handleChat(message) {
 function handleDeleteUser(delUserJSON) {
     console.log(`Deleting user '${delUserJSON.username}'`);
 
-    backendDELETE("/api/playerDel", delUserJSON).then(
+    let url = "/api/playerDel?code=" + process.env.FUNCTION_APP_KEY;
+    backendDELETE(url, delUserJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -62,7 +63,8 @@ function handleDeleteUser(delUserJSON) {
 function handleLogin(socket, loginJSON){
     console.log(`Logging in with username '${loginJSON.username}' and password '${loginJSON.password}'`);
 
-    backendGET("/api/playerLogin", loginJSON).then(
+    let url = "/api/playerLogin?code=" + process.env.FUNCTION_APP_KEY;
+    backendGET(url, loginJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -92,7 +94,8 @@ function handleLogout(info) {
 function handleRegister(socket, registerJSON){
     console.log(`Registering with username '${registerJSON.username}' and password '${registerJSON.password}'`);
 
-    backendPOST("/api/playerAdd", registerJSON).then(
+    let url = "/api/playerAdd?code=" + process.env.FUNCTION_APP_KEY;
+    backendPOST(url, registerJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -115,7 +118,8 @@ function handleRegister(socket, registerJSON){
 function handleAddFriend(addFriendJSON){
     console.log(`Adding friend '${addFriendJSON.friendUsername}' for user '${addFriendJSON.username}'`);
 
-    backendPUT("/api/playerFriendAdd", addFriendJSON).then(
+    let url = "/api/playerFriendAdd?code=" + process.env.FUNCTION_APP_KEY;
+    backendPUT(url, addFriendJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -131,7 +135,8 @@ function handleAddFriend(addFriendJSON){
 function handleDeleteFriend(delFriendJSON){
     console.log(`Deleting friend '${delFriendJSON.friendUsername}' for user '${delFriendJSON.username}'`);
 
-    backendPUT("/api/playerFriendDel", delFriendJSON).then(
+    let url = "/api/playerFriendDel?code=" + process.env.FUNCTION_APP_KEY;
+    backendPUT(url, delFriendJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -150,7 +155,8 @@ function handleGetPlayerQuestions(socket, getQuestionsJSON){
     // First get a list of all the id's for the user
     // Next get all question data for each question ID
     //Finally, send it to the client
-    backendGET("/api/playerQuestionGroupsGet", getQuestionsJSON).then(
+    let url = "/api/playerQuestionGroupsGet?code=" + process.env.FUNCTION_APP_KEY;
+    backendGET(url, getQuestionsJSON).then(
         async function(response) {
             console.log("Success:");
             console.log(response);
@@ -158,7 +164,8 @@ function handleGetPlayerQuestions(socket, getQuestionsJSON){
             let questionsRetrieved = [];
             // For each ID get all the question data and save it to an array
             for (let id of questionIds){
-                 await backendGET("/api/questionGet", id).then(
+                let url = "/api/questionGet?code=" + process.env.FUNCTION_APP_KEY;
+                await backendGET(url, id).then(
                     function(response) {
                         console.log("Success:");
                         console.log(response);
@@ -188,7 +195,8 @@ function handleGetPlayerQuestions(socket, getQuestionsJSON){
 
 function handleQuizCreate(quizJSON){
     console.log(`Creating a quiz using the JSON '${quizJSON}'`);
-    backendPOST("/api/questionSetAdd", quizJSON).then(
+    let url = "/api/questionSetAdd?code=" + process.env.FUNCTION_APP_KEY;
+    backendPOST(url, quizJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -203,7 +211,8 @@ function handleQuizCreate(quizJSON){
 //Get Room List
 function handleGetRoomList(socket) {
     console.log(`Getting a list of all rooms`);
-    backendGET("/api/roomAllGet", {}).then(
+    let url = "/api/roomAllGet?code=" + process.env.FUNCTION_APP_KEY;
+    backendGET(url, {}).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -224,7 +233,8 @@ function handleIncrementGameState(socket, info) {
     const gameState = info["gameState"];
 
     // Get all the players in the room
-    backendGET("/api/roomInfoGet", {adminUsername: adminUsername}).then(
+    let url = "/api/roomInfoGet?code=" + process.env.FUNCTION_APP_KEY;
+    backendGET(url, {adminUsername: adminUsername}).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -250,7 +260,8 @@ function handlePlayerScoreUpdate(socket, info) {
     const adminUsername = info["adminUsername"];
 
     // Get all the players in the room
-    backendGET("/api/roomInfoGet", {adminUsername: adminUsername}).then(
+    let url = "/api/roomInfoGet?code=" + process.env.FUNCTION_APP_KEY;
+    backendGET(url, {adminUsername: adminUsername}).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -285,7 +296,8 @@ function handleDeleteRoom(socket) {
         return;
     }
 
-    backendDELETE("/api/roomSessionDel", {username: username}).then(
+    let url = "/api/roomSessionDel?code=" + process.env.FUNCTION_APP_KEY;
+    backendDELETE(url, {username: username}).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -312,7 +324,8 @@ function handleDeleteRoom(socket) {
 function handleCreateRoom(socket, info) {
     console.log(`Creating a room`);
 
-    backendPOST("/api/roomSessionAdd", info).then(
+    let url = "/api/roomSessionAdd?code=" + process.env.FUNCTION_APP_KEY;
+    backendPOST(url, info).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -337,13 +350,15 @@ function handleJoinRoom(socket, room) {
     console.log(room)
 
     // Send a POST request to the room to add a player to it.
-    backendPOST("/api/roomPlayerAdd", room).then(
+    let url = "/api/roomPlayerAdd?code=" + process.env.FUNCTION_APP_KEY;
+    backendPOST(url, room).then(
         function(response) {
             console.log("Success:");
             console.log(response);
 
             // Get all the players in the room
-            backendGET("/api/roomInfoGet", {adminUsername: room['adminUsername']}).then(
+            let url = "/api/roomInfoGet?code=" + process.env.FUNCTION_APP_KEY;
+            backendGET(url, {adminUsername: room['adminUsername']}).then(
                 function(response) {
                     console.log("Success:");
                     console.log(response);
@@ -354,7 +369,8 @@ function handleJoinRoom(socket, room) {
                         players.push(room['adminUsername']);
 
                         // Get the questions belonging to the question set for this room.
-                        backendGET("/api/questionSetQuestionsGet", {question_set_id: response['question_set_id']}).then(
+                        let url = "/api/questionSetQuestionsGet?code=" + process.env.FUNCTION_APP_KEY;
+                        backendGET(url, {question_set_id: response['question_set_id']}).then(
                             function(response) {
                                 console.log("Success:");
                                 console.log(response);
@@ -404,7 +420,8 @@ function handleLeaveRoom(socket) {
     console.log(`Leaving a room`);
     console.log(room)
 
-    backendDELETE("/api/roomPlayerDel", {}).then(
+    let url = "/api/roomPlayerDel?code=" + process.env.FUNCTION_APP_KEY;
+    backendDELETE(url, {}).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -427,7 +444,8 @@ function handleGetPlayerInfo(socket){
             break;
         }
     }
-    backendGET("/api/playerInfoGet",{'username':username}).then(
+    let url = "/api/playerInfoGet?code=" + process.env.FUNCTION_APP_KEY;
+    backendGET(url,{'username':username}).then(
         function (response){
             console.log("Success:");
             console.log(response);
@@ -453,7 +471,8 @@ function handleUpdateProfileInfo(socket, info){
             }
     }
     info['username'] = username;
-    backendPUT("/api/playerInfoSet",info).then(
+    let url = "/api/playerInfoSet?code=" + process.env.FUNCTION_APP_KEY;
+    backendPUT(url,info).then(
         function (response){
             console.log("Success:")
             console.log(response)

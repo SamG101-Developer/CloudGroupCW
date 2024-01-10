@@ -4,6 +4,10 @@ env: flex
 manual_scaling:
   instances: 1
 
+env_variables:
+  BACKEND: "https://vpq.azurewebsites.net"
+  FUNCTION_APP_KEY: "hoz16bfmcoYVX2n0IrqnT4Qo0kDOjtzc72FArQi_qbAqAzFuPbtw4Q=="
+
 resources:
   cpu: 1
   memory_gb: 0.5
