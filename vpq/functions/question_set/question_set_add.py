@@ -38,6 +38,7 @@ def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
         reqJson = req.get_json()
         logging.info(f"Python HTTP trigger function processed a request to add a question set: JSON: {reqJson}.")
 
+
         # Check the question set is valid
         questionSet = QuestionSet(reqJson)
         questionSet.isQuestionsValid()
@@ -56,15 +57,19 @@ def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
         for quizRound in questionSetList:
             questionSetToAdd.append([])
             for question in quizRound:
+                logging.error(question)
                 query = ("SELECT * FROM c WHERE c.question='{0}' AND c.question_type='{1}' AND c.answers={2}"
                          " AND c.correct_answer='{3}'").format(question['question'], question['question_type'],
                                                                question['answers'], question['correct_answer'])
 
                 dbQuestion = list(questionContainer.query_items(query=query, enable_cross_partition_query=True))
                 if len(dbQuestion) == 0:
+                    logging.error("Requesting a new question to be added")
                     response = requests.post(URL, data=json.dumps(question))
                     newQuestions.append([question, None])
+                    logging.error("New Questions:"+str(newQuestions))
                     questionSetToAdd[roundCount].append(question['question'])
+                    logging.error("Q to add:" + str(questionSetToAdd))
                 else:
                     questionSetToAdd[roundCount].append(dbQuestion[0]['id'])
             roundCount += 1

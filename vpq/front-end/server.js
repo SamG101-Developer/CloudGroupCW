@@ -521,6 +521,7 @@ function backendGET(path, body) {
 
 function backendPOST(path, body) {
 	return new Promise((success, failure) => {
+        console.log("url", BACKEND_ENDPOINT + path)
 		request.post(BACKEND_ENDPOINT + path, {
 			json: true,
 			body: body
