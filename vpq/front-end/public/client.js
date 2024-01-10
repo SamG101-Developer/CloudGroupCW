@@ -17,7 +17,8 @@ var app = new Vue({
         messages: [],
         questionSearchUsernameField: "",
 
-        user: { username: null,
+        user: {
+            username: null,
             password: null,
             state: null,
             firstName: null,
@@ -52,7 +53,7 @@ var app = new Vue({
     },
     methods: {
         setPage(page) {
-            if (["create", "host", "join","profile"].includes(page) && !this.user.username) {
+            if (["create", "host", "join", "profile"].includes(page) && !this.user.username) {
                 alert("You must be logged in to do that.");
                 return;
             }
@@ -99,7 +100,27 @@ var app = new Vue({
         },
         login(username, password) {
             socket.emit('login', {"username": username, "password": password});
+            document.getElementById("nav-profile-button").innerText += " (" + username + ")";
+            // document.getElementById("login-password").value = "";
+            // document.getElementById("register-password").value = "";
             this.showLoading();
+        },
+        logout() {
+            if (!this.user.username) {
+                alert("You must be logged in to do that.");
+                return;
+            }
+            socket.emit('logout', {"username": this.user.username});
+            document.getElementById("nav-profile-button").innerText = "Profile";
+            this.user.username = null;
+            this.user.password = null;
+            this.user.state = null;
+            this.user.firstName = null;
+            this.user.lastName = null;
+            this.user.currency = null;
+            this.user.premiumCurrency = null;
+            this.user.overallScore = null;
+            this.setPage("login");
         },
         roomList() {
             socket.emit('get_room_list');
@@ -298,7 +319,7 @@ function connect() {
     socket.on('confirm_login', function(info) {
         app.hideLoading();
         app.user.username = info["username"];
-        app.user.password = info["password"];
+        app.user.password = info["password"] || "";
         app.setPage("join");
     })
 

@@ -82,6 +82,12 @@ function handleLogin(socket, loginJSON){
     );
 }
 
+function handleLogout(info) {
+    console.log(`Logging out user '${info.username}'`);
+
+    delete all_players_sockets[info.username];
+}
+
 //Player Register
 function handleRegister(registerJSON){
     console.log(`Registering with username '${registerJSON.username}' and password '${registerJSON.password}'`);
@@ -572,6 +578,11 @@ io.on('connection', socket => {
     //Handle login
     socket.on('login', (loginJSON) => {
         handleLogin(socket, loginJSON);
+    });
+
+    //Handle logout
+    socket.on('logout', (info) => {
+        handleLogout(info);
     });
 
     //Handle delete user
