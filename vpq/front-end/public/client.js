@@ -52,6 +52,9 @@ var app = new Vue({
                 alert("You are already logged in. Log out first.");
                 return;
             }
+            if (page === "join") {
+                this.roomList();
+            }
             this.page = page;
         },
 
@@ -182,12 +185,22 @@ var app = new Vue({
                     gameState: "round_score"
                 });
 
-                setTimeout(() => {
-                    socket.emit('increment_game_state', {
-                        adminUsername: this.user.username,
-                        gameState: "round_splash"
-                    });
-                }, 5000);
+                if (this.room.currentRound + 1 < this.room.questions.length) {
+                    setTimeout(() => {
+                        socket.emit('increment_game_state', {
+                            adminUsername: this.user.username,
+                            gameState: "round_splash"
+                        });
+                    }, 5000);
+                }
+                else {
+                    setTimeout(() => {
+                        socket.emit('increment_game_state', {
+                            adminUsername: this.user.username,
+                            gameState: "end_game"
+                        });
+                    }, 5000);
+                }
             }, 5000 + (num_questions_this_round * 10000));
         },
 
@@ -226,7 +239,7 @@ var app = new Vue({
             this.room.leaderboard[info["username"]] = info["score"];
 
             const leaderboard = document.getElementById("leaderboard");
-            const new_player = document.createElement("div");
+            const new_player = document.createElement("h2");
             new_player.innerHTML = info["username"] + ": " + info["score"];
             leaderboard.appendChild(new_player);
 
@@ -251,7 +264,6 @@ function connect() {
         //Set connected state to true
         app.connected = true;
         window.app = app;
-        app.roomList();
     });
     socket.on('confirm_login', function(info) {
         app.hideLoading();
@@ -283,6 +295,7 @@ function connect() {
 
     //Handle incoming list of rooms + updates to it
     socket.on('room_list_all', function(rooms) {
+        app.rooms = [];
         for (let room of rooms) {
             room["id"] = hashUsername(room.adminUsername);
             app.rooms.push(room);
