@@ -21,7 +21,7 @@ class TestRoomSetAdultOnly(unittest.TestCase, MetaTest):
 
         # Create room
         username = self.DEFAULT_PLAYER_JSON['username']
-        requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username": username}))
+        requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username": username,'questionSetID':'DONOTDELETE-ROOMTEST'}))
 
     def tearDown(self):
         try:
