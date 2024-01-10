@@ -16,7 +16,7 @@ except ModuleNotFoundError:
 
 function = func.Blueprint()
 
-@function.route(route="roomSessionDel", auth_level=func.AuthLevel.ANONYMOUS, methods=["DELETE"])
+@function.route(route="roomSessionDel", auth_level=func.AuthLevel.FUNCTION, methods=["DELETE"])
 def roomSessionDel(req: func.HttpRequest) -> func.HttpResponse:
     try:
         logging.info("DELETE REQUEST SENT WITH {}".format(req.get_json()))
@@ -38,8 +38,8 @@ def roomSessionDel(req: func.HttpRequest) -> func.HttpResponse:
         # Retrieve room ID and delete the room
         roomID = rooms[0]['id']
         roomContainer.delete_item(item=roomID, partition_key=roomID)
-        logging.info(f"Room with ID {roomID} deleted successfully.")
-        return func.HttpResponse(body=json.dumps({'result': True, 'msg': 'Room with ID {roomID} deleted successfully'.format(roomID)}), mimetype="application/json")
+        logging.info(f"Room with admin username {username} deleted successfully.")
+        return func.HttpResponse(body=json.dumps({'result': True, 'msg': f'Room with admin username {username} deleted successfully'}), mimetype="application/json")
 
     except RoomDoesNotExist:
         message = RoomDoesNotExist.getMessage()
@@ -48,5 +48,10 @@ def roomSessionDel(req: func.HttpRequest) -> func.HttpResponse:
 
     except CosmosHttpResponseError:
         message = CosmosHttpResponseErrorMessage()
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
+
+    except Exception as e:
+        message = str(e)
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")

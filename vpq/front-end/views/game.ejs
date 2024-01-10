@@ -1,0 +1,26 @@
+<div>
+    <div v-if="room.state == 'lobby'">
+        <%- include('game/lobby'); -%>
+        <div v-if="room.is_host">
+            <button @click="startGame()">Start Game</button>
+        </div>
+    </div>
+    <div v-else-if="room.state == 'round_splash'">
+        <%- include('game/round_splash'); -%>
+    </div>
+    <div v-else-if="room.state == 'question'">
+        <%- include('game/question'); -%>
+    </div>
+    <div v-else-if="room.state == 'answer'">
+        <%- include('game/answer'); -%>
+    </div>
+    <div v-else-if="room.state == 'round_score'">
+        <%- include('game/round_score'); -%>
+    </div>
+    <div v-else-if="room.state == 'end_game'">
+        <%- include('game/end_game'); -%>
+    </div>
+    <div v-else>
+        <h1>Error! [{{ room.state }}]</h1>
+    </div>
+</div>

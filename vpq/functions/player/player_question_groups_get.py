@@ -14,7 +14,7 @@ except ModuleNotFoundError:
 function = func.Blueprint()
 
 
-@function.route(route="playerQuestionGroupsGet", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET"])
+@function.route(route="playerQuestionGroupsGet", auth_level=func.AuthLevel.FUNCTION, methods=["GET"])
 def playerQuestionGroupsGet(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     try:

@@ -19,14 +19,13 @@ app.use('/static', express.static('public'));
 app.get('/', (req, res) => {
     res.render('client');
 });
-//Handle display interface on /display
-// app.get('/display', (req, res) => {
-//     res.render('display');
-// });
+
+let all_players_sockets = {};
 
 // URL of the backend API
 // TODO: Add the URL of the function app
-const BACKEND_ENDPOINT = process.env.BACKEND || 'http://localhost:7071';
+const BACKEND_ENDPOINT = 'http://localhost:7071' // 'https://vpq.azurewebsites.net' // process.env.BACKEND || 'http://localhost:7071';
+console.log(process.env.BACKEND);
 console.log(BACKEND_ENDPOINT); 
 
 //Start the server
@@ -40,7 +39,7 @@ function startServer() {
 //Chat message
 function handleChat(message) {
     console.log('Handling chat: ' + message);
-    io.emit('chat',message);
+    io.emit('chat', message);
 }
 
 //User Deletion
@@ -60,19 +59,33 @@ function handleDeleteUser(delUserJSON) {
 }
 
 //Player Login
-function handleLogin(loginJSON){
+function handleLogin(socket, loginJSON){
     console.log(`Logging in with username '${loginJSON.username}' and password '${loginJSON.password}'`);
 
     backendGET("/api/playerLogin", loginJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
+
+            if (response["result"]) {
+                all_players_sockets[loginJSON.username] = socket;
+                socket.emit("confirm_login", loginJSON)
+            }
+            else {
+                socket.emit("error", response["msg"])
+            }
         },
         function (error) {
             console.error("Error:");
             console.error(error);
         }
     );
+}
+
+function handleLogout(info) {
+    console.log(`Logging out user '${info.username}'`);
+
+    delete all_players_sockets[info.username];
 }
 
 //Player Register
@@ -180,6 +193,261 @@ function handleQuizCreate(quizJSON){
     );
 }
 
+//Get Room List
+function handleGetRoomList(socket) {
+    console.log(`Getting a list of all rooms`);
+    backendGET("/api/roomAllGet", {}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            socket.emit('room_list_all', response["rooms"]);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+//Increment Room State
+function handleIncrementGameState(socket, info) {
+    console.log(`Incrementing the state of the room`);
+
+    const adminUsername = info["adminUsername"];
+    const gameState = info["gameState"];
+
+    // Get all the players in the room
+    backendGET("/api/roomInfoGet", {adminUsername: adminUsername}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            let players = response["players"];
+
+            // For each player in the room, send them an increment state message
+            all_players_sockets[adminUsername].emit("increment_game_state", gameState);
+            for (let player of players) {
+                const player_socket = all_players_sockets[player];
+                player_socket.emit('increment_game_state', gameState);
+            }
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+function handlePlayerScoreUpdate(socket, info) {
+    console.log(`Updating the scores of the players in the room`);
+
+    const adminUsername = info["adminUsername"];
+
+    // Get all the players in the room
+    backendGET("/api/roomInfoGet", {adminUsername: adminUsername}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            let players = response["players"];
+
+            // For each player in the room, send them an increment state message
+            all_players_sockets[adminUsername].emit("player_score_update", info);
+            for (let player of players) {
+                const player_socket = all_players_sockets[player];
+                player_socket.emit('player_score_update', info);
+            }
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+// Delete Room
+function handleDeleteRoom(socket) {
+    console.log(`Deleting a room`);
+
+    let username = "";
+    for (let [key, value] of Object.entries(all_players_sockets)) {
+        if (value === socket) {
+            username = key;
+        }
+    }
+    if (!username) {
+        return;
+    }
+
+    backendDELETE("/api/roomSessionDel", {username: username}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+
+            // TODO : Get list of everyone in the room -> Send to everyone on the list
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+//Create Room
+function handleCreateRoom(socket, info) {
+    console.log(`Creating a room`);
+
+    backendPOST("/api/roomSessionAdd", info).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            if (response["result"]) {
+                io.emit('room_list_add', {adminUsername: info['username'], adultOnly: info['adultOnly'], password: info['password']})
+                socket.emit('confirm_admin_room_create')
+            }
+            else {
+                socket.emit('error', response["msg"])
+            }
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+//Join Room
+function handleJoinRoom(socket, room) {
+    console.log(`Joining a room`);
+    console.log(room)
+
+    // Send a POST request to the room to add a player to it.
+    backendPOST("/api/roomPlayerAdd", room).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+
+            // Get all the players in the room
+            backendGET("/api/roomInfoGet", {adminUsername: room['adminUsername']}).then(
+                function(response) {
+                    console.log("Success:");
+                    console.log(response);
+
+                    if (response["result"]) {
+                        let room_questions;
+                        let players = response["players"];
+                        players.push(room['adminUsername']);
+
+                        // Get the questions belonging to the question set for this room.
+                        backendGET("/api/questionSetQuestionsGet", {question_set_id: response['question_set_id']}).then(
+                            function(response) {
+                                console.log("Success:");
+                                console.log(response);
+                                room_questions = response["questions"];
+                                // shuffle the answers in the questions
+
+                                for (const round of room_questions) {
+                                    for (const question of round) {
+                                        question["answers"].sort(() => Math.random() - 0.5);
+                                    }
+                                }
+
+                                // For each player in the room, send them an increment state message
+                                for (let player of players) {
+                                    const player_socket = all_players_sockets[player];
+                                    player_socket.emit('confirm_join_room', room_questions);
+                                    player_socket.emit('room_player_list', players);
+                                }
+                            },
+                            function (error) {
+                                console.error("Error:");
+                                console.error(error);
+                            }
+                        );
+
+                    }
+                    else {
+                        socket.emit("error", response["msg"]);
+                    }
+                },
+
+                function (error) {
+                    console.error("Error:");
+                    console.error(error);
+                }
+            );
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+//Leave Room
+function handleLeaveRoom(socket) {
+    console.log(`Leaving a room`);
+    console.log(room)
+
+    backendDELETE("/api/roomPlayerDel", {}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+
+            // TODO : Get list of everyone in the room -> Send to everyone on the list
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+function handleGetPlayerInfo(socket){
+    var username = null;
+    console.log('Getting player info')
+    for (let [key, value] of Object.entries(all_players_sockets)) {
+            if (value === socket) {
+                username = key;
+            }
+        }
+    backendGET("/api/playerInfoGet",{'username':username}).then(
+        function (response){
+            console.log("Success:");
+            console.log(response);
+            if (response['result']===true){
+                console.log("emitting to socket")
+                socket.emit('profileInfoReceived',response['body'])
+            }
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    )
+}
+
+function handleUpdateProfileInfo(socket, info){
+    console.log('Updating player info')
+    var username = null;
+    for (let [key, value] of Object.entries(all_players_sockets)) {
+            if (value === socket) {
+                username = key;
+            }
+    }
+    info['username'] = username;
+    backendPUT("/api/playerInfoSet",info).then(
+        function (response){
+            console.log("Success:")
+            console.log(response)
+            if (response['result']===true){
+                console.log("emitting to client")
+                socket.emit('profileInfoUpdated');}
+        },
+        function (error){
+            console.error("Error.")
+            console.error(error)
+        }
+    )
+}
 /*
 All backend requests work using promises.
 A backend request can be done by providing:
@@ -198,7 +466,7 @@ backendGET("/api/playerAdd", {}).then(
 */
 
 function backendGET(path, body) {
-    console.log(BACKEND_ENDPOINT + path);
+    console.log(BACKEND_ENDPOINT + path)
 	return new Promise((success, failure) => {
 		request.get(BACKEND_ENDPOINT + path, {
 			json: true,
@@ -259,6 +527,7 @@ function backendDELETE(path, body) {
     });
 }
 
+
 /*
 Alternatively, backend requests could work with a callback function (which is called when a response is recieved)
 If you would like to use a callback based function, this is the code:
@@ -290,6 +559,15 @@ io.on('connection', socket => {
     //Handle disconnection
     socket.on('disconnect', () => {
         console.log('Dropped connection');
+
+        handleDeleteRoom(socket);
+
+        // Remove the username-socket pair from the list
+        for (let [key, value] of Object.entries(all_players_sockets)) {
+            if (value === socket) {
+                delete all_players_sockets[key];
+            }
+        }
     });
 
     //Handle register
@@ -299,7 +577,12 @@ io.on('connection', socket => {
 
     //Handle login
     socket.on('login', (loginJSON) => {
-        handleLogin(loginJSON);
+        handleLogin(socket, loginJSON);
+    });
+
+    //Handle logout
+    socket.on('logout', (info) => {
+        handleLogout(info);
     });
 
     //Handle delete user
@@ -329,18 +612,19 @@ io.on('connection', socket => {
     });
 
     //Handle create room
-    socket.on('create_room', () => {
-        console.log('Creating a room');
+    socket.on('create_room', (info) => {
+        console.log("Creating room with info " + Object.entries(info))
+        handleCreateRoom(socket, info);
     });
 
     //Handle join room
-    socket.on('join_room', () => {
-        console.log('Joining a room');
+    socket.on('join_room', (room) => {
+        handleJoinRoom(socket, room)
     });
 
     //Handle leave room
     socket.on('leave_room', () => {
-        console.log('Leaving a room');
+        handleLeaveRoom(socket);
     });
 
     //Handle use power up
@@ -367,6 +651,29 @@ io.on('connection', socket => {
     socket.on('get_player_questions', (getQuestionsJSON) => {
         handleGetPlayerQuestions(socket, getQuestionsJSON);
     });
+
+    //Handle request to get a list of all rooms
+    socket.on('get_room_list', () => {
+        handleGetRoomList(socket);
+    });
+
+    //Handle telling all the players in a lobby/game to increment their game state
+    socket.on('increment_game_state', (info) => {
+        handleIncrementGameState(socket, info);
+    });
+
+    //Handle telling all the players in a lobby/game to receive the scores for the round that just happened
+    socket.on('player_score_update', (info) => {
+        console.log("Received player score update " + Object.entries(info));
+        handlePlayerScoreUpdate(socket, info);
+    });
+    //Handle getting current player info
+    socket.on('get_player_info', () => {
+        handleGetPlayerInfo(socket);
+    });
+    socket.on('update_profile_info', (info) => {
+        handleUpdateProfileInfo(socket,info);
+    })
 });
 
 //Start server

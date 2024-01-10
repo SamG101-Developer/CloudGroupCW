@@ -15,7 +15,7 @@ except ModuleNotFoundError:
 function = func.Blueprint()
 
 
-@function.route(route="playerDel", auth_level=func.AuthLevel.ANONYMOUS, methods=["DELETE"])
+@function.route(route="playerDel", auth_level=func.AuthLevel.FUNCTION, methods=["DELETE"])
 def playerDel(req: func.HttpRequest) -> func.HttpResponse:
     try:
         cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])

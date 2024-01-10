@@ -18,7 +18,7 @@ except ModuleNotFoundError:
 function = func.Blueprint()
 
 
-@function.route(route="roomPlayerDel", auth_level=func.AuthLevel.ANONYMOUS, methods=["DELETE"])
+@function.route(route="roomPlayerDel", auth_level=func.AuthLevel.FUNCTION, methods=["DELETE"])
 def roomPlayerDel(req: func.HttpRequest) -> func.HttpResponse:
     try:
         # Set up Cosmos DB client

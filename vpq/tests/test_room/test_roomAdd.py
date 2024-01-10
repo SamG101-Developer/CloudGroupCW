@@ -12,6 +12,7 @@ class TestRoomAdd(unittest.TestCase, MetaTest):
     TEST_URL_PLAYER_ADD = "http://localhost:7071/api/playerAdd?code={}".format(MetaTest.key)
     TEST_URL_ROOM_DELETE = "http://localhost:7071/api/roomSessionDel?code={}".format(MetaTest.key)
     TEST_URL_ROOM_PLAYER_ADD = "http://localhost:7071/api/roomPlayerAdd?code={}".format(MetaTest.key)
+    TEST_URL_QS_ADD = "http://localhost:7071/api/questionSetAdd?code={}".format(MetaTest.key)
 
     def setUp(self):
         # If the default player already exists, delete it
@@ -23,6 +24,7 @@ class TestRoomAdd(unittest.TestCase, MetaTest):
         # Add the player to the database
         requests.post(self.TEST_URL_PLAYER_ADD, data=json.dumps(self.DEFAULT_PLAYER_JSON))
 
+
     def tearDown(self):
         try:
             requests.delete(self.TEST_URL_ROOM_DELETE, data=json.dumps({"username":self.DEFAULT_PLAYER_JSON['username']}))
@@ -33,7 +35,8 @@ class TestRoomAdd(unittest.TestCase, MetaTest):
 
         # Create room
         username = self.DEFAULT_PLAYER_JSON['username']
-        response = requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username":username}))
+        qs = self.DEFAULT_PLAYER_JSON
+        response = requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username":username,'questionSetID':'DONOTDELETE-ROOMTEST'}))
 
         # Check room has been created
         query = "SELECT * FROM p where p.room_admin='{}'".format(self.DEFAULT_PLAYER_JSON['username'])
@@ -43,7 +46,7 @@ class TestRoomAdd(unittest.TestCase, MetaTest):
         # Check correct output message received
         roomIDQuery = "SELECT * FROM r where r.room_admin='{}'".format(username)
         roomID = list(self.roomContainer.query_items(query=roomIDQuery, enable_cross_partition_query=True))[0]['id']
-        responseOutput = {'result': True, "msg": "Room created with id:{}".format(roomID)}
+        responseOutput = {'result': True, "msg": "Room created with id:{}".format(roomID),'adminUsername':'bsab1g21'}
         self.assertEqual(responseOutput, response.json())
 
 
@@ -51,8 +54,8 @@ class TestRoomAdd(unittest.TestCase, MetaTest):
     def testUsernameAlreadyAdmin(self):
         # Try to create a room
         username = self.DEFAULT_PLAYER_JSON['username']
-        requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username": username}))
-        response = requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username": username}))
+        requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username": username,'questionSetID':'DONOTDELETE-ROOMTEST'}))
+        response = requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username": username,'questionSetID':'DONOTDELETE-ROOMTEST'}))
 
 
         self.assertEqual({'result': False, "msg":"User is already in another room."}, response.json())
@@ -67,7 +70,7 @@ class TestRoomAdd(unittest.TestCase, MetaTest):
 
         # Create room
         username = self.DEFAULT_PLAYER_JSON['username']
-        response = requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username": username}))
+        response = requests.post(self.TEST_URL_ROOM_ADD, data=json.dumps({"username": username,'questionSetID':'DONOTDELETE-ROOMTEST'}))
 
         # Check room has not been created
         query = "SELECT * FROM p where p.room_admin='{}'".format(self.DEFAULT_PLAYER_JSON['username'])

@@ -1,0 +1,6 @@
+<div id="joinLobbyContainer" class="container-fluid">
+    <h2>Active rooms:</h2>
+    <div v-for="room in rooms">
+        <button id="joinLobbyOption" @click="joinRoom(room)">{{ room.id }}</button>
+    </div>
+</div>

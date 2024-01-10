@@ -1,0 +1,7 @@
+<div>
+    <h1>Host a Room!</h1>
+    <input type="text" placeholder="Question Set ID" v-model="room_questionSetID"/>
+    <input type="checkbox" value="18+ ?" v-model="room_adultOnly"/>
+    <input type="text" placeholder="Password (empty for no password)" v-model="room_password"/>
+    <button @click="createRoom(room_questionSetID, room_adultOnly, room_password)">Create Room</button>
+</div>

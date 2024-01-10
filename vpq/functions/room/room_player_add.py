@@ -1,4 +1,3 @@
-import azure.functions as func
 import logging
 import json
 import os
@@ -18,7 +17,7 @@ except ModuleNotFoundError:
 function = func.Blueprint()
 
 
-@function.route(route="roomPlayerAdd", auth_level=func.AuthLevel.ANONYMOUS, methods=["POST"])
+@function.route(route="roomPlayerAdd", auth_level=func.AuthLevel.FUNCTION, methods=["POST"])
 def roomPlayerAdd(req: func.HttpRequest) -> func.HttpResponse:
     try:
         cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
@@ -44,7 +43,7 @@ def roomPlayerAdd(req: func.HttpRequest) -> func.HttpResponse:
         room = list(roomContainer.query_items(query=query, enable_cross_partition_query=True))
 
         # Check if room exists
-        if len(room)==0:
+        if len(room) == 0:
             raise RoomDoesNotExist
 
         # Constants
@@ -58,16 +57,16 @@ def roomPlayerAdd(req: func.HttpRequest) -> func.HttpResponse:
         usernameInRoom = len(list(roomContainer.query_items(query=query2, parameters=query_params, enable_cross_partition_query=True))) != 0
         usernameIsAdmin = len(list(roomContainer.query_items(query=query3, enable_cross_partition_query=True))) != 0
 
-        if (usernameIsAdmin or usernameInRoom):
+        if usernameIsAdmin or usernameInRoom:
             raise UserInRoomAlready
 
-        # add player to list and change list in database
+        # Add player to list and change list in database
         playersList.append(usernameToAdd)
         item_to_modify = roomContainer.read_item(item=roomId, partition_key=roomId)
         item_to_modify['players_in_room'] = playersList
         roomContainer.replace_item(item=item_to_modify, body=item_to_modify)
 
-        return func.HttpResponse(body=json.dumps({'result': True, "msg":"Successfully added player to room."}), mimetype="application/json")
+        return func.HttpResponse(body=json.dumps({'result': True, "msg": "Successfully added player to room."}), mimetype="application/json")
 
     except UserInRoomAlready:
         message = UserInRoomAlready.getMessage()
@@ -86,5 +85,10 @@ def roomPlayerAdd(req: func.HttpRequest) -> func.HttpResponse:
 
     except CosmosHttpResponseError:
         message = CosmosHttpResponseErrorMessage()
+        logging.error(message)
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
+
+    except Exception as e:
+        message = str(e)
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")

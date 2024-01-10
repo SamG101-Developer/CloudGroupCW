@@ -20,7 +20,7 @@ except ModuleNotFoundError:
 function = func.Blueprint()
 
 
-@function.route(route="roomFlagPasswordSet",auth_level=func.AuthLevel.ANONYMOUS, methods=['POST'])
+@function.route(route="roomFlagPasswordSet",auth_level=func.AuthLevel.FUNCTION, methods=['POST'])
 def roomFlagPasswordSet(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     try:
