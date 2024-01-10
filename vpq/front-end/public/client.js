@@ -18,6 +18,7 @@ var app = new Vue({
         questionSearchUsernameField: "",
         timers: [],
         queriedQuestions: [],
+        questionSetIDs: [],
 
         user: {
             username: null,
@@ -66,6 +67,9 @@ var app = new Vue({
             if (page === "join") {
                 this.roomList();
             }
+            else if (page === "host"){
+                this.getQuestionIDs();
+            }
             else if (page==="profile"){
                 socket.emit('get_player_info');
             }
@@ -78,6 +82,10 @@ var app = new Vue({
 
         setQueriedQuestions(questionsRetrieved){
             this.queriedQuestions = questionsRetrieved;
+        },
+
+        setQuestionSetIDs(questionIDs){
+            this.questionSetIDs = questionIDs;
         },
 
         // This function is here so that a vue variable can be passed to an external file
@@ -169,14 +177,11 @@ var app = new Vue({
         leaveRoom() {
             socket.emit('leave_room');
         },
-        usePowerUp() {
-            socket.emit('use_power_up')
-        },
         createQuiz(quizJSON) {
             socket.emit('create_quiz', quizJSON);
         },
-        deleteQuiz() {
-            socket.emit('delete_quiz')
+        getQuestionIDs(){
+            socket.emit("get_question_set_ids");
         },
         updateQuiz() {
             socket.emit('update_quiz')
@@ -484,4 +489,9 @@ function connect() {
     socket.on("quiz_create_error", function() {
         alert("There was an error generating your quiz.");
     });
+
+    //Handle getting question set IDs
+    socket.on("receive_question_IDs", function(questionIDs) {
+        app.setQuestionSetIDs(questionIDs);
+    })
 }

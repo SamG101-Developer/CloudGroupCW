@@ -227,6 +227,23 @@ function handleGetRoomList(socket) {
     );
 }
 
+// Get Question Set IDs
+function handleGetQuestionSetIDs(socket) {
+    console.log(`Getting a list of all question set IDs`);
+    let url = "/api/questionsetallget?code=" + process.env.FUNCTION_APP_KEY;
+    backendGET(url, {}).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+            socket.emit('receive_question_IDs', response["questionSetIDs"] || []);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
 //Increment Room State
 function handleIncrementGameState(socket, info) {
     console.log(`Incrementing the state of the room`);
@@ -646,6 +663,12 @@ io.on('connection', socket => {
     //Handle add favourite quiz
     socket.on('add_favourite_quiz', () => {
         console.log('Adding a favourite quiz');
+    });
+
+    //Handle get quiz ids
+    socket.on('get_question_set_ids', () => {
+        console.log('Adding a favourite quiz');
+        handleGetQuestionSetIDs();
     });
 
     //Handle delete favourite quiz
