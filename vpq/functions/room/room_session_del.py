@@ -16,7 +16,7 @@ except ModuleNotFoundError:
 
 function = func.Blueprint()
 
-@function.route(route="roomSessionDel", auth_level=func.AuthLevel.ANONYMOUS, methods=["DELETE"])
+@function.route(route="roomSessionDel", auth_level=func.AuthLevel.FUNCTION, methods=["DELETE"])
 def roomSessionDel(req: func.HttpRequest) -> func.HttpResponse:
     try:
         logging.info("DELETE REQUEST SENT WITH {}".format(req.get_json()))

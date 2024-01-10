@@ -15,7 +15,7 @@ except ModuleNotFoundError:
 function = func.Blueprint()
 
 
-@function.route(route="playerLogin", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET"])
+@function.route(route="playerLogin", auth_level=func.AuthLevel.FUNCTION, methods=["GET"])
 def playerLogin(req: func.HttpRequest) -> func.HttpResponse:
     try:
         cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])
@@ -33,7 +33,7 @@ def playerLogin(req: func.HttpRequest) -> func.HttpResponse:
         if not usernamePasswordMatch:
             raise IncorrectUsernameOrPasswordError
 
-        logging.info("User Login Successful")
+        logging.info(f"User Login Successful ({reqJson['username']})")
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
 
     except IncorrectUsernameOrPasswordError:

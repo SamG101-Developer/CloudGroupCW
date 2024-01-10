@@ -17,7 +17,7 @@ except ModuleNotFoundError:
 function = func.Blueprint()
 
 
-@function.route(route="playerFaveQuizAdd", auth_level=func.AuthLevel.ANONYMOUS, methods=["PUT"])
+@function.route(route="playerFaveQuizAdd", auth_level=func.AuthLevel.FUNCTION, methods=["PUT"])
 def playerFaveQuizAdd(req: func.HttpRequest) -> func.HttpResponse:
     try:
         cosmos = CosmosClient.from_connection_string(os.environ['AzureCosmosDBConnectionString'])

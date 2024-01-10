@@ -21,8 +21,7 @@ def roomAllGet(req: func.HttpRequest) -> func.HttpResponse:
         roomContainer = database.get_container_client(os.environ['Container_Rooms'])
 
         # Get the request
-        reqJson = req.get_json()
-        logging.info('Python HTTP trigger function processed a request to get all rooms. JSON: {}'.format(reqJson))
+        logging.info('Python HTTP trigger function processed a request to get all rooms.')
 
         # Get all rooms
         query = "SELECT p.room_admin, p.adult_only FROM p"
