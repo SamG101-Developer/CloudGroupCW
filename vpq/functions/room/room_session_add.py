@@ -31,9 +31,9 @@ def roomSessionAdd(req: func.HttpRequest) -> func.HttpResponse:
         dictData = {
             "room_admin": username,
             "players_in_room": [],
-            "question_set_id": reqJson["questionSetID"],
-            "adult_only": reqJson["adultOnly"],
-            "password": reqJson["password"]}
+            "question_set_id": reqJson.get("questionSetID", ""),
+            "adult_only": reqJson.get("adultOnly", False),
+            "password": reqJson.get("password", "")}
 
         logging.info(f"Python HTTP trigger function processed a request to add a room: JSON: {dictData}.")
 
