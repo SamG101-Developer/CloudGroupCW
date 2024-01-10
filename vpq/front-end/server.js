@@ -193,17 +193,19 @@ function handleGetPlayerQuestions(socket, getQuestionsJSON){
     );
 }
 
-function handleQuizCreate(quizJSON){
+function handleQuizCreate(socket, quizJSON){
     console.log(`Creating a quiz using the JSON '${quizJSON}'`);
     let url = "/api/questionSetAdd?code=" + process.env.FUNCTION_APP_KEY;
     backendPOST(url, quizJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
+            socket.emit("quiz_create_success");
         },
         function (error) {
             console.error("Error:");
             console.error(error);
+            socket.emit("quiz_create_error");
         }
     );
 }
@@ -674,7 +676,7 @@ io.on('connection', socket => {
 
     //Handle create quiz
     socket.on('create_quiz', (quizJSON) => {
-        handleQuizCreate(quizJSON);
+        handleQuizCreate(socket, quizJSON);
     });
 
     //Handle delete quiz

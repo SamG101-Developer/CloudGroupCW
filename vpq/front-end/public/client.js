@@ -173,7 +173,6 @@ var app = new Vue({
             socket.emit('use_power_up')
         },
         createQuiz(quizJSON) {
-            // TODO: On the server end this will create a new question set and any questions that are new will be added to the database
             socket.emit('create_quiz', quizJSON);
         },
         deleteQuiz() {
@@ -447,5 +446,15 @@ function connect() {
         for (const timer of app.timers) { clearTimeout(timer); }
         app.setPage("join");
         alert("You have been kicked from the room.");
+    });
+
+    //Handle quiz create success
+    socket.on("quiz_create_success", function() {
+        alert("Your quiz has been created successfully");
+    });
+
+    //Handle quiz create incomplete
+    socket.on("quiz_create_error", function() {
+        alert("There was an error generating your quiz.");
     });
 }
