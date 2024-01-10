@@ -1,6 +1,6 @@
 let tabCount = 0;
 let currentTab = 0;
-let questionTypes = ["Multiple Choice", "Numeric", "Pick the Letter", "Full Answer"];
+let questionTypes = ["Multiple Choice", "Pick the Letter"];
 /*
 radioNumber needs to be unique for each question therefore it will be incremented each time it is used.
 The number does not correspond to anything and will not be used for identification and can therefore be ignored.
@@ -167,12 +167,6 @@ function loadQuestionType(questionType, questionDiv, question){
         questionDiv.removeChild(questionDiv.lastElementChild);
     }
 
-    /*
-    This switch statement is slightly unusual.
-    Due to three of the categories having the same needs at the current moment I have removed 'break' from them so that
-    I don't duplicate the code. If in the future these need different inputs then the break statement will be introduced
-    again.
-     */
     switch (questionType){
         case "Multiple Choice":
         {
@@ -211,15 +205,7 @@ function loadQuestionType(questionType, questionDiv, question){
             questionDiv.appendChild(optionsContainer);
             break;
         }
-        case "Numeric":
-        {
-
-        }
         case "Pick the Letter":
-        {
-
-        }
-        case "Full Answer":
         {
             let answerInput = document.createElement("input");
             answerInput.type = "text";

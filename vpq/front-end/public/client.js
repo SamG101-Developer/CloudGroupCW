@@ -196,6 +196,13 @@ var app = new Vue({
             this.timers.push(setTimeout(() => Array.from(answer_buttons).forEach(button => button.disabled = false), 10000 - (this.room.whenLastQuestionAnswered - this.room.whenLastQuestionAsked)));
 
         },
+        selectLetterAnswer(number){
+            this.room.currentAnswer = number;
+            this.room.whenLastQuestionAnswered = Date.now();
+            const answer_buttons = document.getElementsByClassName("letter-box");
+            Array.from(answer_buttons).forEach(button => button.disabled = true);
+            this.timers.push(setTimeout(() => Array.from(answer_buttons).forEach(button => button.disabled = false), 10000 - (this.room.whenLastQuestionAnswered - this.room.whenLastQuestionAsked)));
+        },
         flowGameRound() {
             // Only run from the admin.
             const num_questions_this_round = this.room.questions[this.room.currentRound].length;
@@ -249,8 +256,13 @@ var app = new Vue({
 
         handleAnswerPage() {
             this.$nextTick(() => {
-                const answerBoxes = document.getElementById("answer-container-2").children[0].children;
-                const correctAnswer = this.room.questions[this.room.currentRound][this.room.currentQuestion]["correct_answer"];
+                let answerBoxes = document.getElementById("answer-container-2").children[0].children;
+                let correctAnswer = this.room.questions[this.room.currentRound][this.room.currentQuestion]["correct_answer"];
+                if ( this.room.questions[this.room.currentRound][this.room.currentQuestion]["question_type"] === "Pick the Letter"){
+                    correctAnswer = correctAnswer.slice(0, 1).toUpperCase();
+                    console.log(correctAnswer);
+                    answerBoxes = document.getElementById("answer-container-2").children[0].children;
+                }
                 const correctAnswerBox = Array.from(answerBoxes).find(box => box.innerText === correctAnswer);
 
                 // Make the selected answer box red, and the correct answer box green (green will override red).
@@ -263,7 +275,7 @@ var app = new Vue({
 
                 correctAnswerBox.style.backgroundColor = "#47ff6d";
 
-                if (answerBoxes[this.room.currentAnswer].innerText === this.room.questions[this.room.currentRound][this.room.currentQuestion]["correct_answer"]) {
+                if (answerBoxes[this.room.currentAnswer].innerText === correctAnswer) {
                     this.room.score += 5000 - (this.room.whenLastQuestionAnswered - this.room.whenLastQuestionAsked);
                     this.room.whenLastQuestionAnswered = null;
                     this.room.whenLastQuestionAsked = null;

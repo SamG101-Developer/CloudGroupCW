@@ -10,5 +10,33 @@
             <button class="answer-box" style="background-color: deeppink" @click="selectMultiChoiceAnswer(2)">{{ room.questions[room.currentRound][room.currentQuestion]['answers'][2] }}</button>
             <button class="answer-box" style="background-color: deepskyblue" @click="selectMultiChoiceAnswer(3)">{{ room.questions[room.currentRound][room.currentQuestion]['answers'][3] }}</button>
         </div>
+        <div class="letter_grid" v-if="room.questions[room.currentRound][room.currentQuestion]['question_type'] == 'Pick the Letter'">
+            <button class="letter-box" style="background-color: gold" @click="selectLetterAnswer(0)">A</button>
+            <button class="letter-box" style="background-color: orangered" @click="selectLetterAnswer(1)">B</button>
+            <button class="letter-box" style="background-color: deeppink" @click="selectLetterAnswer(2)">C</button>
+            <button class="letter-box" style="background-color: deepskyblue" @click="selectLetterAnswer(3)">D</button>
+            <button class="letter-box" style="background-color: gold" @click="selectLetterAnswer(4)">E</button>
+            <button class="letter-box" style="background-color: orangered" @click="selectLetterAnswer(5)">F</button>
+            <button class="letter-box" style="background-color: deeppink" @click="selectLetterAnswer(6)">G</button>
+            <button class="letter-box" style="background-color: deepskyblue" @click="selectLetterAnswer(7)">H</button>
+            <button class="letter-box" style="background-color: gold" @click="selectLetterAnswer(8)">I</button>
+            <button class="letter-box" style="background-color: orangered" @click="selectLetterAnswer(9)">J</button>
+            <button class="letter-box" style="background-color: deeppink" @click="selectLetterAnswer(10)">K</button>
+            <button class="letter-box" style="background-color: deepskyblue" @click="selectLetterAnswer(11)">L</button>
+            <button class="letter-box" style="background-color: gold" @click="selectLetterAnswer(12)">M</button>
+            <button class="letter-box" style="background-color: orangered" @click="selectLetterAnswer(13)">N</button>
+            <button class="letter-box" style="background-color: deeppink" @click="selectLetterAnswer(14)">O</button>
+            <button class="letter-box" style="background-color: deepskyblue" @click="selectLetterAnswer(15)">P</button>
+            <button class="letter-box" style="background-color: gold" @click="selectLetterAnswer(16)">Q</button>
+            <button class="letter-box" style="background-color: orangered" @click="selectLetterAnswer(17)">R</button>
+            <button class="letter-box" style="background-color: deeppink" @click="selectLetterAnswer(18)">S</button>
+            <button class="letter-box" style="background-color: deepskyblue" @click="selectLetterAnswer(19)">T</button>
+            <button class="letter-box" style="background-color: gold" @click="selectLetterAnswer(20)">U</button>
+            <button class="letter-box" style="background-color: orangered" @click="selectLetterAnswer(21)">V</button>
+            <button class="letter-box" style="background-color: deeppink" @click="selectLetterAnswer(22)">W</button>
+            <button class="letter-box" style="background-color: deepskyblue" @click="selectLetterAnswer(23)">X</button>
+            <button class="letter-box" style="background-color: gold" @click="selectLetterAnswer(24)">Y</button>
+            <button class="letter-box" style="background-color: orangered" @click="selectLetterAnswer(25)">Z</button>
+        </div>
     </div>
 </div>

@@ -351,6 +351,16 @@ The height of the container is 100vh - .navSize height
     gap: 1vh;
 }
 
+.letter_grid {
+    margin-top: 10vh;
+    height: 50vh;
+    width: 50vh;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 1vh;
+}
+
 .answer-box {
     border-radius: 3vh;
     box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
@@ -360,6 +370,11 @@ The height of the container is 100vh - .navSize height
     border: none;
     font-size: 1vw;
     font-weight: bold;
+}
+
+.letter-box {
+    width: 4vw;
+    height: 4vw;
 }
 
 /*  This contains all the css for the login page */
