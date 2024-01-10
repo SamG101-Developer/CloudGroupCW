@@ -720,7 +720,7 @@ io.on('connection', socket => {
 
     //Handle deleting room
     socket.on('delete_room', (info) => {
-        handleDeleteRoom(all_players_sockets[info['username']]);
+        handleDeleteRoom(all_players_sockets[info['adminUsername']]);
     })
 
     //Handle use power up
