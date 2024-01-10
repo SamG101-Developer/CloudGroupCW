@@ -450,6 +450,7 @@ function connect() {
     });
     socket.on("confirm_join_room", function(questions) {
         app.hideLoading();
+        app.room.state = "lobby";
         app.room.questions = questions;
     })
 
@@ -459,6 +460,7 @@ function connect() {
         app.room.is_host = true;
         app.room.adminUsername = app.user.username;
         app.page = "game";
+        app.room.state = "lobby";
     })
 
     //Handle an error
