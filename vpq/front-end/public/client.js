@@ -229,6 +229,15 @@ var app = new Vue({
             const new_player = document.createElement("div");
             new_player.innerHTML = info["username"] + ": " + info["score"];
             leaderboard.appendChild(new_player);
+
+            // sort all leaderboard entries by score
+            const leaderboard_entries = Array.from(leaderboard.children);
+            leaderboard_entries.sort((a, b) => {
+                const score_a = parseInt(a.innerText.split(": ")[1]);
+                const score_b = parseInt(b.innerText.split(": ")[1]);
+                return score_b - score_a;
+            });
+            leaderboard_entries.forEach(entry => leaderboard.appendChild(entry));
         }
     }
 });
