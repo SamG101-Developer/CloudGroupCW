@@ -89,13 +89,20 @@ function handleLogout(info) {
 }
 
 //Player Register
-function handleRegister(registerJSON){
+function handleRegister(socket, registerJSON){
     console.log(`Registering with username '${registerJSON.username}' and password '${registerJSON.password}'`);
 
     backendPOST("/api/playerAdd", registerJSON).then(
         function(response) {
             console.log("Success:");
             console.log(response);
+            if (response["result"]) {
+                socket.emit("confirm_register", registerJSON)
+            }
+            else {
+                socket.emit("error", response["msg"])
+            }
+
         },
         function (error) {
             console.error("Error:");
@@ -572,7 +579,7 @@ io.on('connection', socket => {
 
     //Handle register
     socket.on('register', (registerJSON) => {
-        handleRegister(registerJSON);
+        handleRegister(socket, registerJSON);
     });
 
     //Handle login

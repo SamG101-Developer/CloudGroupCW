@@ -7,29 +7,6 @@ h2 { /* Used for main titles */
     font-size: 26pt;
 }
 
-.login-container {
-    min-width: 250px;
-    width: 25%;
-    height: fit-content;
-
-    background-color: white;
-    border-radius: 6px;
-    box-shadow: 0px 12px 32px lightgray;
-    
-    display: grid;
-    gap: 8px;
-    grid-template-columns: 1fr 1fr;
-
-    position: absolute;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    
-    margin: auto;
-    padding: 8px;
-}
-
 .navSize {
     height: 6vh;
     width: 100vw;
@@ -102,15 +79,6 @@ The height of the container is 100vh - .navSize height
     margin: 0;
 }
 
-.scroller-content {
-    max-height: 85vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    flex: 1;
-    padding: 10px;
-    background: #dadada;
-}
-
 .tab:last-child {
     margin-right: 0;
 }
@@ -123,18 +91,27 @@ The height of the container is 100vh - .navSize height
     height: fit-content;
 }
 
-.checkbox-row {
-    display: flex;
-    align-items: center;
-    padding-right: 3vh;
-}
-
 .roundTabButton:hover {
     transform: scale(1.05);
 }
 
 .roundTabButton:active {
     transform: scale(0.95);
+}
+
+.scroller-content {
+    max-height: 85vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+    padding: 10px;
+    background: #dadada;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    padding-right: 3vh;
 }
 
 .addQuestionButton {
@@ -184,7 +161,7 @@ The height of the container is 100vh - .navSize height
 }
 
 /* Style the buttons */
-#buttonRow {
+.buttonRow {
     display: flex;
     justify-content: flex-start;
     margin-top: 1vw;
@@ -463,4 +440,34 @@ p.login {
     color: #fff;
     transition: background-color 0.3s, color 0.3s;
     vertical-align: middle;
+}
+
+/* This contains all the css for the login / register page */
+
+.login-register-tab-content {
+    display: none;
+    flex-direction: column;
+    flex-wrap: wrap;
+
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #888888;
+    background-color: #fff;
+}
+
+/* Other */
+
+.login-register-input-container {
+    display: flex;
+    margin-bottom: 1vh;
+}
+
+.login-register-input-container label {
+    flex: 0 0 100%;
+    text-align: right;
+}
+
+.login-register-input-container input {
+    flex: 1 1 auto;
+    margin-left: 1vw;
 }

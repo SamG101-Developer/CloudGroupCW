@@ -1,7 +1,43 @@
-<div class="container-fluid">
-    <form>
-        <input type="text" placeholder="Username" autocomplete="on" v-model="username" id="login-username"/>
-        <input type="password" placeholder="Password" autocomplete="on" v-model="password" id="login-password"/>
-        <button @click="login(username, password)" type="submit">Login</button>
-    </form>
+<!--<div class="container-fluid">-->
+<!--    <form>-->
+<!--        <input type="text" placeholder="Username" autocomplete="on" v-model="username" id="login-username"/>-->
+<!--        <input type="password" placeholder="Password" autocomplete="on" v-model="password" id="login-password"/>-->
+<!--        <button @click="login(username, password)" type="submit">Login</button>-->
+<!--    </form>-->
+<!--</div>-->
+
+<div style="height: 70vh; width: 50vw">
+    <div class="tab-container">
+        <button class="tab" onclick="document.getElementById('login-content').style.display = 'flex'; document.getElementById('register-content').style.display = 'none'">Login</button>
+        <button class="tab" onclick="document.getElementById('login-content').style.display = 'none'; document.getElementById('register-content').style.display = 'flex'">Register</button>
+    </div>
+
+    <div id="login-content" class="login-register-tab-content container-fluid">
+            <form style="display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center">
+            <div style="display: flex; flex-direction: column">
+                <div class="login-register-input-container"><label>Username:<input class="inputFieldRound" type="text" autocomplete="on" v-model="username" id="login-username"/></label></div>
+                <div class="login-register-input-container"><label>Password:<input class="inputFieldRound" type="password" autocomplete="on" v-model="password" id="login-password"/></label></div>
+            </div>
+        </form>
+
+        <div class="buttonRow">
+            <button class="addQuestionButton" @click="login(username, password)" type="submit">Login</button>
+        </div>
+    </div>
+
+    <div id="register-content" class="login-register-tab-content container-fluid">
+        <form style="display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center">
+            <div style="display: flex; flex-direction: column">
+                <div class="login-register-input-container"><label>First Name:<input class="inputFieldRound" type="text" autocomplete="on" v-model="firstName" id="register-first-name"/></label></div>
+                <div class="login-register-input-container"><label>Last Name:<input class="inputFieldRound" type="text" autocomplete="on" v-model="lastName" id="register-last-name"/></label></div>
+                <div class="login-register-input-container"><label>Username:<input class="inputFieldRound" type="text" autocomplete="on" v-model="username" id="register-username"/></label></div>
+                <div class="login-register-input-container"><label>Password:<input class="inputFieldRound" type="password" autocomplete="on" v-model="password" id="register-password"/></label></div>
+                <div class="login-register-input-container"><label>Confirm Password:<input class="inputFieldRound" type="password" autocomplete="on" v-model="confirmPassword" id="register-confirm-password"/></label></div>
+            </div>
+        </form>
+
+        <div class="buttonRow">
+            <button class="addQuestionButton" @click="register(username, password, confirmPassword, firstName, lastName)" type="submit">Register</button>
+        </div>
+    </div>
 </div>

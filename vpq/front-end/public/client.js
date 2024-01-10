@@ -95,15 +95,20 @@ var app = new Vue({
             socket.emit('chat',this.message);
             this.chatmessage = '';
         },
-        register(username, password) {
-            socket.emit('register', {"username": username, "password": password});
+        register(username, password, confirmPassword, firstName, lastName) {
+            if (password !== confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
+            this.showLoading();
+            socket.emit('register', {"username": username, "password": password, "firstname": firstName, "lastname": lastName});
         },
         login(username, password) {
+            this.showLoading();
             socket.emit('login', {"username": username, "password": password});
             document.getElementById("nav-profile-button").innerText += " (" + username + ")";
             // document.getElementById("login-password").value = "";
             // document.getElementById("register-password").value = "";
-            this.showLoading();
         },
         logout() {
             if (!this.user.username) {
@@ -155,11 +160,10 @@ var app = new Vue({
                 }
             }
 
-
             this.page = "game"
             this.room.adminUsername = room.adminUsername;
-            socket.emit('join_room', {adminUsername: room.adminUsername, usernameToAdd: this.user.username});
             this.showLoading();
+            socket.emit('join_room', {adminUsername: room.adminUsername, usernameToAdd: this.user.username});
         },
         leaveRoom() {
             socket.emit('leave_room');
@@ -322,6 +326,10 @@ function connect() {
         app.user.password = info["password"] || "";
         app.setPage("join");
     })
+    socket.on('confirm_register', function(info) {
+        app.hideLoading();
+        app.login(info["username"], info["password"]);
+    })
 
     //Handle connection error
     socket.on('connect_error', function(message) {
@@ -408,6 +416,7 @@ function connect() {
 
     //Handle an error
     socket.on('error', function(error) {
+        alert(error);
         app.hideLoading();
     })
 
