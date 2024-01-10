@@ -337,6 +337,13 @@ function handleJoinRoom(socket, room) {
                                 console.log("Success:");
                                 console.log(response);
                                 room_questions = response["questions"];
+                                // shuffle the answers in the questions
+
+                                for (const round of room_questions) {
+                                    for (const question of round) {
+                                        question["answers"].sort(() => Math.random() - 0.5);
+                                    }
+                                }
 
                                 // For each player in the room, send them an increment state message
                                 for (let player of players) {
