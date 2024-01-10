@@ -91,8 +91,11 @@ def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
                          " AND c.correct_answer='{3}'").format(
                     question['question'], question['question_type'],
                     question['answers'], question['correct_answer'])
+                logging.error("Query made")
                 dbQuestion = list(questionContainer.query_items(query=query, enable_cross_partition_query=True))
-                time.sleep(2000)
+                logging.error(f"Query response received {dbQuestion}")
+                time.sleep(2)
+                logging.error("PAUSE DONE")
 
             logging.error("Question added to DB")
 
