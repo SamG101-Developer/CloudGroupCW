@@ -323,11 +323,12 @@ var app = new Vue({
         },
 
         updateProfileInfo(firstname, lastname, newPassword){
-            document.getElementById('firstname').value = '';
-            document.getElementById('lastname').value = '';
-            document.getElementById('newPassword').value = '';
-            socket.emit('update_profile_info',{'firstname':firstname, 'lastname':lastname, 'password':newPassword});
+            document.getElementById('update_firstname').value = '';
+            document.getElementById('update_lastname').value = '';
+            document.getElementById('update_newPassword').value = '';
+            socket.emit('update_profile_info', {'firstname': firstname, 'lastname': lastname, 'password': newPassword});
         },
+
         handleProfileInfoUpdated(){
             alert("Profile information updated successfully!")
             this.setPage("profile")
