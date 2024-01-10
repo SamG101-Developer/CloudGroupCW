@@ -668,7 +668,7 @@ io.on('connection', socket => {
     //Handle get quiz ids
     socket.on('get_question_set_ids', () => {
         console.log('Adding a favourite quiz');
-        handleGetQuestionSetIDs();
+        handleGetQuestionSetIDs(socket);
     });
 
     //Handle delete favourite quiz

@@ -4,7 +4,12 @@
 
         <div style="display: flex" class="general-content container-fluid">
             <form style="align-items: center">
-                <div class="general-input-container"><label>Question Set ID:<input class="inputFieldRound" type="text" v-model="room_questionSetID"/></label></div>
+                <label>Question Set ID:
+                    <select v-model="room_questionSetID" style="width: fit-content">
+                        <option v-for="id in questionSetIDs" :value="id['id']">{{id["id"]}}</option>
+                    </select>
+                </label>
+                <!--                <div class="general-input-container"><label>Question Set ID:<input class="inputFieldRound" type="text" v-model="room_questionSetID"/></label></div>-->
                 <div class="general-input-container"><label>Add Password:<input class="inputFieldRound" type="text" v-model="room_password"/></label></div>
                 <div class="general-input-container"><label>18+<input type="checkbox" value="18+ ?" v-model="room_adultOnly"/></label></div>
             </form>
