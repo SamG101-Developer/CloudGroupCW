@@ -216,7 +216,7 @@ function handleGetRoomList(socket) {
         function(response) {
             console.log("Success:");
             console.log(response);
-            socket.emit('room_list_all', response["rooms"]);
+            socket.emit('room_list_all', response["rooms"] || []);
         },
         function (error) {
             console.error("Error:");
