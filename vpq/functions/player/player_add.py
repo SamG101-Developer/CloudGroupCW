@@ -30,6 +30,11 @@ def playerAdd(req: func.HttpRequest) -> func.HttpResponse:
         player = Player(reqJson)
         player.isUsernameValid()
         player.isPasswordValid()
+        reqJson["currency"] = 0
+        reqJson["premium_currency"] = 0
+        reqJson["overall_score"] = 0
+        reqJson["friends"] = []
+        reqJson["fave_quizzes"] = []
 
         # Check the database does NOT contain the username
         query = "SELECT * FROM p where p.username='{}'".format(reqJson['username'])
