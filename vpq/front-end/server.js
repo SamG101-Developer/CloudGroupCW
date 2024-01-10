@@ -24,7 +24,8 @@ let all_players_sockets = {};
 
 // URL of the backend API
 // TODO: Add the URL of the function app
-const BACKEND_ENDPOINT = process.env.BACKEND || 'http://localhost:7071';
+const BACKEND_ENDPOINT = 'http://localhost:7071' // 'https://vpq.azurewebsites.net' // process.env.BACKEND || 'http://localhost:7071';
+console.log(process.env.BACKEND);
 console.log(BACKEND_ENDPOINT); 
 
 //Start the server
@@ -261,15 +262,17 @@ function handlePlayerScoreUpdate(socket, info) {
 function handleDeleteRoom(socket) {
     console.log(`Deleting a room`);
 
-    let adminUsername = "";
+    let username = "";
     for (let [key, value] of Object.entries(all_players_sockets)) {
         if (value === socket) {
-            adminUsername = key;
+            username = key;
         }
     }
-    console.log(adminUsername)
+    if (!username) {
+        return;
+    }
 
-    backendDELETE("/api/roomSessionDel", {username: adminUsername}).then(
+    backendDELETE("/api/roomSessionDel", {username: username}).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -405,7 +408,7 @@ backendGET("/api/playerAdd", {}).then(
 */
 
 function backendGET(path, body) {
-    console.log(BACKEND_ENDPOINT + path);
+    console.log(BACKEND_ENDPOINT + path)
 	return new Promise((success, failure) => {
 		request.get(BACKEND_ENDPOINT + path, {
 			json: true,
