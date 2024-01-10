@@ -2,10 +2,10 @@
     <h1 style="font-size: 3em; letter-spacing: 4px; color: #6bdeb4; -webkit-text-stroke: 3px black; font-weight: 800; font-family: 'Arial Black', sans-serif;">EDIT PROFILE</h1>
     <form>
         <div style="display: flex; flex-direction: column;">
-            <input id="firstname" type="text" placeholder="New Firstname" autocomplete="on" v-model="firstname" style="margin-bottom: 10px; padding: 8px;"/>
-            <input id="lastname" type="text" placeholder="New Surname" autocomplete="on" v-model="lastname" style="margin-bottom: 10px; padding: 8px;"/>
-            <input id="newPassword" type="password" placeholder="New Password" autocomplete="on" v-model="newPassword" style="margin-bottom: 10px; padding: 8px;"/>
-            <button @click="updateProfileInfo(firstname, lastname, newPassword)" type="submit" style="background-color: #4CAF50; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">Submit</button>
+            <input id="update_firstname" type="text" placeholder="New Firstname" autocomplete="on" v-model="update_firstname" style="margin-bottom: 10px; padding: 8px;"/>
+            <input id="update_lastname" type="text" placeholder="New Surname" autocomplete="on" v-model="update_lastname" style="margin-bottom: 10px; padding: 8px;"/>
+            <input id="update_newPassword" type="password" placeholder="New Password" autocomplete="on" v-model="update_newPassword" style="margin-bottom: 10px; padding: 8px;"/>
+            <button @click="updateProfileInfo(update_firstname, update_lastname, update_newPassword)" type="submit" style="background-color: #4CAF50; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">Submit</button>
         </div>
     </form>
 </div>
