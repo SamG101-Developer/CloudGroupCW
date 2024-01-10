@@ -397,7 +397,10 @@ function handleGetPlayerInfo(socket){
         function (response){
             console.log("Success:");
             console.log(response);
-            socket.emit('playerInfoReceived',response['body'])
+            if (response['result']===true){
+                console.log("emitting to socket")
+                socket.emit('profileInfoReceived',response['body'])
+            }
         },
         function (error) {
             console.error("Error:");
@@ -406,7 +409,29 @@ function handleGetPlayerInfo(socket){
     )
 }
 
-
+function handleUpdateProfileInfo(socket, info){
+    console.log('Updating player info')
+    var username = null;
+    for (let [key, value] of Object.entries(all_players_sockets)) {
+            if (value === socket) {
+                username = key;
+            }
+    }
+    info['username'] = username;
+    backendPUT("/api/playerInfoSet",info).then(
+        function (response){
+            console.log("Success:")
+            console.log(response)
+            if (response['result']===true){
+                console.log("emitting to client")
+                socket.emit('profileInfoUpdated');}
+        },
+        function (error){
+            console.error("Error.")
+            console.error(error)
+        }
+    )
+}
 /*
 All backend requests work using promises.
 A backend request can be done by providing:
@@ -624,6 +649,9 @@ io.on('connection', socket => {
     //Handle getting current player info
     socket.on('get_player_info', () => {
         handleGetPlayerInfo(socket);
+    });
+    socket.on('update_profile_info', (info) => {
+        handleUpdateProfileInfo(socket,info);
     })
 });
 

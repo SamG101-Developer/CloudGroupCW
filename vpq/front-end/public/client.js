@@ -61,7 +61,7 @@ var app = new Vue({
                 return;
             }
             if (page==="profile"){
-                    socket.emit('get_player_info')
+                socket.emit('get_player_info');
             }
             this.page = page;
         },
@@ -242,13 +242,24 @@ var app = new Vue({
             leaderboard.appendChild(new_player);
         },
 
-        handlePlayerInfoReceived(info){
+        handleProfileInfoReceived(info){
             this.user.firstName = info['firstname']
             this.user.lastName = info['lastname']
             this.user.currency = info['currency']
             this.user.premiumCurrency = info['premium_currency']
             this.user.overallScore = info['overall_score']
         },
+
+        updateProfileInfo(firstname, lastname, newPassword){
+            document.getElementById('firstname').value = '';
+            document.getElementById('lastname').value = '';
+            document.getElementById('newPassword').value = '';
+            socket.emit('update_profile_info',{'firstname':firstname, 'lastname':lastname, 'password':newPassword});
+        },
+        handleProfileInfoUpdated(){
+            alert("Profile information updated successfully!")
+            this.setPage("profile")
+        }
     }
 });
 
@@ -363,7 +374,12 @@ function connect() {
     });
 
     //Handle receiving player info
-    socket.on('playerInfoReceived', function (info) {
-        app.handlePlayerInfoReceived(info);
-    })
+    socket.on('profileInfoReceived', function (info) {
+        app.handleProfileInfoReceived(info);
+    });
+
+    //Handle profile info updated
+    socket.on('profileInfoUpdated', function () {
+        app.handleProfileInfoUpdated();
+    });
 }
