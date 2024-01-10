@@ -16,7 +16,7 @@ h2 { /* Used for main titles */
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #e5e5e5;
+    background-color: #424141;
     margin: 0;
     padding: 0;
     display: flex;
@@ -444,7 +444,7 @@ p.login {
 
 /* This contains all the css for the login / register page */
 
-.login-register-tab-content {
+.general-content {
     display: none;
     flex-direction: column;
     flex-wrap: wrap;
@@ -457,17 +457,17 @@ p.login {
 
 /* Other */
 
-.login-register-input-container {
+.general-input-container {
     display: flex;
     margin-bottom: 1vh;
 }
 
-.login-register-input-container label {
+.general-input-container label {
     flex: 0 0 100%;
     text-align: right;
 }
 
-.login-register-input-container input {
+.general-input-container input {
     flex: 1 1 auto;
     margin-left: 1vw;
 }

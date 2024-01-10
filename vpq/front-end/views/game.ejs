@@ -1,8 +1,8 @@
 <div>
     <div v-if="room.state == 'lobby'">
         <%- include('game/lobby'); -%>
-        <div v-if="room.is_host">
-            <button @click="startGame()">Start Game</button>
+        <div v-if="room.is_host" class="buttonRow">
+            <button class="addQuestionButton" @click="startGame()">Start Game</button>
         </div>
     </div>
     <div v-else-if="room.state == 'round_splash'">
