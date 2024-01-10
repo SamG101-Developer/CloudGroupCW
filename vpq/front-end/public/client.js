@@ -28,6 +28,7 @@ var app = new Vue({
             currency:null,
             premiumCurrency:null,
             overallScore:null,
+            friends: [],
         },
 
         room: {
@@ -55,7 +56,7 @@ var app = new Vue({
     },
     methods: {
         setPage(page) {
-            if (["create", "host", "join", "profile"].includes(page) && !this.user.username) {
+            if (["create", "host", "join", "profile", "friends"].includes(page) && !this.user.username) {
                 alert("You must be logged in to do that.");
                 return;
             }
@@ -66,8 +67,11 @@ var app = new Vue({
             if (page === "join") {
                 this.roomList();
             }
-            else if (page==="profile"){
+            else if (page === "profile"){
                 socket.emit('get_player_info');
+            }
+            else if (page === "friends") {
+                socket.emit('update_friends', {username: this.user.username});
             }
             this.page = page;
         },
@@ -126,6 +130,7 @@ var app = new Vue({
             this.user.currency = null;
             this.user.premiumCurrency = null;
             this.user.overallScore = null;
+            this.user.friends = [];
             this.setPage("login");
         },
         roomList() {
@@ -134,11 +139,14 @@ var app = new Vue({
         deleteUser(username, password) {
             socket.emit('delete', {"username": username, "password": password});
         },
-        addFriend() {
-            socket.emit('add_friend');
+        addFriend(friend) {
+            socket.emit('add_friend', {username: this.user.username, friendUsername: friend});
         },
-        deleteFriend() {
-            socket.emit('del_friend');
+        deleteFriend(friend) {
+            socket.emit('del_friend', {username: this.user.username, friendUsername: friend});
+        },
+        updateFriends(friendsList){
+            this.user.friends = friendsList;
         },
         addFavouriteQuiz() {
             socket.emit('add_favourite_quiz');
@@ -318,7 +326,7 @@ var app = new Vue({
         handleProfileInfoUpdated(){
             alert("Profile information updated successfully!")
             this.setPage("profile")
-        }
+        },
     }
 });
 
@@ -483,5 +491,9 @@ function connect() {
     //Handle quiz create incomplete
     socket.on("quiz_create_error", function() {
         alert("There was an error generating your quiz.");
+    });
+
+    socket.on("update_friends", function(friendsList){
+        app.updateFriends(friendsList);
     });
 }

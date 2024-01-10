@@ -123,6 +123,7 @@ function handleAddFriend(addFriendJSON){
         function(response) {
             console.log("Success:");
             console.log(response);
+            handleUpdateFriends(all_players_sockets[addFriendJSON.username], addFriendJSON);
         },
         function (error) {
             console.error("Error:");
@@ -140,6 +141,26 @@ function handleDeleteFriend(delFriendJSON){
         function(response) {
             console.log("Success:");
             console.log(response);
+            handleUpdateFriends(all_players_sockets[delFriendJSON.username], delFriendJSON);
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    );
+}
+
+//Player update friends
+function handleUpdateFriends(socket, info) {
+    const username = info["username"];
+    console.log('Updating friends list for user ' + username);
+
+    backendGET("/api/playerInfoGet", info).then(
+        function(response) {
+            console.log("Success:");
+            console.log(response);
+
+            socket.emit("update_friends", response.body.friends);
         },
         function (error) {
             console.error("Error:");
@@ -635,12 +656,16 @@ io.on('connection', socket => {
     //Handle add friend
     socket.on('add_friend', (addFriendJSON) => {
         handleAddFriend(addFriendJSON)
-
     });
 
     //Handle delete friend
     socket.on('del_friend', (delFriendJSON) => {
         handleDeleteFriend(delFriendJSON)
+    });
+
+    //Handle updating friends
+    socket.on('update_friends', (info) => {
+        handleUpdateFriends(socket, info);
     });
 
     //Handle add favourite quiz
