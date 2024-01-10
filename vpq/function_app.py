@@ -32,6 +32,7 @@ try:
     from functions.question_set.question_set_del import function as question_set_del
     from functions.question_set.question_set_questions_get import function as question_set_questions_get
     from functions.question_set.question_set_set import function as question_set_set
+    from functions.question_set.question_set_all_get import function as question_set_all_get
     from functions.room.room_admin_set import function as room_admin_set
     from functions.room.room_all_get import function as room_all_get
     from functions.room.room_adultonly_set import function as room_adultonly_set
@@ -62,6 +63,7 @@ try:
         question_set_add,
         question_set_del,
         question_set_set,
+        question_set_all_get,
         room_admin_set,
         room_all_get,
         room_adultonly_set,
