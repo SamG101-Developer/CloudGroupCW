@@ -81,7 +81,9 @@ def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
         for i in range(len(newQuestions)):
             logging.error(f"Inspecting new question {i} ({newQuestions[i]})")
             question = newQuestions[i][0]
+            logging.error("STAGE 1")
             dbQuestion = []
+            logging.error("STAGE 2")
 
             while len(dbQuestion) == 0:
                 logging.error("Waiting for question to be added to DB...")
