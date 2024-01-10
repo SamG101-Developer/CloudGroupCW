@@ -278,6 +278,7 @@ function handleDeleteRoom(socket) {
     for (let [key, value] of Object.entries(all_players_sockets)) {
         if (value === socket) {
             username = key;
+            break;
         }
     }
     if (!username) {
@@ -288,8 +289,17 @@ function handleDeleteRoom(socket) {
         function(response) {
             console.log("Success:");
             console.log(response);
+            const players = response["players"];
 
-            // TODO : Get list of everyone in the room -> Send to everyone on the list
+            if (response["result"]) {
+                for (let player of players) {
+                    const player_socket = all_players_sockets[player];
+                    player_socket.emit('kick_from_room');
+                }
+            }
+            else {
+                socket.emit("error", response["msg"])
+            }
         },
         function (error) {
             console.error("Error:");
@@ -412,10 +422,11 @@ function handleGetPlayerInfo(socket){
     var username = null;
     console.log('Getting player info')
     for (let [key, value] of Object.entries(all_players_sockets)) {
-            if (value === socket) {
-                username = key;
-            }
+        if (value === socket) {
+            username = key;
+            break;
         }
+    }
     backendGET("/api/playerInfoGet",{'username':username}).then(
         function (response){
             console.log("Success:");
@@ -438,6 +449,7 @@ function handleUpdateProfileInfo(socket, info){
     for (let [key, value] of Object.entries(all_players_sockets)) {
             if (value === socket) {
                 username = key;
+                break;
             }
     }
     info['username'] = username;
@@ -573,6 +585,7 @@ io.on('connection', socket => {
         for (let [key, value] of Object.entries(all_players_sockets)) {
             if (value === socket) {
                 delete all_players_sockets[key];
+                break;
             }
         }
     });

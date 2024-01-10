@@ -16,6 +16,7 @@ var app = new Vue({
         connected: false,
         messages: [],
         questionSearchUsernameField: "",
+        timers: [],
 
         user: {
             username: null,
@@ -192,51 +193,51 @@ var app = new Vue({
             // Disable all the buttons
             const answer_buttons = document.getElementsByClassName("answer-box");
             Array.from(answer_buttons).forEach(button => button.disabled = true);
-            setTimeout(() => Array.from(answer_buttons).forEach(button => button.disabled = false), 10000 - (this.room.whenLastQuestionAnswered - this.room.whenLastQuestionAsked));
+            this.timers.push(setTimeout(() => Array.from(answer_buttons).forEach(button => button.disabled = false), 10000 - (this.room.whenLastQuestionAnswered - this.room.whenLastQuestionAsked)));
 
         },
         flowGameRound() {
             // Only run from the admin.
             const num_questions_this_round = this.room.questions[this.room.currentRound].length;
             for (const i in this.room.questions[this.room.currentRound]) {
-                setTimeout(() => {
+                this.timers.push(setTimeout(() => {
                     socket.emit('increment_game_state', {
                         adminUsername: this.user.username,
                         gameState: "question"
                     });
 
-                    setTimeout(() => {
+                    this.timers.push(setTimeout(() => {
                         socket.emit('increment_game_state', {
                             adminUsername: this.user.username,
                             gameState: "answer"
                         });
-                    }, 5000);
-                }, 5000 + (i * 10000));
+                    }, 5000));
+                }, 5000 + (i * 10000)));
             }
 
-            setTimeout(() => {
+            this.timers.push(setTimeout(() => {
                 socket.emit('increment_game_state', {
                     adminUsername: this.user.username,
                     gameState: "round_score"
                 });
 
                 if (this.room.currentRound + 1 < this.room.questions.length) {
-                    setTimeout(() => {
+                    this.timers.push(setTimeout(() => {
                         socket.emit('increment_game_state', {
                             adminUsername: this.user.username,
                             gameState: "round_splash"
                         });
-                    }, 5000);
+                    }, 5000));
                 }
                 else {
-                    setTimeout(() => {
+                    this.timers.push(setTimeout(() => {
                         socket.emit('increment_game_state', {
                             adminUsername: this.user.username,
                             gameState: "end_game"
                         });
-                    }, 5000);
+                    }, 5000));
                 }
-            }, 5000 + (num_questions_this_round * 10000));
+            }, 5000 + (num_questions_this_round * 10000)));
         },
 
         showLoading() {
@@ -438,5 +439,12 @@ function connect() {
     //Handle profile info updated
     socket.on('profileInfoUpdated', function () {
         app.handleProfileInfoUpdated();
+    });
+
+    //Handle being kicked from the room
+    socket.on("kick_from_room", function() {
+        for (const timer of app.timers) { clearTimeout(timer); }
+        app.setPage("join");
+        alert("You have been kicked from the room.");
     });
 }
