@@ -1,7 +1,7 @@
 <div>
-    <h1>Round {{ room.currentRound }}</h1>
-    <h1>Question {{ room.currentQuestion }}</h1>
-    <h2>{{ room.questions[room.currentRound][room.currentQuestion]["question"] }}</h2>
+    <h1 style="color: white">Round {{ room.currentRound }}</h1>
+    <h1 style="color: white">Question {{ room.currentQuestion }}</h1>
+    <h2 style="color: white">{{ room.questions[room.currentRound][room.currentQuestion]["question"] }}</h2>
 
     <div class="grid-wrapper" id="answer-container">
         <div class="grid" v-if="room.questions[room.currentRound][room.currentQuestion]['question_type'] == 'Multiple Choice'">
