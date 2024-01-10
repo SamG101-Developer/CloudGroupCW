@@ -27,6 +27,14 @@
         <%- include('navbar'); -%>
         <%- include('login'); -%>
     </div>
+    <div v-else-if="page == 'profile'">
+        <%- include('navbar'); -%>
+        <%- include('profile'); -%>
+    </div>
+    <div v-else-if="page == 'update_profile'">
+        <%- include('navbar'); -%>
+        <%- include('update_profile'); -%>
+    </div>
     <div v-else>
         <%- include('navbar'); -%>
         <p>Invalid Page!</p>

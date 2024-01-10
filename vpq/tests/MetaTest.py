@@ -69,3 +69,8 @@ class MetaTest:
         'adult_only': False,
         'password': '',
     }
+
+    DEFAULT_QUESTION_SET_JSON = {
+        'username':'bsab1g21',
+        'questions':[],
+    }

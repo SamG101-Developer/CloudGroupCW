@@ -17,7 +17,15 @@ var app = new Vue({
         messages: [],
         questionSearchUsernameField: "",
 
-        user: { username: null, password: null, state: null },
+        user: { username: null,
+            password: null,
+            state: null,
+            firstName: null,
+            lastName: null,
+            currency:null,
+            premiumCurrency:null,
+            overallScore:null,
+        },
 
         room: {
             id: null,
@@ -44,7 +52,7 @@ var app = new Vue({
     },
     methods: {
         setPage(page) {
-            if (["create", "host", "join"].includes(page) && !this.user.username) {
+            if (["create", "host", "join","profile"].includes(page) && !this.user.username) {
                 alert("You must be logged in to do that.");
                 return;
             }
@@ -54,6 +62,9 @@ var app = new Vue({
             }
             if (page === "join") {
                 this.roomList();
+            }
+            else if (page==="profile"){
+                socket.emit('get_player_info');
             }
             this.page = page;
         },
@@ -251,6 +262,25 @@ var app = new Vue({
                 return score_b - score_a;
             });
             leaderboard_entries.forEach(entry => leaderboard.appendChild(entry));
+        },
+
+        handleProfileInfoReceived(info){
+            this.user.firstName = info['firstname']
+            this.user.lastName = info['lastname']
+            this.user.currency = info['currency']
+            this.user.premiumCurrency = info['premium_currency']
+            this.user.overallScore = info['overall_score']
+        },
+
+        updateProfileInfo(firstname, lastname, newPassword){
+            document.getElementById('firstname').value = '';
+            document.getElementById('lastname').value = '';
+            document.getElementById('newPassword').value = '';
+            socket.emit('update_profile_info',{'firstname':firstname, 'lastname':lastname, 'password':newPassword});
+        },
+        handleProfileInfoUpdated(){
+            alert("Profile information updated successfully!")
+            this.setPage("profile")
         }
     }
 });
@@ -363,5 +393,15 @@ function connect() {
     //Handle receiving the scores of each player in the game
     socket.on('player_score_update', function(info) {
         app.handlePlayerScoreUpdate(info);
+    });
+
+    //Handle receiving player info
+    socket.on('profileInfoReceived', function (info) {
+        app.handleProfileInfoReceived(info);
+    });
+
+    //Handle profile info updated
+    socket.on('profileInfoUpdated', function () {
+        app.handleProfileInfoUpdated();
     });
 }

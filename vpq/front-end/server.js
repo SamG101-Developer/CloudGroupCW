@@ -190,7 +190,6 @@ function handleQuizCreate(quizJSON){
 //Get Room List
 function handleGetRoomList(socket) {
     console.log(`Getting a list of all rooms`);
-
     backendGET("/api/roomAllGet", {}).then(
         function(response) {
             console.log("Success:");
@@ -396,7 +395,53 @@ function handleLeaveRoom(socket) {
     );
 }
 
+function handleGetPlayerInfo(socket){
+    var username = null;
+    console.log('Getting player info')
+    for (let [key, value] of Object.entries(all_players_sockets)) {
+            if (value === socket) {
+                username = key;
+            }
+        }
+    backendGET("/api/playerInfoGet",{'username':username}).then(
+        function (response){
+            console.log("Success:");
+            console.log(response);
+            if (response['result']===true){
+                console.log("emitting to socket")
+                socket.emit('profileInfoReceived',response['body'])
+            }
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    )
+}
 
+function handleUpdateProfileInfo(socket, info){
+    console.log('Updating player info')
+    var username = null;
+    for (let [key, value] of Object.entries(all_players_sockets)) {
+            if (value === socket) {
+                username = key;
+            }
+    }
+    info['username'] = username;
+    backendPUT("/api/playerInfoSet",info).then(
+        function (response){
+            console.log("Success:")
+            console.log(response)
+            if (response['result']===true){
+                console.log("emitting to client")
+                socket.emit('profileInfoUpdated');}
+        },
+        function (error){
+            console.error("Error.")
+            console.error(error)
+        }
+    )
+}
 /*
 All backend requests work using promises.
 A backend request can be done by providing:
@@ -475,6 +520,7 @@ function backendDELETE(path, body) {
         });
     });
 }
+
 
 /*
 Alternatively, backend requests could work with a callback function (which is called when a response is recieved)
@@ -610,6 +656,13 @@ io.on('connection', socket => {
         console.log("Received player score update " + Object.entries(info));
         handlePlayerScoreUpdate(socket, info);
     });
+    //Handle getting current player info
+    socket.on('get_player_info', () => {
+        handleGetPlayerInfo(socket);
+    });
+    socket.on('update_profile_info', (info) => {
+        handleUpdateProfileInfo(socket,info);
+    })
 });
 
 //Start server
