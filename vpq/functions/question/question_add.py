@@ -23,6 +23,8 @@ def questionAdd(req: func.HttpRequest) -> func.HttpResponse:
         playerContainer = database.get_container_client(os.environ['Container_Players'])
         questionContainer = database.get_container_client(os.environ['Container_Questions'])
 
+        logging.error("Loading DB Configs")
+
         reqJson = req.get_json()
         logging.info(f"Python HTTP trigger function processed a request to add a question: JSON: {reqJson}.")
 
@@ -30,15 +32,19 @@ def questionAdd(req: func.HttpRequest) -> func.HttpResponse:
         question = Question(reqJson)
         question.isQuestionValid()
 
+        logging.error("Question is valid")
+
         # Check the author exists
         author_query = "SELECT p.username FROM p where p.username='{}'".format(reqJson['author'])
         authors = list(playerContainer.query_items(query=author_query, enable_cross_partition_query=True))
         if len(authors) == 0:
             raise DatabaseDoesNotContainUsernameError
 
+        logging.error("Author exists")
+
         # Add the question to the database
         questionContainer.create_item(body=reqJson, enable_automatic_id_generation=True)
-        logging.info("Question Added Successfully")
+        logging.error("Question Added Successfully")
         return func.HttpResponse(body=json.dumps({'result': True, "msg": "Success"}), mimetype="application/json")
 
     except QuestionLengthError:
@@ -55,5 +61,6 @@ def questionAdd(req: func.HttpRequest) -> func.HttpResponse:
         message = CosmosHttpResponseErrorMessage()
         logging.error(message)
         return func.HttpResponse(body=json.dumps({'result': False, "msg": message}), mimetype="application/json")
+
     except Exception as test:
-        return func.HttpResponse(body=json.dumps({'result': False, "msg": test}), mimetype="application/json")
+        return func.HttpResponse(body=json.dumps({'result': False, "msg": str(test)}), mimetype="application/json")

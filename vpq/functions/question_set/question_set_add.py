@@ -67,6 +67,8 @@ def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
                 if len(dbQuestion) == 0:
                     logging.error("Requesting a new question to be added")
                     response = requests.post(URL, data=json.dumps(question))
+                    logging.error("Response:"+str(response.json()))
+
                     newQuestions.append([question, None])
                     logging.error("New Questions:"+str(newQuestions))
                     questionSetToAdd[roundCount].append(question['question'])
