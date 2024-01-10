@@ -15,17 +15,17 @@ h2 { /* Used for main titles */
     background-color: white;
     border-radius: 6px;
     box-shadow: 0px 12px 32px lightgray;
-    
+
     display: grid;
     gap: 8px;
     grid-template-columns: 1fr 1fr;
 
     position: absolute;
-    top:0;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    
+
     margin: auto;
     padding: 8px;
 }
@@ -78,6 +78,7 @@ The height of the container is 100vh - .navSize height
     display: flex;
     background-color: inherit;
 }
+
 .tab {
     flex: 1;
     background-color: #2A2929FF;
@@ -144,7 +145,7 @@ The height of the container is 100vh - .navSize height
 
 .removeButton {
     background: linear-gradient(to right, #ff6e6e 0%, #a72828 100%);
-    color:white;
+    color: white;
 }
 
 .deleteQuestion {
@@ -173,7 +174,7 @@ The height of the container is 100vh - .navSize height
     gap: 1vh;
 }
 
-.multipleChoiceOptionsContainer .checkbox-row{
+.multipleChoiceOptionsContainer .checkbox-row {
     display: flex;
     flex-direction: row;
     gap: 0.5vh;
@@ -266,11 +267,10 @@ The height of the container is 100vh - .navSize height
     padding: 0.3vh;
     border-radius: 2vh;
     background-color: white;
-    box-shadow:
-            0 2px 4px rgba(0, 0, 0, 0.2),
-            0 3px 10px rgba(0, 0, 0, 0.1),
-            inset 0 4px 2px rgba(255, 255, 255, 0.5),
-            inset 0 -3px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2),
+    0 3px 10px rgba(0, 0, 0, 0.1),
+    inset 0 4px 2px rgba(255, 255, 255, 0.5),
+    inset 0 -3px 2px rgba(0, 0, 0, 0.1);
 }
 
 .questionDataText {
@@ -309,176 +309,180 @@ The height of the container is 100vh - .navSize height
 
 /*  This contains all the css for the login page */
 body.login {
-      background-color: rgba(128, 186, 255, 0.67);
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding-top: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+    background-color: rgba(128, 186, 255, 0.67);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-    .container-login {
-      text-align: center;
-      max-width: 800px;
-      margin: auto;
-      padding: 30px;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+.container-login {
+    text-align: center;
+    max-width: 800px;
+    margin: auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-    .logo-login {
-      max-width: 300px;
-      height: auto;
-      margin-bottom: 20px;
-    }
+.logo-login {
+    max-width: 300px;
+    height: auto;
+    margin-bottom: 20px;
+}
 
-    h1.login {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      color: #333;
-    }
+h1.login {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333;
+}
 
-    p.login {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-      color: #555;
-    }
+p.login {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: #555;
+}
 
-    .btn-container-login {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+.btn-container-login {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
 
-    .btn-login {
-      font-size: 1.2rem;
-      width: 100%;
-      padding: 15px;
-      border-radius: 5px;
-      transition: background-color 0.3s, color 0.3s;
-    }
+.btn-login {
+    font-size: 1.2rem;
+    width: 100%;
+    height: 5vh;
+    padding: 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+    vertical-align: middle;
+}
 
-    .btn-login:hover {
-      background-color: #0056b3;
-      color: #fff;
-    }
+.btn-login:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
 
-    .logout-btn-login:hover {
-      background-color: #c82333;
-    }
+.logout-btn-login:hover {
+    background-color: #c82333;
+}
 
-    .logout-btn-login {
-      margin-top: 15px;
-      display: inline-block;
-      font-size: 1.3rem;
-      padding: 15px 30px;
-      border-radius: 8px;
-      background-color: #dc3545;
-      color: #fff;
-      transition: background-color 0.3s, color 0.3s;
-    }
+.logout-btn-login {
+    height: 5vh;
+    margin-top: 15px;
+    display: inline-block;
+    font-size: 1.3rem;
+    padding: 15px 30px;
+    border-radius: 8px;
+    background-color: #dc3545;
+    color: #fff;
+    transition: background-color 0.3s, color 0.3s;
+    vertical-align: middle;
+}
 
 
-    /*  This contains css for all of the friends page*/
+/*  This contains css for all of the friends page*/
 /* General styles */
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 50px;
-  background-color: #f4f4f4;
-  color: #333;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 50px;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 h1 {
-  text-align: center;
+    text-align: center;
 }
 
 .alert {
-  margin-bottom: 15px;
-  padding: 15px;
-  border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 5px;
 }
 
 .alert-danger {
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
 }
 
 .form-control {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
 .btn-primary {
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
 }
 
 .btn-danger.btn-sm {
-  padding: 5px 10px;
-  margin-left: 5px;
-  border-radius: 50%;
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  cursor: pointer;
+    padding: 5px 10px;
+    margin-left: 5px;
+    border-radius: 50%;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    cursor: pointer;
 }
 
 /* Friends List */
 #addFriendsContainer {
-  max-width: 300px;
-  margin: auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 #friendsListContainer {
-  max-width: 800px;
-  margin: 20px auto;
-  overflow-y: auto; /* Vertical scrolling only when needed */
+    max-width: 800px;
+    margin: 20px auto;
+    overflow-y: auto; /* Vertical scrolling only when needed */
 }
 
 .no-friends-message {
-  text-align: center;
-  padding: 20px;
-  background-color: #f8f9fa; /* Muted color */
-  border: 1px solid #e2e3e5; /* Light border */
-  border-radius: 5px;
-  margin-bottom: 20px;
+    text-align: center;
+    padding: 20px;
+    background-color: #f8f9fa; /* Muted color */
+    border: 1px solid #e2e3e5; /* Light border */
+    border-radius: 5px;
+    margin-bottom: 20px;
 }
 
 .no-friends-message p {
-  color: #6c757d; /* Muted text color */
+    color: #6c757d; /* Muted text color */
 }
 
 
 .friends-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
 }
 
 .friend {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
