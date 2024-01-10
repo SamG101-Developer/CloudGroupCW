@@ -1,6 +1,7 @@
 import json
 import os
 import logging
+import time
 
 import azure.functions as func
 import requests
@@ -77,11 +78,16 @@ def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
         # Set the IDs of all the newly added questions
         for i in range(len(newQuestions)):
             question = newQuestions[i][0]
-            query = ("SELECT * FROM c WHERE c.question='{0}' AND c.question_type='{1}' AND c.answers={2}"
-                     " AND c.correct_answer='{3}'").format(question['question'], question['question_type'],
-                                                           question['answers'], question['correct_answer'])
-            dbQuestion = list(
-                questionContainer.query_items(query=query, enable_cross_partition_query=True))
+            dbQuestion = []
+
+            while len(dbQuestion) == 0:
+                query = ("SELECT * FROM c WHERE c.question='{0}' AND c.question_type='{1}' AND c.answers={2}"
+                         " AND c.correct_answer='{3}'").format(
+                    question['question'], question['question_type'],
+                    question['answers'], question['correct_answer'])
+                dbQuestion = list(questionContainer.query_items(query=query, enable_cross_partition_query=True))
+                time.sleep(2000)
+
             newQuestions[i][1] = dbQuestion[0]['id']
 
         logging.error(newQuestions)
