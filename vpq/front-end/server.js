@@ -115,7 +115,7 @@ function handleRegister(socket, registerJSON){
 }
 
 //Player Add Friend
-function handleAddFriend(addFriendJSON){
+function handleAddFriend(socket, addFriendJSON){
     console.log(`Adding friend '${addFriendJSON.friendUsername}' for user '${addFriendJSON.username}'`);
 
     let url = "/api/playerFriendAdd?code=" + process.env.FUNCTION_APP_KEY;
@@ -123,7 +123,7 @@ function handleAddFriend(addFriendJSON){
         function(response) {
             console.log("Success:");
             console.log(response);
-            handleUpdateFriends(all_players_sockets[addFriendJSON.username], addFriendJSON);
+            handleUpdateFriends(socket, addFriendJSON);
         },
         function (error) {
             console.error("Error:");
@@ -133,7 +133,7 @@ function handleAddFriend(addFriendJSON){
 }
 
 //Player Delete Friend
-function handleDeleteFriend(delFriendJSON){
+function handleDeleteFriend(socket, delFriendJSON){
     console.log(`Deleting friend '${delFriendJSON.friendUsername}' for user '${delFriendJSON.username}'`);
 
     let url = "/api/playerFriendDel?code=" + process.env.FUNCTION_APP_KEY;
@@ -141,7 +141,7 @@ function handleDeleteFriend(delFriendJSON){
         function(response) {
             console.log("Success:");
             console.log(response);
-            handleUpdateFriends(all_players_sockets[delFriendJSON.username], delFriendJSON);
+            handleUpdateFriends(socket, delFriendJSON);
         },
         function (error) {
             console.error("Error:");
@@ -155,7 +155,8 @@ function handleUpdateFriends(socket, info) {
     const username = info["username"];
     console.log('Updating friends list for user ' + username);
 
-    backendGET("/api/playerInfoGet", info).then(
+    let url = "/api/playerInfoGet?code=" + process.env.FUNCTION_APP_KEY;
+    backendGET(url, info).then(
         function(response) {
             console.log("Success:");
             console.log(response);
@@ -672,12 +673,12 @@ io.on('connection', socket => {
 
     //Handle add friend
     socket.on('add_friend', (addFriendJSON) => {
-        handleAddFriend(addFriendJSON)
+        handleAddFriend(socket, addFriendJSON)
     });
 
     //Handle delete friend
     socket.on('del_friend', (delFriendJSON) => {
-        handleDeleteFriend(delFriendJSON)
+        handleDeleteFriend(socket, delFriendJSON)
     });
 
     //Handle updating friends
