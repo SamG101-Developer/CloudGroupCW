@@ -35,11 +35,14 @@ def roomSessionDel(req: func.HttpRequest) -> func.HttpResponse:
         if len(rooms) == 0:
             raise RoomDoesNotExist
 
+        # Get the players currently in the room
+        players = rooms[0]['players_in_room']
+
         # Retrieve room ID and delete the room
         roomID = rooms[0]['id']
         roomContainer.delete_item(item=roomID, partition_key=roomID)
         logging.info(f"Room with admin username {username} deleted successfully.")
-        return func.HttpResponse(body=json.dumps({'result': True, 'msg': f'Room with admin username {username} deleted successfully'}), mimetype="application/json")
+        return func.HttpResponse(body=json.dumps({'result': True, 'msg': f'Room with admin username {username} deleted successfully', "players": players}), mimetype="application/json")
 
     except RoomDoesNotExist:
         message = RoomDoesNotExist.getMessage()
