@@ -79,16 +79,20 @@ def questionSetAdd(req: func.HttpRequest) -> func.HttpResponse:
 
         # Set the IDs of all the newly added questions
         for i in range(len(newQuestions)):
+            logging.error(f"Inspecting new question {i} ({newQuestions[i]})")
             question = newQuestions[i][0]
             dbQuestion = []
 
             while len(dbQuestion) == 0:
+                logging.error("Waiting for question to be added to DB...")
                 query = ("SELECT * FROM c WHERE c.question='{0}' AND c.question_type='{1}' AND c.answers={2}"
                          " AND c.correct_answer='{3}'").format(
                     question['question'], question['question_type'],
                     question['answers'], question['correct_answer'])
                 dbQuestion = list(questionContainer.query_items(query=query, enable_cross_partition_query=True))
                 time.sleep(2000)
+
+            logging.error("Question added to DB")
 
             newQuestions[i][1] = dbQuestion[0]['id']
 
