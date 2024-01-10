@@ -17,6 +17,7 @@ var app = new Vue({
         messages: [],
         questionSearchUsernameField: "",
         timers: [],
+        queriedQuestions: [],
 
         user: {
             username: null,
