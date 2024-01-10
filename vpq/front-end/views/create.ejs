@@ -1,6 +1,6 @@
 <div>
     <div id="createQuizContainer">
-        <div id="buttonRow">
+        <div class="buttonRow">
             <button class="btn btn-lg btn-info" id="createQuizButton" onclick="createQuiz(window.app.user.username)">Create</button>
         </div>
         <div class="createQuizContent">
@@ -15,7 +15,7 @@
                     <h4>Question Search</h4>
                 </div>
                 <label>Search for:
-                    <input id="usernameToSearch"  class="inputFieldRound" type="text" v-model="questionSearchUsernameField" placeholder="Username">
+                    <input id="usernameToSearch" class="inputFieldRound" type="text" v-model="questionSearchUsernameField" placeholder="Username">
                 </label>
                 <button id="searchButton" @click="searchDatabaseForQuestions()">Search</button>
                 <div class="question-scroller">
