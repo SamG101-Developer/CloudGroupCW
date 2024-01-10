@@ -4,6 +4,7 @@
         <img id="loading-image" src="static/assets/loading.gif" alt="Loading"/>
     </div>
     <div v-if="page == 'home'">
+        <%- include('navbar'); -%>
         <%- include('home'); -%>
     </div>
     <div v-else-if="page == 'create'">
