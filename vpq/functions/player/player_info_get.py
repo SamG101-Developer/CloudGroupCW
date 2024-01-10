@@ -25,7 +25,7 @@ def playerInfoGet(req: func.HttpRequest) -> func.HttpResponse:
         logging.info('Python HTTP trigger function processed a request to retrieve player info. JSON: {}'.format(reqJson))
 
         # Check the database does contain the username
-        query = ("SELECT p.username, p.currency, p.premium_currency, p.overall_score, p.friends, p.fave_quizzes"
+        query = ("SELECT p.username,p.firstname,p.lastname, p.currency, p.premium_currency, p.overall_score, p.friends, p.fave_quizzes"
                  " FROM p where p.username='{}'").format(reqJson['username'])
         users = list(playerContainer.query_items(query=query, enable_cross_partition_query=True))
         if len(users) == 0:

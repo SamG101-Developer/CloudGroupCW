@@ -1,0 +1,9 @@
+<div class="container-fluid">
+    <h1>Profile</h1>
+    <p>Firstname: {{user['firstName']}}</p>
+    <p>Surname: {{user['lastName']}}</p>
+    <p>Currency: {{user['currency']}}</p>
+    <p>Premium Currency: {{user['premiumCurrency']}}</p>
+    <p>Overall Score: {{user['overallScore']}}</p>
+    <button @click="setPage('update_profile')" type="submit">Update Profile Information</button>
+</div>

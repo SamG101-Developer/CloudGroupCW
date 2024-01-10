@@ -189,7 +189,6 @@ function handleQuizCreate(quizJSON){
 //Get Room List
 function handleGetRoomList(socket) {
     console.log(`Getting a list of all rooms`);
-
     backendGET("/api/roomAllGet", {}).then(
         function(response) {
             console.log("Success:");
@@ -386,6 +385,27 @@ function handleLeaveRoom(socket) {
     );
 }
 
+function handleGetPlayerInfo(socket){
+    var username = null;
+    console.log('Getting player info')
+    for (let [key, value] of Object.entries(all_players_sockets)) {
+            if (value === socket) {
+                username = key;
+            }
+        }
+    backendGET("/api/playerInfoGet",{'username':username}).then(
+        function (response){
+            console.log("Success:");
+            console.log(response);
+            socket.emit('playerInfoReceived',response['body'])
+        },
+        function (error) {
+            console.error("Error:");
+            console.error(error);
+        }
+    )
+}
+
 
 /*
 All backend requests work using promises.
@@ -465,6 +485,7 @@ function backendDELETE(path, body) {
         });
     });
 }
+
 
 /*
 Alternatively, backend requests could work with a callback function (which is called when a response is recieved)
@@ -600,6 +621,10 @@ io.on('connection', socket => {
         console.log("Received player score update " + Object.entries(info));
         handlePlayerScoreUpdate(socket, info);
     });
+    //Handle getting current player info
+    socket.on('get_player_info', () => {
+        handleGetPlayerInfo(socket);
+    })
 });
 
 //Start server

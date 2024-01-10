@@ -17,7 +17,15 @@ var app = new Vue({
         messages: [],
         questionSearchUsernameField: "",
 
-        user: { username: null, password: null, state: null },
+        user: { username: null,
+            password: null,
+            state: null,
+            firstName: null,
+            lastName: null,
+            currency:null,
+            premiumCurrency:null,
+            overallScore:null,
+        },
 
         room: {
             id: null,
@@ -44,13 +52,16 @@ var app = new Vue({
     },
     methods: {
         setPage(page) {
-            if (["create", "host", "join"].includes(page) && !this.user.username) {
+            if (["create", "host", "join","profile"].includes(page) && !this.user.username) {
                 alert("You must be logged in to do that.");
                 return;
             }
             if (["login"].includes(page) && this.user.username) {
                 alert("You are already logged in. Log out first.");
                 return;
+            }
+            if (page==="profile"){
+                    socket.emit('get_player_info')
             }
             this.page = page;
         },
@@ -229,7 +240,15 @@ var app = new Vue({
             const new_player = document.createElement("div");
             new_player.innerHTML = info["username"] + ": " + info["score"];
             leaderboard.appendChild(new_player);
-        }
+        },
+
+        handlePlayerInfoReceived(info){
+            this.user.firstName = info['firstname']
+            this.user.lastName = info['lastname']
+            this.user.currency = info['currency']
+            this.user.premiumCurrency = info['premium_currency']
+            this.user.overallScore = info['overall_score']
+        },
     }
 });
 
@@ -342,4 +361,9 @@ function connect() {
     socket.on('player_score_update', function(info) {
         app.handlePlayerScoreUpdate(info);
     });
+
+    //Handle receiving player info
+    socket.on('playerInfoReceived', function (info) {
+        app.handlePlayerInfoReceived(info);
+    })
 }
